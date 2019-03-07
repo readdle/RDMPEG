@@ -85,8 +85,6 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
 
 + (void)initialize {
     av_log_set_callback(ffmpeg_log);
-    av_register_all();
-    avfilter_register_all();
     avformat_network_init();
 }
 
@@ -210,7 +208,7 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
             return [self errorWithCode:RDMPEGDecoderErrorCodeOpenFile];
         }
         
-        const int bufSize = FF_MIN_BUFFER_SIZE + FF_INPUT_BUFFER_PADDING_SIZE;
+        const int bufSize = AV_INPUT_BUFFER_MIN_SIZE + AV_INPUT_BUFFER_PADDING_SIZE;
         Byte *buffer = av_malloc(bufSize);
         if (buffer == NULL) {
             avformat_free_context(formatCtx);
@@ -822,8 +820,8 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
         return NO;
     }
     
-    AVFilter *buffer = avfilter_get_by_name("buffer");
-    AVFilter *buffersink = avfilter_get_by_name("buffersink");
+    const AVFilter *buffer = avfilter_get_by_name("buffer");
+    const AVFilter *buffersink = avfilter_get_by_name("buffersink");
     
     _filterGraph = avfilter_graph_alloc();
     if (_filterGraph == NULL) {
@@ -938,12 +936,11 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
         frameOffset = self.activeVideoStream.stream->start_time * _videoTimeBase;
     }
     
-    NSTimeInterval framePosition = av_frame_get_best_effort_timestamp(avFrame) * _videoTimeBase - frameOffset;
-    NSTimeInterval frameDuration = 0.0;
+    NSTimeInterval framePosition = avFrame->best_effort_timestamp * _videoTimeBase - frameOffset;
     
-    const int64_t avDuration = av_frame_get_pkt_duration(avFrame);
-    if (avDuration) {
-        frameDuration = avDuration * _videoTimeBase;
+    NSTimeInterval frameDuration = 0.0;
+    if (avFrame->pkt_duration) {
+        frameDuration = avFrame->pkt_duration * _videoTimeBase;
         frameDuration += avFrame->repeat_pict * _videoTimeBase * 0.5;
     }
     else {
@@ -1061,9 +1058,13 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
         frameOffset = self.activeAudioStream.stream->start_time * _audioTimeBase;
     }
     
-    NSTimeInterval framePosition = av_frame_get_best_effort_timestamp(_audioFrame) * _audioTimeBase - frameOffset;
-    NSTimeInterval frameDuration = av_frame_get_pkt_duration(_audioFrame) * _audioTimeBase;
-    if (frameDuration == 0) {
+    NSTimeInterval framePosition = _audioFrame->best_effort_timestamp * _audioTimeBase - frameOffset;
+    
+    NSTimeInterval frameDuration = 0.0;
+    if (_audioFrame->pkt_duration) {
+        frameDuration = _audioFrame->pkt_duration * _audioTimeBase;
+    }
+    else {
         // sometimes ffmpeg can't determine the duration of audio frame
         // especially of wma/wmv format
         // so in this case must compute duration
