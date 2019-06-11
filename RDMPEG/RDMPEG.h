@@ -11,5 +11,5 @@
 #import <RDMPEG/RDMPEGPlayerView.h>
 #import <RDMPEG/RDMPEGDecoder.h>
 #import <RDMPEG/RDMPEGIOStream.h>
-
+#import <RDMPEG/RDMPEGConverter.h>
 
