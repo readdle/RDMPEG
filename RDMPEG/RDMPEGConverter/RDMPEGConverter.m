@@ -32,7 +32,6 @@ NS_ASSUME_NONNULL_END
 
 - (NSString *)convertToMP3
 {
-    [MobileFFmpeg getLastCommandOutput];
     int result = -1;
     NSString *pathToMP3;
     NSFileManager *fm = [NSFileManager defaultManager];
