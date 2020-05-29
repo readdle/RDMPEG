@@ -56,7 +56,6 @@
 		7890013422AE86E800D17F31 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7890013322AE86E800D17F31 /* AudioToolbox.framework */; };
 		789001E522AEB8AD00D17F31 /* RDMPEGConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 789001E322AEB8AD00D17F31 /* RDMPEGConverter.m */; };
 		789001E622AEBA9400D17F31 /* RDMPEGConverter.h in Headers */ = {isa = PBXBuildFile; fileRef = 789001E222AEB8AD00D17F31 /* RDMPEGConverter.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		789002B622AF84BF00D17F31 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 789001E822AF84BE00D17F31 /* LICENSE */; };
 		789002B722AF84BF00D17F31 /* ArchDetect.h in Headers */ = {isa = PBXBuildFile; fileRef = 789001EA22AF84BE00D17F31 /* ArchDetect.h */; };
 		789002B822AF84BF00D17F31 /* mobileffmpeg_exception.h in Headers */ = {isa = PBXBuildFile; fileRef = 789001EB22AF84BE00D17F31 /* mobileffmpeg_exception.h */; };
 		789002B922AF84BF00D17F31 /* MobileFFmpegConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 789001EC22AF84BE00D17F31 /* MobileFFmpegConfig.h */; };
@@ -248,6 +247,7 @@
 		7890037322AF84BF00D17F31 /* libtwolame.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 789002B322AF84BE00D17F31 /* libtwolame.a */; };
 		7890037422AF84BF00D17F31 /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 789002B422AF84BE00D17F31 /* libjpeg.a */; };
 		7890037522AF84BF00D17F31 /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 789002B522AF84BE00D17F31 /* libvorbis.a */; };
+		AC31450924810CBA002918E6 /* MobileFFprobe.h in Headers */ = {isa = PBXBuildFile; fileRef = AC31450824810CB9002918E6 /* MobileFFprobe.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -333,7 +333,6 @@
 		7890013322AE86E800D17F31 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		789001E222AEB8AD00D17F31 /* RDMPEGConverter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGConverter.h; sourceTree = "<group>"; };
 		789001E322AEB8AD00D17F31 /* RDMPEGConverter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMPEGConverter.m; sourceTree = "<group>"; };
-		789001E822AF84BE00D17F31 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		789001EA22AF84BE00D17F31 /* ArchDetect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArchDetect.h; sourceTree = "<group>"; };
 		789001EB22AF84BE00D17F31 /* mobileffmpeg_exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mobileffmpeg_exception.h; sourceTree = "<group>"; };
 		789001EC22AF84BE00D17F31 /* MobileFFmpegConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileFFmpegConfig.h; sourceTree = "<group>"; };
@@ -525,6 +524,7 @@
 		789002B322AF84BE00D17F31 /* libtwolame.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libtwolame.a; sourceTree = "<group>"; };
 		789002B422AF84BE00D17F31 /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libjpeg.a; sourceTree = "<group>"; };
 		789002B522AF84BE00D17F31 /* libvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libvorbis.a; sourceTree = "<group>"; };
+		AC31450824810CB9002918E6 /* MobileFFprobe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileFFprobe.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -811,7 +811,6 @@
 		789001E722AF84BE00D17F31 /* mobile-ffmpeg-full-universal */ = {
 			isa = PBXGroup;
 			children = (
-				789001E822AF84BE00D17F31 /* LICENSE */,
 				789001E922AF84BE00D17F31 /* include */,
 				7890028322AF84BE00D17F31 /* lib */,
 			);
@@ -821,6 +820,7 @@
 		789001E922AF84BE00D17F31 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				AC31450824810CB9002918E6 /* MobileFFprobe.h */,
 				789001EA22AF84BE00D17F31 /* ArchDetect.h */,
 				789001EB22AF84BE00D17F31 /* mobileffmpeg_exception.h */,
 				789001EC22AF84BE00D17F31 /* MobileFFmpegConfig.h */,
@@ -1149,6 +1149,7 @@
 				789002EC22AF84BF00D17F31 /* thread.h in Headers */,
 				789002EA22AF84BF00D17F31 /* buffer.h in Headers */,
 				734C69841F8297340031761D /* RDMPEGFramebuffer.h in Headers */,
+				AC31450924810CBA002918E6 /* MobileFFprobe.h in Headers */,
 				789002E322AF84BF00D17F31 /* adler32.h in Headers */,
 				7890032D22AF84BF00D17F31 /* vaapi.h in Headers */,
 				789002E422AF84BF00D17F31 /* hwcontext_d3d11va.h in Headers */,
@@ -1383,7 +1384,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				789002B622AF84BF00D17F31 /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

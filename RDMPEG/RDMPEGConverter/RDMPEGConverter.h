@@ -10,12 +10,22 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
+@protocol RDMPEGConverterDelegate <NSObject>
+
+- (void)converterDidChangeProgress:(float)progress;
+
+@end
+
 @interface RDMPEGConverter : NSObject
 
-- (instancetype)initWithFileAtPath:(NSString *)filePath;
-- (NSString *)convertToMP3;
++ (instancetype)sharedConverter;
+
+@property (nonatomic,weak)id<RDMPEGConverterDelegate> delegate;
+
+- (NSString *)convertToMP3FileAtPath:(NSString *)inputFilePath;
+
 - (void)cancel;
-- (NSString *)errorOutput;
 
 @end
 
