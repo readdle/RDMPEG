@@ -70,6 +70,8 @@ NS_ASSUME_NONNULL_BEGIN
         return nil;
     }
     
+    [MobileFFmpegConfig resetStatistics];
+    
     self.inputFileTotalDuration = [RDMPEGConverter getDurationOfLocalFileAtPath:inputFilePath];
     self.inputFileProcessedDuration = 0;
     NSLog(@"frame total duration: %@",@(self.inputFileTotalDuration));
