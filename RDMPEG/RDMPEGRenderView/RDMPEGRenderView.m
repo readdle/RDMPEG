@@ -177,6 +177,10 @@ enum {
     
     _aspectFillMode = aspectFillMode;
     
+    [self updateView];
+}
+
+- (void)updateView{
     [self updateVertices];
     if (self.renderer.isValid) {
         [self render:nil];

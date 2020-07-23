@@ -76,7 +76,13 @@ NS_ASSUME_NONNULL_BEGIN
                                           subtitleSize.height);
         
         self.subtitleLabel.frame = CGRectIntegral(subtitleFrame);
+        self.subtitleLabel.hidden = (CGRectGetWidth(self.bounds) < 120.0);
     }
+    
+}
+
+- (void)updateView{
+    [self.renderView updateView];
 }
 
 #pragma mark - Public Accessors
