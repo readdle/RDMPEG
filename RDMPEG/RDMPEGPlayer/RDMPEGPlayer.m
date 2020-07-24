@@ -21,6 +21,7 @@
 #import "RDMPEGRendererRGB.h"
 #import "RDMPEGRendererYUV.h"
 #import "RDMPEGStream.h"
+#import "RDMPEGSelectableInputStream.h"
 #import <Log4Cocoa/Log4Cocoa.h>
 
 
@@ -32,6 +33,7 @@ static const NSTimeInterval RDMPEGPlayerMaxVideoBufferSize = 1.0;
 static const NSTimeInterval RDMPEGPlayerMinAudioBufferSize = 0.2;
 
 static NSString * const RDMPEGPlayerInputDecoderKey = @"RDMPEGPlayerInputDecoderKey";
+static NSString * const RDMPEGPlayerInputNameKey = @"RDMPEGPlayerInputNameKey";
 static NSString * const RDMPEGPlayerInputAudioStreamsKey = @"RDMPEGPlayerInputAudioStreamsKey";
 static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInputSubtitleStreamsKey";
 
@@ -53,8 +55,8 @@ static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInpu
 @property (nonatomic, strong, nullable) NSError *error;
 @property (nonatomic, strong, nullable) RDMPEGRenderScheduler *scheduler;
 @property (nonatomic, strong, nullable) NSTimer *timeObservingTimer;
-@property (nonatomic, strong, nullable) NSArray<NSString *> *audioStreams;
-@property (nonatomic, strong, nullable) NSArray<NSString *> *subtitleStreams;
+@property (nonatomic, strong, nullable) NSArray<RDMPEGSelectableInputStream *> *audioStreams;
+@property (nonatomic, strong, nullable) NSArray<RDMPEGSelectableInputStream *> *subtitleStreams;
 @property (nonatomic, strong, nullable) NSNumber *activeAudioStreamIndex;
 @property (nonatomic, strong, nullable) NSNumber *activeSubtitleStreamIndex;
 @property (nonatomic, strong, nullable) NSMutableArray<RDMPEGSubtitleFrame *> *currentSubtitleFrames;
@@ -623,19 +625,34 @@ static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInpu
     
     NSMutableDictionary<NSString *, id> *selectableInput = [NSMutableDictionary dictionary];
     selectableInput[RDMPEGPlayerInputDecoderKey] = decoder;
+    if(inputName){
+        selectableInput[RDMPEGPlayerInputNameKey] = inputName;
+    }
     selectableInput[RDMPEGPlayerInputAudioStreamsKey] = audioStreamNames.count > 0 ? audioStreamNames : nil;
     selectableInput[RDMPEGPlayerInputSubtitleStreamsKey] = subtitleStreamNames.count > 0 ? subtitleStreamNames : nil;
     [self.selectableInputs addObject:selectableInput];
     
-    NSMutableArray<NSString *> *allAudioStreams = [NSMutableArray array];
-    NSMutableArray<NSString *> *allSubtitleStreams = [NSMutableArray array];
+    NSMutableArray<RDMPEGSelectableInputStream *> *allAudioStreams = [NSMutableArray<RDMPEGSelectableInputStream *> array];
+    NSMutableArray<RDMPEGSelectableInputStream *> *allSubtitleStreams = [NSMutableArray<RDMPEGSelectableInputStream *> array];
     
     for (NSMutableDictionary<NSString *, id> *selectableInput in self.selectableInputs) {
         NSArray<NSString *> *audioStreams = selectableInput[RDMPEGPlayerInputAudioStreamsKey];
         NSArray<NSString *> *subtitleStreams = selectableInput[RDMPEGPlayerInputSubtitleStreamsKey];
+        NSString *inputName = selectableInput[RDMPEGPlayerInputNameKey];
         
-        [allAudioStreams addObjectsFromArray:audioStreams];
-        [allSubtitleStreams addObjectsFromArray:subtitleStreams];
+        for (NSString *audioStreamName in audioStreams) {
+            RDMPEGSelectableInputStream *selectableStream = [RDMPEGSelectableInputStream new];
+            selectableStream.title = audioStreamName;
+            selectableStream.inputName = inputName;
+            [allAudioStreams addObject:selectableStream];
+        }
+        
+        for (NSString *subtitleStreamName in subtitleStreams) {
+            RDMPEGSelectableInputStream *selectableStream = [RDMPEGSelectableInputStream new];
+            selectableStream.title = subtitleStreamName;
+            selectableStream.inputName = inputName;
+            [allSubtitleStreams addObject:selectableStream];
+        }
     }
     
     self.audioStreams = allAudioStreams;

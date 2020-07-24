@@ -11,7 +11,7 @@
 @class RDMPEGPlayer;
 @class RDMPEGPlayerView;
 @protocol RDMPEGIOStream;
-
+@class RDMPEGSelectableInputStream;
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -43,8 +43,8 @@ typedef NS_ENUM(NSInteger, RDMPEGPlayerState) {
 @property (nonatomic, readonly) RDMPEGPlayerView *playerView;
 @property (nonatomic, readonly) RDMPEGPlayerState state;
 @property (nonatomic, readonly, nullable) NSError *error;
-@property (nonatomic, readonly, nullable) NSArray<NSString *> *audioStreams;
-@property (nonatomic, readonly, nullable) NSArray<NSString *> *subtitleStreams;
+@property (nonatomic, readonly, nullable) NSArray<RDMPEGSelectableInputStream *> *audioStreams;
+@property (nonatomic, readonly, nullable) NSArray<RDMPEGSelectableInputStream *> *subtitleStreams;
 @property (nonatomic, readonly, nullable) NSNumber *activeAudioStreamIndex;
 @property (nonatomic, readonly, nullable) NSNumber *activeSubtitleStreamIndex;
 @property (nonatomic, readonly) NSTimeInterval currentTime;

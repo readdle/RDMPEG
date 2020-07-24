@@ -247,6 +247,8 @@
 		7890037322AF84BF00D17F31 /* libtwolame.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 789002B322AF84BE00D17F31 /* libtwolame.a */; };
 		7890037422AF84BF00D17F31 /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 789002B422AF84BE00D17F31 /* libjpeg.a */; };
 		7890037522AF84BF00D17F31 /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 789002B522AF84BE00D17F31 /* libvorbis.a */; };
+		AC21AEF524CB2DB800D47C3D /* RDMPEGSelectableInputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = AC21AEF324CB2DB700D47C3D /* RDMPEGSelectableInputStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AC21AEF624CB2DB800D47C3D /* RDMPEGSelectableInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = AC21AEF424CB2DB700D47C3D /* RDMPEGSelectableInputStream.m */; };
 		AC31450924810CBA002918E6 /* MobileFFprobe.h in Headers */ = {isa = PBXBuildFile; fileRef = AC31450824810CB9002918E6 /* MobileFFprobe.h */; };
 /* End PBXBuildFile section */
 
@@ -524,6 +526,8 @@
 		789002B322AF84BE00D17F31 /* libtwolame.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libtwolame.a; sourceTree = "<group>"; };
 		789002B422AF84BE00D17F31 /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libjpeg.a; sourceTree = "<group>"; };
 		789002B522AF84BE00D17F31 /* libvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libvorbis.a; sourceTree = "<group>"; };
+		AC21AEF324CB2DB700D47C3D /* RDMPEGSelectableInputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGSelectableInputStream.h; sourceTree = "<group>"; };
+		AC21AEF424CB2DB700D47C3D /* RDMPEGSelectableInputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMPEGSelectableInputStream.m; sourceTree = "<group>"; };
 		AC31450824810CB9002918E6 /* MobileFFprobe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileFFprobe.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -615,6 +619,8 @@
 				73309E0E1F9E3F22006ED07D /* RDMPEGStream.m */,
 				73309EC81F9E47A7006ED07D /* RDMPEGStream+Decoder.h */,
 				73309EC91F9E47A7006ED07D /* RDMPEGStream+Decoder.m */,
+				AC21AEF324CB2DB700D47C3D /* RDMPEGSelectableInputStream.h */,
+				AC21AEF424CB2DB700D47C3D /* RDMPEGSelectableInputStream.m */,
 			);
 			path = RDMPEGStream;
 			sourceTree = "<group>";
@@ -1133,6 +1139,7 @@
 				739F77581F82A06F009E27EA /* RDMPEGWeakTimerTarget.h in Headers */,
 				734C69821F8297340031761D /* RDMPEGRawAudioFrame.h in Headers */,
 				789002FF22AF84BF00D17F31 /* cpu.h in Headers */,
+				AC21AEF524CB2DB800D47C3D /* RDMPEGSelectableInputStream.h in Headers */,
 				73309ECA1F9E47A7006ED07D /* RDMPEGStream+Decoder.h in Headers */,
 				7890031522AF84BF00D17F31 /* hash.h in Headers */,
 				789002C022AF84BF00D17F31 /* time.h in Headers */,
@@ -1413,6 +1420,7 @@
 				732D4DC51F8634870005C682 /* RDMPEGRendererRGB.m in Sources */,
 				734C69851F8297340031761D /* RDMPEGFramebuffer.m in Sources */,
 				734C69861F8297340031761D /* RDMPEGRenderScheduler.m in Sources */,
+				AC21AEF624CB2DB800D47C3D /* RDMPEGSelectableInputStream.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

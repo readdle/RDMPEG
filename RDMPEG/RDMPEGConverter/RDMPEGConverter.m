@@ -59,7 +59,8 @@ NS_ASSUME_NONNULL_BEGIN
     return duration;
 }
 
-- (NSString *)convertToMP3FileAtPath:(NSString *)inputFilePath{
+- (NSString *)convertToMP3FileAtPath:(NSString *)inputFilePath
+                    audioStreamIndex:(NSUInteger)audioStreamIndex{
     
     if(inputFilePath == nil){
         NSParameterAssert(NO);
@@ -82,10 +83,18 @@ NS_ASSUME_NONNULL_BEGIN
     NSString *convertedMP3 = [NSTemporaryDirectory() stringByAppendingPathComponent:@"converted.mp3"];
     [[NSFileManager defaultManager] removeItemAtPath:convertedMP3 error:nil];
     
-    result = [MobileFFmpeg executeWithArguments:@[@"-i",
-                                                  inputFilePath,
-                                                  @"-vn",
-                                                  convertedMP3]];
+    NSMutableArray *arguments = [NSMutableArray new];
+    [arguments addObject:@"-i"];
+    [arguments addObject:inputFilePath];
+    if(audioStreamIndex > 0){
+        [arguments addObject:@"-map"];
+        [arguments addObject:[NSString stringWithFormat:@"0:a:%@",@(audioStreamIndex)]];
+    }
+    [arguments addObject:@"-vn"];
+    [arguments addObject:convertedMP3];
+    
+    result = [MobileFFmpeg executeWithArguments:arguments];
+    
     if (result == 0) {
         NSString *pathToArtwork = [NSTemporaryDirectory() stringByAppendingPathComponent:[baseFileName stringByAppendingPathExtension:@"jpg"]];
         [[NSFileManager defaultManager] removeItemAtPath:pathToArtwork error:nil];

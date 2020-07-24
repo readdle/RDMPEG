@@ -10,7 +10,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-
 @protocol RDMPEGConverterDelegate <NSObject>
 
 - (void)converterDidChangeProgress:(float)progress;
@@ -23,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic,weak)id<RDMPEGConverterDelegate> delegate;
 
-- (NSString *)convertToMP3FileAtPath:(NSString *)inputFilePath;
+- (NSString *)convertToMP3FileAtPath:(NSString *)inputFilePath audioStreamIndex:(NSUInteger)audioStreamIndex;
 
 - (void)cancel;
 
