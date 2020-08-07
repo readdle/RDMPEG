@@ -22,6 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic,weak)id<RDMPEGConverterDelegate> delegate;
 
+@property (atomic,readonly,assign,getter=isExecuting)BOOL executing;
+
 - (NSString *)convertToMP3FileAtPath:(NSString *)inputFilePath audioStreamIndex:(NSUInteger)audioStreamIndex;
 
 - (void)cancel;

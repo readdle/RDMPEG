@@ -18,10 +18,11 @@ NS_ASSUME_NONNULL_BEGIN
 @interface RDMPEGConverter()<StatisticsDelegate,LogDelegate>
 
 @property (nonatomic,assign)int64_t inputFileTotalDuration;
-
 @property (nonatomic,assign)int64_t inputFileProcessedDuration;
+@property (atomic,assign,getter=isExecuting)BOOL executing;
 
 @end
+
 
 @implementation RDMPEGConverter
 
@@ -62,6 +63,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)convertToMP3FileAtPath:(NSString *)inputFilePath
                     audioStreamIndex:(NSUInteger)audioStreamIndex{
     
+    if(self.isExecuting){
+        NSParameterAssert(NO);
+        return nil;
+    }
+    
     if(inputFilePath == nil){
         NSParameterAssert(NO);
         return nil;
@@ -70,6 +76,8 @@ NS_ASSUME_NONNULL_BEGIN
         NSParameterAssert(NO);
         return nil;
     }
+    
+    self.executing = YES;
     
     [MobileFFmpegConfig resetStatistics];
     
@@ -100,24 +108,31 @@ NS_ASSUME_NONNULL_BEGIN
         [[NSFileManager defaultManager] removeItemAtPath:pathToArtwork error:nil];
         result = [MobileFFmpeg executeWithArguments:@[@"-i",
                                                       inputFilePath,
-                                                      @"-frames",
+                                                      @"-ss",
+                                                      @"-00:00:01",
+                                                      @"-vframes",
                                                       @"1",
-                                                      @"-q:v",
-                                                      @"1",
-                                                      @"-vf",
-                                                      @"select=not(mod(n\\,40)),scale=-1:160,tile=2x3",
-                                                      @"-s",
-                                                      @"512x512",
-                                                      @"-f",
-                                                      @"image2",
                                                       pathToArtwork]];
+        
+        NSString *pathToArtworkScaled = [NSTemporaryDirectory() stringByAppendingPathComponent:[[baseFileName stringByAppendingString:@"_scaled"] stringByAppendingPathExtension:@"jpg"]];
+        [[NSFileManager defaultManager] removeItemAtPath:pathToArtworkScaled error:nil];
+        
+        //https://superuser.com/questions/547296/resizing-videos-with-ffmpeg-avconv-to-fit-into-static-sized-player/1136305#1136305
+        result = [MobileFFmpeg executeWithArguments:@[@"-i",
+                                                      pathToArtwork,
+                                                      @"-vf",
+                                                      //@"scale=300:300:force_original_aspect_ratio=increase",
+                                                      //@"scale=300:-2:force_original_aspect_ratio=increase,pad=300:300:(ow-iw)/2:(oh-ih)/2",
+                                                      @"scale=600:-2:force_original_aspect_ratio=increase,crop=300:300:keep_aspect=1",
+                                                      pathToArtworkScaled]];
+        
         if (result == 0) {
             pathToMP3 = [NSTemporaryDirectory() stringByAppendingPathComponent:[baseFileName stringByAppendingPathExtension:@"mp3"]];
             [[NSFileManager defaultManager] removeItemAtPath:pathToMP3 error:nil];
             result = [MobileFFmpeg executeWithArguments:@[@"-i",
                                                           convertedMP3,
                                                           @"-i",
-                                                          pathToArtwork,
+                                                          pathToArtworkScaled,
                                                           @"-map",
                                                           @"0:0",
                                                           @"-map",
@@ -133,11 +148,15 @@ NS_ASSUME_NONNULL_BEGIN
                                                           pathToMP3]];
         }
         [[NSFileManager defaultManager] removeItemAtPath:pathToArtwork error:nil];
+        [[NSFileManager defaultManager] removeItemAtPath:pathToArtworkScaled error:nil];
     }
     [[NSFileManager defaultManager] removeItemAtPath:convertedMP3 error:nil];
     if (result == RETURN_CODE_CANCEL) {
         [[NSFileManager defaultManager] removeItemAtPath:pathToMP3 error:nil];
     }
+    
+    self.executing = NO;
+    
     return result == 0 ? pathToMP3 : nil;
 }
 
@@ -158,6 +177,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)cancel{
     [MobileFFmpeg cancel];
+    self.executing = NO;
 }
 
 @end
