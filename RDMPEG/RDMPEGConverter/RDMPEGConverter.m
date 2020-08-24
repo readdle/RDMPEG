@@ -12,6 +12,10 @@
 #include <libavformat/avformat.h>
 
 
+//to build mobile-ffmpeg:
+//mobile-ffmpeg ./ios.sh --enable-lame
+
+
 NS_ASSUME_NONNULL_BEGIN
 
 
@@ -160,7 +164,7 @@ NS_ASSUME_NONNULL_BEGIN
     return result == 0 ? pathToMP3 : nil;
 }
 
-- (void)logCallback: (int)level :(NSString*)message{
+- (void)logCallback:(long)executionId :(int)level :(NSString*)message{
     NSLog(@"level: %@, message: %@",@(level),message);
 }
 

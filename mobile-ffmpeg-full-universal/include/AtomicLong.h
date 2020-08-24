@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Taner Sener
+ * Copyright (c) 2020 Taner Sener
  *
  * This file is part of MobileFFmpeg.
  *
@@ -20,30 +20,12 @@
 #include <Foundation/Foundation.h>
 
 /**
- * Statistics for running executions.
+ * Represents an atomic long data type.
  */
-@interface Statistics : NSObject
+@interface AtomicLong : NSObject
 
-- (instancetype)init;
+- (instancetype)initWithInitialValue:(long)initialValue;
 
-- (instancetype)initWithId:(long)currentExecutionId videoFrameNumber:(int)newVideoFrameNumber fps:(float)newVideoFps quality:(float)newVideoQuality size:(int64_t)newSize time:(int)newTime bitrate:(double)newBitrate speed:(double)newSpeed;
-
-- (void)update:(Statistics*)statistics;
-
-- (long)getExecutionId;
-
-- (int)getVideoFrameNumber;
-
-- (float)getVideoFps;
-
-- (float)getVideoQuality;
-
-- (long)getSize;
-
-- (int)getTime;
-
-- (double)getBitrate;
-
-- (double)getSpeed;
+- (long)incrementAndGet;
 
 @end

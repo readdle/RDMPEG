@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Taner Sener
+ * Copyright (c) 2020 Taner Sener
  *
  * This file is part of MobileFFmpeg.
  *
@@ -17,33 +17,10 @@
  * along with MobileFFmpeg.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <Foundation/Foundation.h>
-
 /**
- * Statistics for running executions.
+ * Use this delegate to receive an asynchronous execution result.
  */
-@interface Statistics : NSObject
-
-- (instancetype)init;
-
-- (instancetype)initWithId:(long)currentExecutionId videoFrameNumber:(int)newVideoFrameNumber fps:(float)newVideoFps quality:(float)newVideoQuality size:(int64_t)newSize time:(int)newTime bitrate:(double)newBitrate speed:(double)newSpeed;
-
-- (void)update:(Statistics*)statistics;
-
-- (long)getExecutionId;
-
-- (int)getVideoFrameNumber;
-
-- (float)getVideoFps;
-
-- (float)getVideoQuality;
-
-- (long)getSize;
-
-- (int)getTime;
-
-- (double)getBitrate;
-
-- (double)getSpeed;
-
+@protocol ExecuteDelegate<NSObject>
+@required
+- (void)executeCallback:(long)executionId :(int)returnCode;
 @end

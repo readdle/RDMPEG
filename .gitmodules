@@ -1,0 +1,3 @@
+[submodule "submodules/mobile-ffmpeg"]
+	path = submodules/mobile-ffmpeg
+	url = git@github.com:readdle/mobile-ffmpeg.git
