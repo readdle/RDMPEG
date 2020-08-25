@@ -14,7 +14,7 @@
 
 @interface RDMobileFFmpegOperation()<StatisticsDelegate,LogDelegate>
 
-@property (nonatomic,strong)NSArray *arguments;
+@property (nonatomic,strong)NSArray<NSString *> *arguments;
 @property (nonatomic,copy)RDMobileFFmpegOperationResultBlock resultBlock;
 @property (nonatomic,copy)RDMobileFFmpegOperationStatisticsBlock statisticsBlock;
 
@@ -23,7 +23,7 @@
 
 @implementation RDMobileFFmpegOperation
 
-- (instancetype)initWithArguments:(NSArray *)arguments
+- (instancetype)initWithArguments:(NSArray<NSString *> *)arguments
                   statisticsBlock:(RDMobileFFmpegOperationStatisticsBlock)statisticsBlock
                       resultBlock:(RDMobileFFmpegOperationResultBlock)resultBlock{
     NSParameterAssert(arguments);
@@ -63,21 +63,6 @@
 - (void)cancel{
     [super cancel];
     [MobileFFmpeg cancel];
-}
-
-+ (int64_t)getDurationForLocalFileAtPath:(NSString *)localFilePath{
-    AVFormatContext* pFormatCtx = avformat_alloc_context();
-    int result = avformat_open_input(&pFormatCtx, localFilePath.UTF8String, NULL, NULL);
-    int64_t duration = 0;
-    if(result == 0){
-        result = avformat_find_stream_info(pFormatCtx,NULL);
-        if(result >= 0){
-            duration = pFormatCtx->duration;
-        }
-    }
-    avformat_close_input(&pFormatCtx);
-    avformat_free_context(pFormatCtx);
-    return duration;
 }
 
 + (BOOL)isReturnCodeCancel:(int)code{

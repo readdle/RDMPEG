@@ -206,6 +206,8 @@
 		AC21AEF524CB2DB800D47C3D /* RDMPEGSelectableInputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = AC21AEF324CB2DB700D47C3D /* RDMPEGSelectableInputStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AC21AEF624CB2DB800D47C3D /* RDMPEGSelectableInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = AC21AEF424CB2DB700D47C3D /* RDMPEGSelectableInputStream.m */; };
 		AC31450924810CBA002918E6 /* MobileFFprobe.h in Headers */ = {isa = PBXBuildFile; fileRef = AC31450824810CB9002918E6 /* MobileFFprobe.h */; };
+		AC8FD3B524F50D6000608F5C /* RDMobileFFmpegUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = AC8FD3B324F50D5F00608F5C /* RDMobileFFmpegUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AC8FD3B624F50D6000608F5C /* RDMobileFFmpegUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = AC8FD3B424F50D6000608F5C /* RDMobileFFmpegUtils.m */; };
 		ACA4A46724F434E5006015F5 /* libmp3lame.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ACA4A46424F434E4006015F5 /* libmp3lame.a */; };
 		ACA4A46A24F44F44006015F5 /* RDMobileFFmpegOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = ACA4A46824F44F44006015F5 /* RDMobileFFmpegOperation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		ACA4A46B24F44F44006015F5 /* RDMobileFFmpegOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = ACA4A46924F44F44006015F5 /* RDMobileFFmpegOperation.m */; };
@@ -444,6 +446,8 @@
 		AC21AEF324CB2DB700D47C3D /* RDMPEGSelectableInputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGSelectableInputStream.h; sourceTree = "<group>"; };
 		AC21AEF424CB2DB700D47C3D /* RDMPEGSelectableInputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMPEGSelectableInputStream.m; sourceTree = "<group>"; };
 		AC31450824810CB9002918E6 /* MobileFFprobe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileFFprobe.h; sourceTree = "<group>"; };
+		AC8FD3B324F50D5F00608F5C /* RDMobileFFmpegUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMobileFFmpegUtils.h; sourceTree = "<group>"; };
+		AC8FD3B424F50D6000608F5C /* RDMobileFFmpegUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMobileFFmpegUtils.m; sourceTree = "<group>"; };
 		ACA4A46424F434E4006015F5 /* libmp3lame.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmp3lame.a; sourceTree = "<group>"; };
 		ACA4A46824F44F44006015F5 /* RDMobileFFmpegOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMobileFFmpegOperation.h; sourceTree = "<group>"; };
 		ACA4A46924F44F44006015F5 /* RDMobileFFmpegOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMobileFFmpegOperation.m; sourceTree = "<group>"; };
@@ -687,6 +691,8 @@
 			children = (
 				ACA4A46824F44F44006015F5 /* RDMobileFFmpegOperation.h */,
 				ACA4A46924F44F44006015F5 /* RDMobileFFmpegOperation.m */,
+				AC8FD3B324F50D5F00608F5C /* RDMobileFFmpegUtils.h */,
+				AC8FD3B424F50D6000608F5C /* RDMobileFFmpegUtils.m */,
 			);
 			path = RDMPEGConverter;
 			sourceTree = "<group>";
@@ -972,6 +978,7 @@
 				7890033222AF84BF00D17F31 /* avfft.h in Headers */,
 				7890030722AF84BF00D17F31 /* libm.h in Headers */,
 				7890033022AF84BF00D17F31 /* mediacodec.h in Headers */,
+				AC8FD3B524F50D6000608F5C /* RDMobileFFmpegUtils.h in Headers */,
 				789002E022AF84BF00D17F31 /* tree.h in Headers */,
 				739F77581F82A06F009E27EA /* RDMPEGWeakTimerTarget.h in Headers */,
 				734C69821F8297340031761D /* RDMPEGRawAudioFrame.h in Headers */,
@@ -1245,6 +1252,7 @@
 				734C697F1F8297340031761D /* RDMPEGAudioRenderer.m in Sources */,
 				ACA4A46B24F44F44006015F5 /* RDMobileFFmpegOperation.m in Sources */,
 				737C20321F83C0300067E318 /* RDMPEGDecoder.m in Sources */,
+				AC8FD3B624F50D6000608F5C /* RDMobileFFmpegUtils.m in Sources */,
 				737C20361F83C1C50067E318 /* RDMPEGFrames.m in Sources */,
 				732D4DCE1F864AD50005C682 /* RDMPEGPlayerView.m in Sources */,
 				732D4DC91F8634950005C682 /* RDMPEGRendererYUV.m in Sources */,

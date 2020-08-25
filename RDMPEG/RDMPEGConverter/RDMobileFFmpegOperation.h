@@ -23,11 +23,9 @@ typedef void(^RDMobileFFmpegOperationResultBlock)(int result);
 + (instancetype)new NS_UNAVAILABLE;
 - (instancetype)init NS_UNAVAILABLE;
 
-- (instancetype)initWithArguments:(NSArray *)arguments
+- (instancetype)initWithArguments:(NSArray<NSString *> *)arguments
                   statisticsBlock:(RDMobileFFmpegOperationStatisticsBlock)statisticsBlock
                       resultBlock:(RDMobileFFmpegOperationResultBlock)resultBlock;
-
-+ (int64_t)getDurationForLocalFileAtPath:(NSString *)localFilePath;
 
 + (BOOL)isReturnCodeCancel:(int)code;
 
