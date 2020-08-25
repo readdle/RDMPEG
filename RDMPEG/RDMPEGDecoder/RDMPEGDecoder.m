@@ -234,7 +234,6 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     
     if (avformat_open_input(&formatCtx, [self.path cStringUsingEncoding:NSUTF8StringEncoding], NULL, NULL) < 0) {
         if (avioContext) {
-            //av_freep(avioContext->buffer);
             av_freep(avioContext);
         }
         if (formatCtx) {
@@ -245,7 +244,6 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     
     if (avformat_find_stream_info(formatCtx, NULL) < 0) {
         if (avioContext) {
-            //av_freep(avioContext->buffer);
             av_freep(avioContext);
         }
         avformat_close_input(&formatCtx);
@@ -345,7 +343,6 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     }
     
     if (_avioContext) {
-//        av_freep(_avioContext->buffer);
         av_freep(_avioContext);
     }
     
