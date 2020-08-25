@@ -54,8 +54,6 @@
 		73DE5F391F86BA8300FAD4E1 /* RDMPEGPlayerView+Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DE5F371F86BA8300FAD4E1 /* RDMPEGPlayerView+Player.m */; };
 		7890013222AE855000D17F31 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7890012F22AE855000D17F31 /* libc++.tbd */; };
 		7890013422AE86E800D17F31 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7890013322AE86E800D17F31 /* AudioToolbox.framework */; };
-		789001E522AEB8AD00D17F31 /* RDMPEGConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 789001E322AEB8AD00D17F31 /* RDMPEGConverter.m */; };
-		789001E622AEBA9400D17F31 /* RDMPEGConverter.h in Headers */ = {isa = PBXBuildFile; fileRef = 789001E222AEB8AD00D17F31 /* RDMPEGConverter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		789002B722AF84BF00D17F31 /* ArchDetect.h in Headers */ = {isa = PBXBuildFile; fileRef = 789001EA22AF84BE00D17F31 /* ArchDetect.h */; };
 		789002B822AF84BF00D17F31 /* mobileffmpeg_exception.h in Headers */ = {isa = PBXBuildFile; fileRef = 789001EB22AF84BE00D17F31 /* mobileffmpeg_exception.h */; };
 		789002B922AF84BF00D17F31 /* MobileFFmpegConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 789001EC22AF84BE00D17F31 /* MobileFFmpegConfig.h */; };
@@ -192,7 +190,7 @@
 		7890033C22AF84BF00D17F31 /* MediaInformationParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 7890027A22AF84BE00D17F31 /* MediaInformationParser.h */; };
 		7890033D22AF84BF00D17F31 /* LogDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 7890027B22AF84BE00D17F31 /* LogDelegate.h */; };
 		7890033E22AF84BF00D17F31 /* fftools_cmdutils.h in Headers */ = {isa = PBXBuildFile; fileRef = 7890027C22AF84BE00D17F31 /* fftools_cmdutils.h */; };
-		7890033F22AF84BF00D17F31 /* Statistics.h in Headers */ = {isa = PBXBuildFile; fileRef = 7890027D22AF84BE00D17F31 /* Statistics.h */; };
+		7890033F22AF84BF00D17F31 /* Statistics.h in Headers */ = {isa = PBXBuildFile; fileRef = 7890027D22AF84BE00D17F31 /* Statistics.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7890034022AF84BF00D17F31 /* MediaInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7890027E22AF84BE00D17F31 /* MediaInformation.h */; };
 		7890034122AF84BF00D17F31 /* fftools_ffmpeg.h in Headers */ = {isa = PBXBuildFile; fileRef = 7890027F22AF84BE00D17F31 /* fftools_ffmpeg.h */; };
 		7890034222AF84BF00D17F31 /* version.h in Headers */ = {isa = PBXBuildFile; fileRef = 7890028122AF84BE00D17F31 /* version.h */; };
@@ -209,6 +207,8 @@
 		AC21AEF624CB2DB800D47C3D /* RDMPEGSelectableInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = AC21AEF424CB2DB700D47C3D /* RDMPEGSelectableInputStream.m */; };
 		AC31450924810CBA002918E6 /* MobileFFprobe.h in Headers */ = {isa = PBXBuildFile; fileRef = AC31450824810CB9002918E6 /* MobileFFprobe.h */; };
 		ACA4A46724F434E5006015F5 /* libmp3lame.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ACA4A46424F434E4006015F5 /* libmp3lame.a */; };
+		ACA4A46A24F44F44006015F5 /* RDMobileFFmpegOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = ACA4A46824F44F44006015F5 /* RDMobileFFmpegOperation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		ACA4A46B24F44F44006015F5 /* RDMobileFFmpegOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = ACA4A46924F44F44006015F5 /* RDMobileFFmpegOperation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -292,8 +292,6 @@
 		73DE5F371F86BA8300FAD4E1 /* RDMPEGPlayerView+Player.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RDMPEGPlayerView+Player.m"; sourceTree = "<group>"; };
 		7890012F22AE855000D17F31 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		7890013322AE86E800D17F31 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		789001E222AEB8AD00D17F31 /* RDMPEGConverter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGConverter.h; sourceTree = "<group>"; };
-		789001E322AEB8AD00D17F31 /* RDMPEGConverter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMPEGConverter.m; sourceTree = "<group>"; };
 		789001EA22AF84BE00D17F31 /* ArchDetect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArchDetect.h; sourceTree = "<group>"; };
 		789001EB22AF84BE00D17F31 /* mobileffmpeg_exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mobileffmpeg_exception.h; sourceTree = "<group>"; };
 		789001EC22AF84BE00D17F31 /* MobileFFmpegConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileFFmpegConfig.h; sourceTree = "<group>"; };
@@ -447,6 +445,8 @@
 		AC21AEF424CB2DB700D47C3D /* RDMPEGSelectableInputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMPEGSelectableInputStream.m; sourceTree = "<group>"; };
 		AC31450824810CB9002918E6 /* MobileFFprobe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileFFprobe.h; sourceTree = "<group>"; };
 		ACA4A46424F434E4006015F5 /* libmp3lame.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmp3lame.a; sourceTree = "<group>"; };
+		ACA4A46824F44F44006015F5 /* RDMobileFFmpegOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMobileFFmpegOperation.h; sourceTree = "<group>"; };
+		ACA4A46924F44F44006015F5 /* RDMobileFFmpegOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMobileFFmpegOperation.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -685,8 +685,8 @@
 		789001E122AEB89100D17F31 /* RDMPEGConverter */ = {
 			isa = PBXGroup;
 			children = (
-				789001E222AEB8AD00D17F31 /* RDMPEGConverter.h */,
-				789001E322AEB8AD00D17F31 /* RDMPEGConverter.m */,
+				ACA4A46824F44F44006015F5 /* RDMobileFFmpegOperation.h */,
+				ACA4A46924F44F44006015F5 /* RDMobileFFmpegOperation.m */,
 			);
 			path = RDMPEGConverter;
 			sourceTree = "<group>";
@@ -968,12 +968,14 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7890033F22AF84BF00D17F31 /* Statistics.h in Headers */,
 				7890033222AF84BF00D17F31 /* avfft.h in Headers */,
 				7890030722AF84BF00D17F31 /* libm.h in Headers */,
 				7890033022AF84BF00D17F31 /* mediacodec.h in Headers */,
 				789002E022AF84BF00D17F31 /* tree.h in Headers */,
 				739F77581F82A06F009E27EA /* RDMPEGWeakTimerTarget.h in Headers */,
 				734C69821F8297340031761D /* RDMPEGRawAudioFrame.h in Headers */,
+				ACA4A46A24F44F44006015F5 /* RDMobileFFmpegOperation.h in Headers */,
 				789002FF22AF84BF00D17F31 /* cpu.h in Headers */,
 				AC21AEF524CB2DB800D47C3D /* RDMPEGSelectableInputStream.h in Headers */,
 				73309ECA1F9E47A7006ED07D /* RDMPEGStream+Decoder.h in Headers */,
@@ -1090,7 +1092,6 @@
 				7890033522AF84BF00D17F31 /* dirac.h in Headers */,
 				789002E922AF84BF00D17F31 /* display.h in Headers */,
 				737C20421F83E3830067E318 /* RDMPEGRenderView.h in Headers */,
-				789001E622AEBA9400D17F31 /* RDMPEGConverter.h in Headers */,
 				789002E622AF84BF00D17F31 /* sha512.h in Headers */,
 				789002CC22AF84BF00D17F31 /* samplefmt.h in Headers */,
 				7890033722AF84BF00D17F31 /* mathops.h in Headers */,
@@ -1114,7 +1115,6 @@
 				7890032B22AF84BF00D17F31 /* vdpau.h in Headers */,
 				7890030222AF84BF00D17F31 /* channel_layout.h in Headers */,
 				7890032C22AF84BF00D17F31 /* qsv.h in Headers */,
-				7890033F22AF84BF00D17F31 /* Statistics.h in Headers */,
 				7890030022AF84BF00D17F31 /* lzo.h in Headers */,
 				789002CF22AF84BF00D17F31 /* rational.h in Headers */,
 				789002BC22AF84BF00D17F31 /* buffersink.h in Headers */,
@@ -1243,7 +1243,7 @@
 				734C69831F8297340031761D /* RDMPEGRawAudioFrame.m in Sources */,
 				73DE5F391F86BA8300FAD4E1 /* RDMPEGPlayerView+Player.m in Sources */,
 				734C697F1F8297340031761D /* RDMPEGAudioRenderer.m in Sources */,
-				789001E522AEB8AD00D17F31 /* RDMPEGConverter.m in Sources */,
+				ACA4A46B24F44F44006015F5 /* RDMobileFFmpegOperation.m in Sources */,
 				737C20321F83C0300067E318 /* RDMPEGDecoder.m in Sources */,
 				737C20361F83C1C50067E318 /* RDMPEGFrames.m in Sources */,
 				732D4DCE1F864AD50005C682 /* RDMPEGPlayerView.m in Sources */,
