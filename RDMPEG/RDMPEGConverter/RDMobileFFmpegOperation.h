@@ -15,6 +15,9 @@ NS_ASSUME_NONNULL_BEGIN
 typedef void(^RDMobileFFmpegOperationStatisticsBlock)(Statistics * _Nonnull statistics);
 typedef void(^RDMobileFFmpegOperationResultBlock)(int result);
 
+//to build mobile-ffmpeg:
+//mobile-ffmpeg ./ios.sh --enable-lame
+
 @interface RDMobileFFmpegOperation : NSOperation
 
 + (instancetype)new NS_UNAVAILABLE;
