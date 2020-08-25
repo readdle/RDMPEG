@@ -1172,7 +1172,7 @@
 		73450B051F82906B009E8F5F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = Readdle;
 				TargetAttributes = {
 					73450B0D1F82906B009E8F5F = {
@@ -1304,6 +1304,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1365,6 +1366,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1416,11 +1418,13 @@
 				);
 				INFOPLIST_FILE = RDMPEG/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/mobile-ffmpeg-full-universal/lib";
-				OTHER_LDFLAGS = "-Wl,-no_compact_unwind";
-				PRODUCT_BUNDLE_IDENTIFIER = com.readdle.RDMPEG;
+				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/ffmpeg",
+					"$(PROJECT_DIR)/ffmpeg",
+                    "$(PROJECT_DIR)/mobile-ffmpeg-full-universal/lib",
+				);
+                PRODUCT_BUNDLE_IDENTIFIER = com.readdle.RDMPEG;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1449,10 +1453,12 @@
 				);
 				INFOPLIST_FILE = RDMPEG/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/mobile-ffmpeg-full-universal/lib";
-				OTHER_LDFLAGS = "-Wl,-no_compact_unwind";
+				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/ffmpeg",
+					"$(PROJECT_DIR)/ffmpeg",
+                    "$(PROJECT_DIR)/mobile-ffmpeg-full-universal/lib",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.readdle.RDMPEG;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;

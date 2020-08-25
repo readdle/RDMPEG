@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "RDMPEGFrames.h"
+#import <RDMPEG/RDMPEGFrames.h>
 
 @protocol RDMPEGIOStream;
 @class RDMPEGStream;
