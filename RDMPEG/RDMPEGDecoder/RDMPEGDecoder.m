@@ -138,6 +138,10 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     return (CGFloat)_formatCtx->duration / AV_TIME_BASE;
 }
 
+- (int64_t)ffmpegDuration{
+    return self.duration * AV_TIME_BASE;
+}
+
 - (BOOL)isOpened {
     return (_formatCtx != NULL);
 }
