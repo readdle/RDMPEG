@@ -10,3 +10,6 @@ xcuserdata
 *.xcuserstate
 *.xcbkptlist
 *.xcworkspacedata
+.s7control
+.s7bak
+dependencies/mobile-ffmpeg
