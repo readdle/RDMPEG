@@ -90,6 +90,14 @@ NS_ASSUME_NONNULL_BEGIN
     return (self.codec != nil);
 }
 
+- (NSInteger)codecID{
+    return self.stream->codecpar->codec_id;
+}
+
+- (BOOL)isCodecH264{
+    return self.codecID == AV_CODEC_ID_H264;
+}
+
 @end
 
 NS_ASSUME_NONNULL_END

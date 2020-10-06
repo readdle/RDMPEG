@@ -174,6 +174,11 @@ static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInpu
     }];
 }
 
+- (BOOL)isVideoCodecH264{
+    return self.decoder.videoStreams.count == 1 &&
+    self.decoder.videoStreams.firstObject.isCodecH264;
+}
+
 #pragma mark - Private Accessors
 
 - (BOOL)isVideoBufferReady {

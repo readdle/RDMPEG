@@ -17,6 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, nullable) NSString *languageCode;
 @property (nonatomic, readonly, nullable) NSString *info;
 @property (nonatomic, readonly, getter=isCanBeDecoded) BOOL canBeDecoded;
+@property (nonatomic, readonly) NSInteger codecID;
+@property (nonatomic, readonly, getter=isCodecH264) BOOL codecH264;
 
 @end
 

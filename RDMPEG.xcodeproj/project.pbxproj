@@ -15,7 +15,7 @@
 		732D4DCC1F86363C0005C682 /* RDMPEGShaders.h in Headers */ = {isa = PBXBuildFile; fileRef = 732D4DCA1F86363C0005C682 /* RDMPEGShaders.h */; };
 		732D4DCE1F864AD50005C682 /* RDMPEGPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73450B201F8290FA009E8F5F /* RDMPEGPlayerView.m */; };
 		732D4DCF1F864AD70005C682 /* RDMPEGPlayerView.h in Headers */ = {isa = PBXBuildFile; fileRef = 73450B1F1F8290FA009E8F5F /* RDMPEGPlayerView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		73309E0F1F9E3F22006ED07D /* RDMPEGStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 73309E0D1F9E3F22006ED07D /* RDMPEGStream.h */; };
+		73309E0F1F9E3F22006ED07D /* RDMPEGStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 73309E0D1F9E3F22006ED07D /* RDMPEGStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		73309E101F9E3F22006ED07D /* RDMPEGStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 73309E0E1F9E3F22006ED07D /* RDMPEGStream.m */; };
 		73309ECA1F9E47A7006ED07D /* RDMPEGStream+Decoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 73309EC81F9E47A7006ED07D /* RDMPEGStream+Decoder.h */; };
 		73309ECB1F9E47A7006ED07D /* RDMPEGStream+Decoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 73309EC91F9E47A7006ED07D /* RDMPEGStream+Decoder.m */; };
@@ -969,6 +969,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7890033F22AF84BF00D17F31 /* Statistics.h in Headers */,
+				73309E0F1F9E3F22006ED07D /* RDMPEGStream.h in Headers */,
 				7890033222AF84BF00D17F31 /* avfft.h in Headers */,
 				7890030722AF84BF00D17F31 /* libm.h in Headers */,
 				7890033022AF84BF00D17F31 /* mediacodec.h in Headers */,
@@ -1037,7 +1038,6 @@
 				7890033822AF84BF00D17F31 /* ac3_parser.h in Headers */,
 				7890030622AF84BF00D17F31 /* hwcontext_videotoolbox.h in Headers */,
 				7890032022AF84BF00D17F31 /* url.h in Headers */,
-				73309E0F1F9E3F22006ED07D /* RDMPEGStream.h in Headers */,
 				789002F322AF84BF00D17F31 /* random_seed.h in Headers */,
 				7890033B22AF84BF00D17F31 /* dv_profile.h in Headers */,
 				7890030422AF84BF00D17F31 /* twofish.h in Headers */,
