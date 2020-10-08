@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <VideoToolbox/VideoToolbox.h>
 #import <RDMPEG/RDMPEGPlayer.h>
 #import <RDMPEG/RDMPEGPlayerView.h>
 #import <RDMPEG/RDMPEGDecoder.h>
