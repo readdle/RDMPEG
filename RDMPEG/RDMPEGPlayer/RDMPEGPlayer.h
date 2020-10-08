@@ -51,7 +51,6 @@ typedef NS_ENUM(NSInteger, RDMPEGPlayerState) {
 @property (nonatomic, readonly) NSTimeInterval duration;
 @property (nonatomic, readonly, getter=isBuffering) BOOL buffering;
 @property (nonatomic, readonly, getter=isSeeking) BOOL seeking;
-@property (nonatomic, readonly, getter=isVideoCodecH264) BOOL videoCodecH264;
 @property (nonatomic, assign) NSTimeInterval timeObservingInterval;
 @property (nonatomic, assign, getter=isDeinterlacingEnabled) BOOL deinterlacingEnabled;
 @property (nonatomic, weak) id<RDMPEGPlayerDelegate> delegate;
