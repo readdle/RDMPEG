@@ -55,7 +55,6 @@
 		73DE14D01F82A7C000E96055 /* libswscale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 738B8AB41F82A2D1003C2AEC /* libswscale.a */; };
 		73DE14D11F82A7D100E96055 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 73DE142F1F82A3B200E96055 /* libz.tbd */; };
 		73DE14D21F82A7D600E96055 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 73DE14331F82A3F100E96055 /* libiconv.tbd */; };
-		73DE14D31F82A7E200E96055 /* Log4Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 739F77B61F82A270009E27EA /* Log4Cocoa.framework */; };
 		73DE5F381F86BA8300FAD4E1 /* RDMPEGPlayerView+Player.h in Headers */ = {isa = PBXBuildFile; fileRef = 73DE5F361F86BA8300FAD4E1 /* RDMPEGPlayerView+Player.h */; };
 		73DE5F391F86BA8300FAD4E1 /* RDMPEGPlayerView+Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DE5F371F86BA8300FAD4E1 /* RDMPEGPlayerView+Player.m */; };
 /* End PBXBuildFile section */
@@ -154,7 +153,6 @@
 			files = (
 				73398C981F9E0122003C9022 /* VideoToolbox.framework in Frameworks */,
 				73C4FFCC1FA0C9CA0084D489 /* libbz2.tbd in Frameworks */,
-				73DE14D31F82A7E200E96055 /* Log4Cocoa.framework in Frameworks */,
 				73DE14D21F82A7D600E96055 /* libiconv.tbd in Frameworks */,
 				73DE14D11F82A7D100E96055 /* libz.tbd in Frameworks */,
 				73DE14CC1F82A7C000E96055 /* libavcodec.a in Frameworks */,
@@ -602,6 +600,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -656,6 +655,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -687,6 +687,7 @@
 					"$(SRCROOT)/ffmpeg",
 					"$(PROJECT_DIR)/ffmpeg",
 				);
+				MACH_O_TYPE = staticlib;
 				PRODUCT_BUNDLE_IDENTIFIER = com.readdle.RDMPEG;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -718,6 +719,7 @@
 					"$(SRCROOT)/ffmpeg",
 					"$(PROJECT_DIR)/ffmpeg",
 				);
+				MACH_O_TYPE = staticlib;
 				PRODUCT_BUNDLE_IDENTIFIER = com.readdle.RDMPEG;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
