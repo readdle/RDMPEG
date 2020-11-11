@@ -1411,11 +1411,7 @@
 				INFOPLIST_FILE = RDMPEG/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(SRCROOT)/ffmpeg",
-					"$(PROJECT_DIR)/ffmpeg",
-					"$(PROJECT_DIR)/mobile-ffmpeg-full-universal/lib",
-				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/mobile-ffmpeg-full-universal/lib";
 				PRODUCT_BUNDLE_IDENTIFIER = com.readdle.RDMPEG;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -1446,11 +1442,7 @@
 				INFOPLIST_FILE = RDMPEG/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(SRCROOT)/ffmpeg",
-					"$(PROJECT_DIR)/ffmpeg",
-					"$(PROJECT_DIR)/mobile-ffmpeg-full-universal/lib",
-				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/mobile-ffmpeg-full-universal/lib";
 				PRODUCT_BUNDLE_IDENTIFIER = com.readdle.RDMPEG;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
