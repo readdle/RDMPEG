@@ -18,8 +18,6 @@
 #import "RDMPEGDecoder.h"
 #import "RDMPEGIOStream.h"
 #import "RDMPEGFrames.h"
-#import "RDMPEGRendererRGB.h"
-#import "RDMPEGRendererYUV.h"
 #import "RDMPEGStream.h"
 #import "RDMPEGSelectableInputStream.h"
 #import <Log4Cocoa/Log4Cocoa.h>
@@ -757,18 +755,11 @@ static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInpu
                     
                     strongSelf.decoder.deinterlacingEnabled = strongSelf.isDeinterlacingEnabled;
                     
-                    id<RDMPEGRenderer> renderer = nil;
-                    if (strongSelf.decoder.actualVideoFrameFormat == RDMPEGVideoFrameFormatYUV) {
-                        renderer = [[RDMPEGRendererYUV alloc] init];
-                    }
-                    else {
-                        renderer = [[RDMPEGRendererRGB alloc] init];
-                    }
-                    
-                    strongSelf.playerView.renderView = [[RDMPEGRenderView alloc] initWithFrame:strongSelf.playerView.bounds
-                                                                                      renderer:renderer
-                                                                                    frameWidth:strongSelf.decoder.frameWidth
-                                                                                   frameHeight:strongSelf.decoder.frameHeight];
+                    strongSelf.playerView.renderView =
+                    [[RDMPEGRenderView alloc]
+                     initWithFrame:strongSelf.playerView.bounds
+                     frameWidth:strongSelf.decoder.frameWidth
+                     frameHeight:strongSelf.decoder.frameHeight];
                     
                     strongSelf.videoStreamExist = strongSelf.decoder.isVideoStreamExist;
                     strongSelf.audioStreamExist = strongSelf.decoder.isAudioStreamExist;

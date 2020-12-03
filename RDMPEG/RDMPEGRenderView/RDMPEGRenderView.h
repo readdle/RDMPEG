@@ -2,19 +2,19 @@
 //  RDMPEGRenderView.h
 //  RDMPEG
 //
-//  Created by Serhii Alpieiev on 10/3/17.
-//  Copyright © 2017 Readdle. All rights reserved.
+//  Created by Serhii Alpieiev on 03.12.2020.
+//  Copyright © 2020 Readdle. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
 @class RDMPEGVideoFrame;
-@protocol RDMPEGRenderer;
 
 
 
 NS_ASSUME_NONNULL_BEGIN
 
+API_AVAILABLE(ios(13.0))
 @interface RDMPEGRenderView : UIView
 
 @property (nonatomic, readonly) CGRect videoFrame;
@@ -22,7 +22,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign, getter=isAspectFillMode) BOOL aspectFillMode;
 
 - (instancetype)initWithFrame:(CGRect)frame
-                     renderer:(id<RDMPEGRenderer>)renderer
                    frameWidth:(NSUInteger)frameWidth
                   frameHeight:(NSUInteger)frameHeight;
 
