@@ -90,6 +90,39 @@ NS_ASSUME_NONNULL_BEGIN
     return (self.codec != nil);
 }
 
+- (NSInteger)codecID{
+    return self.stream->codecpar->codec_id;
+}
+
+- (RDMPEGStreamCodecType)codecType{
+    switch (self.codecID) {
+            
+        case AV_CODEC_ID_H264:
+            return RDMPEGStreamCodecTypeH264;
+            
+        case AV_CODEC_ID_MP3:
+            return RDMPEGStreamCodecTypeMP3;
+            
+        case AV_CODEC_ID_FLAC:
+            return RDMPEGStreamCodecTypeFLAC;
+            
+        case AV_CODEC_ID_AAC:
+            return RDMPEGStreamCodecTypeAAC;
+            
+        case AV_CODEC_ID_OPUS:
+            return RDMPEGStreamCodecTypeOPUS;
+            
+        case AV_CODEC_ID_VORBIS:
+            return RDMPEGStreamCodecTypeVORBIS;
+            
+        case AV_CODEC_ID_WAVPACK:
+            return RDMPEGStreamCodecTypeWAV;
+            
+    }
+    
+    return RDMPEGStreamCodecTypeUnknown;
+}
+
 @end
 
 NS_ASSUME_NONNULL_END

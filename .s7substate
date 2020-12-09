@@ -1,0 +1,1 @@
+dependencies/mobile-ffmpeg = { git@github.com:readdle/mobile-ffmpeg.git, 3182fb0721cb0468caa6498b921ba30973121b52, master }

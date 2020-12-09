@@ -39,6 +39,7 @@ typedef BOOL (^RDMPEGDecoderInterruptCallback)(void);
 
 @property (nonatomic, readonly) NSString *path;
 @property (nonatomic, readonly) NSTimeInterval duration;
+@property (nonatomic, readonly) int64_t ffmpegDuration;
 @property (nonatomic, readonly) NSUInteger frameWidth;
 @property (nonatomic, readonly) NSUInteger frameHeight;
 @property (nonatomic, readonly) RDMPEGVideoFrameFormat actualVideoFrameFormat;

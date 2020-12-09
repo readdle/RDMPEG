@@ -138,6 +138,10 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     return (CGFloat)_formatCtx->duration / AV_TIME_BASE;
 }
 
+- (int64_t)ffmpegDuration{
+    return self.duration * AV_TIME_BASE;
+}
+
 - (BOOL)isOpened {
     return (_formatCtx != NULL);
 }
@@ -224,7 +228,7 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
                                          iostream_seekoffset);
         
         if (avioContext == NULL) {
-            av_free(buffer);
+            av_freep(buffer);
             avformat_free_context(formatCtx);
             return [self errorWithCode:RDMPEGDecoderErrorCodeOpenFile];
         }
@@ -234,8 +238,7 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     
     if (avformat_open_input(&formatCtx, [self.path cStringUsingEncoding:NSUTF8StringEncoding], NULL, NULL) < 0) {
         if (avioContext) {
-            av_free(avioContext->buffer);
-            av_free(avioContext);
+            av_freep(avioContext);
         }
         if (formatCtx) {
             avformat_free_context(formatCtx);
@@ -245,8 +248,7 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     
     if (avformat_find_stream_info(formatCtx, NULL) < 0) {
         if (avioContext) {
-            av_free(avioContext->buffer);
-            av_free(avioContext);
+            av_freep(avioContext);
         }
         avformat_close_input(&formatCtx);
         return [self errorWithCode:RDMPEGDecoderErrorCodeStreamInfoNotFound];
@@ -345,9 +347,7 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     }
     
     if (_avioContext) {
-        av_free(_avioContext->buffer);
-        av_free(_avioContext);
-        _avioContext = NULL;
+        av_freep(_avioContext);
     }
     
     if (self.ioStream) {
@@ -757,8 +757,7 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     [self closeVideoScaler];
     
     if (_videoFrame) {
-        av_free(_videoFrame);
-        _videoFrame = NULL;
+        av_freep(_videoFrame);
     }
 }
 
@@ -781,8 +780,7 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     }
     
     if (_audioFrame) {
-        av_free(_audioFrame);
-        _audioFrame = NULL;
+        av_freep(_audioFrame);
     }
 }
 
@@ -913,8 +911,7 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     avfilter_graph_free(&_filterGraph);
     
     if (_filteredVideoFrame) {
-        av_free(_filteredVideoFrame);
-        _filteredVideoFrame = NULL;
+        av_freep(_filteredVideoFrame);
     }
 }
 
@@ -1145,8 +1142,7 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     if (imageStatusCode < 0) {
         log4Error(@"Allocate image error: %s", av_err2str(imageStatusCode));
         
-        av_free(_rgbVideoFrame);
-        _rgbVideoFrame = NULL;
+        av_freep(_rgbVideoFrame);
         
         return NO;
     }
@@ -1172,9 +1168,7 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     
     if (_rgbVideoFrame) {
         av_freep(_rgbVideoFrame->data);
-        
-        av_free(_rgbVideoFrame);
-        _rgbVideoFrame = NULL;
+        av_freep(_rgbVideoFrame);
     }
 }
 

@@ -8,7 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
-
+typedef NS_ENUM(NSUInteger, RDMPEGStreamCodecType) {
+    RDMPEGStreamCodecTypeUnknown,
+    RDMPEGStreamCodecTypeH264,
+    RDMPEGStreamCodecTypeMP3,
+    RDMPEGStreamCodecTypeFLAC,
+    RDMPEGStreamCodecTypeAAC,
+    RDMPEGStreamCodecTypeOPUS,
+    RDMPEGStreamCodecTypeVORBIS,
+    RDMPEGStreamCodecTypeWAV
+};
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -17,6 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, nullable) NSString *languageCode;
 @property (nonatomic, readonly, nullable) NSString *info;
 @property (nonatomic, readonly, getter=isCanBeDecoded) BOOL canBeDecoded;
+@property (nonatomic, readonly) RDMPEGStreamCodecType codecType;
 
 @end
 

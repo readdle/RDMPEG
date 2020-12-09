@@ -35,8 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
             if (codecContext) {
                 int parametersToContextStatus = avcodec_parameters_to_context(codecContext, self.stream->codecpar);
                 if (parametersToContextStatus >= 0) {
-                    av_codec_set_pkt_timebase(codecContext, self.stream->time_base);
-                    
+                    codecContext->pkt_timebase = self.stream->time_base;
                     self.codec = codec;
                     self.codecContext = codecContext;
                 }
