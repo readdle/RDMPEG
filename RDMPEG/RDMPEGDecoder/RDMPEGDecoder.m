@@ -1130,7 +1130,7 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     
     _rgbVideoFrame->width = self.activeVideoStream.codecContext->width;
     _rgbVideoFrame->height = self.activeVideoStream.codecContext->height;
-    _rgbVideoFrame->format = AV_PIX_FMT_RGB24;
+    _rgbVideoFrame->format = AV_PIX_FMT_BGRA;
     
     int imageStatusCode = av_image_alloc(_rgbVideoFrame->data,
                                          _rgbVideoFrame->linesize,

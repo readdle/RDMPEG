@@ -7,6 +7,8 @@
 //
 
 #import "RDMPEGRenderView.h"
+#import "AAPLShaderTypes.h"
+#import "RDMPEGFrames.h"
 #import <Metal/Metal.h>
 #import <Log4Cocoa/Log4Cocoa.h>
 
@@ -62,23 +64,34 @@ NS_ASSUME_NONNULL_BEGIN
     self.metalLayer.pixelFormat = MTLPixelFormatBGRA8Unorm;
     self.metalLayer.framebufferOnly = YES;
     
-    const float bytes[] = {
-        0.0,  1.0, 0.0,
-        -1.0, -1.0, 0.0,
-        1.0, -1.0, 0.0
+    static const AAPLVertex quadVertices[] =
+    {
+        // Pixel positions, Texture coordinates
+        { {  250,  -250 },  { 1.f, 1.f } },
+        { { -250,  -250 },  { 0.f, 1.f } },
+        { { -250,   250 },  { 0.f, 0.f } },
+
+        { {  250,  -250 },  { 1.f, 1.f } },
+        { { -250,   250 },  { 0.f, 0.f } },
+        { {  250,   250 },  { 1.f, 0.f } },
     };
-    const NSUInteger length = sizeof(bytes) * sizeof(bytes[0]);
-    _vertexBuffer = [self.device newBufferWithBytes:bytes length:length options:0];
+    
+    _vertexBuffer =
+    [self.device
+     newBufferWithBytes:quadVertices
+     length:sizeof(quadVertices)
+     options:MTLResourceStorageModeShared];
     
     id<MTLLibrary> const defaultLibrary = [self.device newDefaultLibrary];
     
     MTLRenderPipelineDescriptor * const pipelineStateDescriptor = [MTLRenderPipelineDescriptor new];
-    pipelineStateDescriptor.vertexFunction = [defaultLibrary newFunctionWithName:@"basic_vertex"];
-    pipelineStateDescriptor.fragmentFunction = [defaultLibrary newFunctionWithName:@"basic_fragment"];
+    pipelineStateDescriptor.vertexFunction = [defaultLibrary newFunctionWithName:@"vertexShader"];
+    pipelineStateDescriptor.fragmentFunction = [defaultLibrary newFunctionWithName:@"samplingShader"];
     pipelineStateDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
     
     // TODO: SA CHECK - handle errors
-    _pipelineState = [self.device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor error:nil];
+    NSError *renderPipelineError = nil;
+    _pipelineState = [self.device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor error:&renderPipelineError];
     
     _commandQueue = [self.device newCommandQueue];
     
@@ -133,21 +146,107 @@ NS_ASSUME_NONNULL_BEGIN
         return;
     }
     
+    id<MTLCommandBuffer> const commandBuffer = [self.commandQueue commandBuffer];
+    
+    // Obtain a renderPassDescriptor generated from the view's drawable textures
+//    MTLRenderPassDescriptor *renderPassDescriptor = view.currentRenderPassDescriptor;
     MTLRenderPassDescriptor * const renderPassDescriptor = [MTLRenderPassDescriptor new];
     renderPassDescriptor.colorAttachments[0].texture = drawable.texture;
     renderPassDescriptor.colorAttachments[0].loadAction = MTLLoadActionClear;
     renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(0.0, 0.4, 0.2, 1.0);
+
+    if(renderPassDescriptor != nil)
+    {
+        id<MTLRenderCommandEncoder> renderEncoder =
+        [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+        renderEncoder.label = @"MyRenderEncoder";
+
+        // Set the region of the drawable to draw into.
+        [renderEncoder setViewport:(MTLViewport){0.0, 0.0, self.frameWidth, self.frameHeight, -1.0, 1.0 }];
+
+        [renderEncoder setRenderPipelineState:_pipelineState];
+
+        [renderEncoder setVertexBuffer:self.vertexBuffer
+                                offset:0
+                              atIndex:AAPLVertexInputIndexVertices];
+        
+        vector_uint2 viewportSize;
+        viewportSize.x = (unsigned int)self.frameWidth;
+        viewportSize.y = (unsigned int)self.frameHeight;
+        
+        id<MTLTexture> texture = [self textureFromFrame:videoFrame];
+        
+        [renderEncoder setVertexBytes:&viewportSize
+                               length:sizeof(viewportSize)
+                              atIndex:AAPLVertexInputIndexViewportSize];
+
+        // Set the texture object.  The AAPLTextureIndexBaseColor enum value corresponds
+        ///  to the 'colorMap' argument in the 'samplingShader' function because its
+        //   texture attribute qualifier also uses AAPLTextureIndexBaseColor for its index.
+        [renderEncoder setFragmentTexture:texture
+                                  atIndex:AAPLTextureIndexBaseColor];
+
+        // Draw the triangles.
+        [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
+                          vertexStart:0
+                          vertexCount:6];
+
+        [renderEncoder endEncoding];
+
+        // Schedule a present once the framebuffer is complete using the current drawable
+//        [commandBuffer presentDrawable:view.currentDrawable];
+    }
     
-    id<MTLCommandBuffer> const commandBuffer = [self.commandQueue commandBuffer];
+//    MTLRenderPassDescriptor * const renderPassDescriptor = [MTLRenderPassDescriptor new];
+//    renderPassDescriptor.colorAttachments[0].texture = drawable.texture;
+//    renderPassDescriptor.colorAttachments[0].loadAction = MTLLoadActionClear;
+//    renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(0.0, 0.4, 0.2, 1.0);
     
-    id<MTLRenderCommandEncoder> const renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
-    [renderEncoder setRenderPipelineState:self.pipelineState];
-    [renderEncoder setVertexBuffer:self.vertexBuffer offset:0 atIndex:0];
-    [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:3 instanceCount:1];
-    [renderEncoder endEncoding];
+//    id<MTLRenderCommandEncoder> const renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+//    [renderEncoder setRenderPipelineState:self.pipelineState];
+//    [renderEncoder setVertexBuffer:self.vertexBuffer offset:0 atIndex:0];
+//    [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:3 instanceCount:1];
+//    [renderEncoder endEncoding];
     
     [commandBuffer presentDrawable:drawable];
     [commandBuffer commit];
+}
+
+- (id<MTLTexture>)textureFromFrame:(RDMPEGVideoFrame *)videoFrame1 {
+    NSParameterAssert(videoFrame1);
+    NSParameterAssert([videoFrame1 isKindOfClass:[RDMPEGVideoFrameRGB class]]);
+    
+    RDMPEGVideoFrameRGB *videoFrame = (RDMPEGVideoFrameRGB *)videoFrame1;
+
+    MTLTextureDescriptor *textureDescriptor = [[MTLTextureDescriptor alloc] init];
+    
+    // Indicate that each pixel has a blue, green, red, and alpha channel, where each channel is
+    // an 8-bit unsigned normalized value (i.e. 0 maps to 0.0 and 255 maps to 1.0)
+    textureDescriptor.pixelFormat = MTLPixelFormatBGRA8Unorm;
+    
+    // Set the pixel dimensions of the texture
+    textureDescriptor.width = videoFrame.width;
+    textureDescriptor.height = videoFrame.height;
+    
+    // Create the texture from the device by using the descriptor
+    id<MTLTexture> texture = [_device newTextureWithDescriptor:textureDescriptor];
+    
+    // Calculate the number of bytes per row in the image.
+    NSUInteger bytesPerRow = 4 * videoFrame.width;
+    
+    MTLRegion region = {
+        { 0, 0, 0 },                   // MTLOrigin
+        {videoFrame.width, videoFrame.height, 1} // MTLSize
+    };
+    
+    NSLog(@"AAAAA RGB: %ld", videoFrame.rgb.length);
+    
+    // Copy the bytes from the data object into the texture
+    [texture replaceRegion:region
+                mipmapLevel:0
+                  withBytes:[videoFrame rgb].bytes
+                bytesPerRow:bytesPerRow];
+    return texture;
 }
 
 @end

@@ -816,7 +816,7 @@ static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInpu
         return NO;
     }
     
-    NSError *videoError = [decoder loadVideoStreamWithPreferredVideoFrameFormat:RDMPEGVideoFrameFormatYUV actualVideoFrameFormat:nil];
+    NSError *videoError = [decoder loadVideoStreamWithPreferredVideoFrameFormat:RDMPEGVideoFrameFormatRGB actualVideoFrameFormat:nil];
     NSError *audioError = [decoder loadAudioStreamWithSamplingRate:samplingRate outputChannels:outputChannelsCount];
     
     if (videoError == nil || audioError == nil) {
