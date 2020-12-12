@@ -53,8 +53,6 @@ NS_ASSUME_NONNULL_BEGIN
         return nil;
     }
     
-    self.contentMode = UIViewContentModeScaleAspectFit;
-    
     _frameWidth = frameWidth;
     _frameHeight = frameHeight;
     
@@ -64,23 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
     self.metalLayer.pixelFormat = MTLPixelFormatBGRA8Unorm;
     self.metalLayer.framebufferOnly = YES;
     
-    static const AAPLVertex quadVertices[] =
-    {
-        // Pixel positions, Texture coordinates
-        { {  250,  -250 },  { 1.f, 1.f } },
-        { { -250,  -250 },  { 0.f, 1.f } },
-        { { -250,   250 },  { 0.f, 0.f } },
-
-        { {  250,  -250 },  { 1.f, 1.f } },
-        { { -250,   250 },  { 0.f, 0.f } },
-        { {  250,   250 },  { 1.f, 0.f } },
-    };
-    
-    _vertexBuffer =
-    [self.device
-     newBufferWithBytes:quadVertices
-     length:sizeof(quadVertices)
-     options:MTLResourceStorageModeShared];
+    [self updateVertices];
     
     id<MTLLibrary> const defaultLibrary = [self.device newDefaultLibrary];
     
@@ -103,7 +85,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-//    [self updateVertices];
+    [self updateVertices];
 }
 
 #pragma mark - Public Accessors
@@ -127,7 +109,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)updateView{
-//    [self updateVertices];
+    [self updateVertices];
 //    if (self.renderer.isValid) {
 //        [self render:nil];
 //    }
@@ -153,7 +135,7 @@ NS_ASSUME_NONNULL_BEGIN
     MTLRenderPassDescriptor * const renderPassDescriptor = [MTLRenderPassDescriptor new];
     renderPassDescriptor.colorAttachments[0].texture = drawable.texture;
     renderPassDescriptor.colorAttachments[0].loadAction = MTLLoadActionClear;
-    renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(0.0, 0.4, 0.2, 1.0);
+    renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(0.0, 0.0, 0.0, 1.0);
 
     if(renderPassDescriptor != nil)
     {
@@ -162,7 +144,15 @@ NS_ASSUME_NONNULL_BEGIN
         renderEncoder.label = @"MyRenderEncoder";
 
         // Set the region of the drawable to draw into.
-        [renderEncoder setViewport:(MTLViewport){0.0, 0.0, self.frameWidth, self.frameHeight, -1.0, 1.0 }];
+        MTLViewport viewport;
+        viewport.originX = 0.0;
+        viewport.originY = 0.0;
+        viewport.width = CGRectGetWidth(self.bounds);
+        viewport.height = CGRectGetHeight(self.bounds);
+        viewport.znear = -1.0;
+        viewport.zfar = 1.0;
+        
+        [renderEncoder setViewport:viewport];
 
         [renderEncoder setRenderPipelineState:_pipelineState];
 
@@ -171,8 +161,8 @@ NS_ASSUME_NONNULL_BEGIN
                               atIndex:AAPLVertexInputIndexVertices];
         
         vector_uint2 viewportSize;
-        viewportSize.x = (unsigned int)self.frameWidth;
-        viewportSize.y = (unsigned int)self.frameHeight;
+        viewportSize.x = (unsigned int)viewport.width;
+        viewportSize.y = (unsigned int)viewport.height;
         
         id<MTLTexture> texture = [self textureFromFrame:videoFrame];
         
@@ -192,21 +182,7 @@ NS_ASSUME_NONNULL_BEGIN
                           vertexCount:6];
 
         [renderEncoder endEncoding];
-
-        // Schedule a present once the framebuffer is complete using the current drawable
-//        [commandBuffer presentDrawable:view.currentDrawable];
     }
-    
-//    MTLRenderPassDescriptor * const renderPassDescriptor = [MTLRenderPassDescriptor new];
-//    renderPassDescriptor.colorAttachments[0].texture = drawable.texture;
-//    renderPassDescriptor.colorAttachments[0].loadAction = MTLLoadActionClear;
-//    renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(0.0, 0.4, 0.2, 1.0);
-    
-//    id<MTLRenderCommandEncoder> const renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
-//    [renderEncoder setRenderPipelineState:self.pipelineState];
-//    [renderEncoder setVertexBuffer:self.vertexBuffer offset:0 atIndex:0];
-//    [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:3 instanceCount:1];
-//    [renderEncoder endEncoding];
     
     [commandBuffer presentDrawable:drawable];
     [commandBuffer commit];
@@ -247,6 +223,38 @@ NS_ASSUME_NONNULL_BEGIN
                   withBytes:[videoFrame rgb].bytes
                 bytesPerRow:bytesPerRow];
     return texture;
+}
+
+- (void)updateVertices {
+    const double xScale = CGRectGetWidth(self.bounds) / self.frameWidth;
+    const double yScale = CGRectGetHeight(self.bounds) / self.frameHeight;
+    const double minScale = MIN(xScale, yScale);
+    const double maxScale = MAX(xScale, yScale);
+    const double scale = self.isAspectFillMode ? maxScale : minScale;
+    
+    const double halfWidth = self.frameWidth / 2.0;
+    const double halfHeight = self.frameHeight / 2.0;
+    
+    const double adjustedWidth = halfWidth * scale;
+    const double adjustedHeight = halfHeight * scale;
+    
+    const AAPLVertex quadVertices[] =
+    {
+        // Pixel positions, Texture coordinates
+        { {  adjustedWidth,  -adjustedHeight },  { 1.f, 1.f } },
+        { { -adjustedWidth,  -adjustedHeight },  { 0.f, 1.f } },
+        { { -adjustedWidth,   adjustedHeight },  { 0.f, 0.f } },
+
+        { {  adjustedWidth,  -adjustedHeight },  { 1.f, 1.f } },
+        { { -adjustedWidth,   adjustedHeight },  { 0.f, 0.f } },
+        { {  adjustedWidth,   adjustedHeight },  { 1.f, 0.f } },
+    };
+    
+    _vertexBuffer =
+    [self.device
+     newBufferWithBytes:quadVertices
+     length:sizeof(quadVertices)
+     options:MTLResourceStorageModeShared];
 }
 
 @end
