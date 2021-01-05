@@ -53,6 +53,8 @@ NS_ASSUME_NONNULL_BEGIN
         return nil;
     }
     
+    self.contentMode = UIViewContentModeScaleAspectFit;
+    
     _frameWidth = frameWidth;
     _frameHeight = frameHeight;
     
@@ -84,6 +86,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)layoutSubviews {
     [super layoutSubviews];
+    
+    self.metalLayer.drawableSize = self.bounds.size;
     
     [self updateVertices];
 }
@@ -214,8 +218,6 @@ NS_ASSUME_NONNULL_BEGIN
         { 0, 0, 0 },                   // MTLOrigin
         {videoFrame.width, videoFrame.height, 1} // MTLSize
     };
-    
-    NSLog(@"AAAAA RGB: %ld", videoFrame.rgb.length);
     
     // Copy the bytes from the data object into the texture
     [texture replaceRegion:region
