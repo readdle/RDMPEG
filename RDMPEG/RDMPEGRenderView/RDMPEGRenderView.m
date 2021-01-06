@@ -7,7 +7,8 @@
 //
 
 #import "RDMPEGRenderView.h"
-#import "AAPLShaderTypes.h"
+#import "RDMPEGRenderer.h"
+#import "RDMPEGShaderTypes.h"
 #import "RDMPEGFrames.h"
 #import <Metal/Metal.h>
 #import <Log4Cocoa/Log4Cocoa.h>
@@ -20,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) NSUInteger frameWidth;
 @property (nonatomic, readonly) NSUInteger frameHeight;
+@property (nonatomic, readonly) id<RDMPEGRenderer> renderer;
 @property (nonatomic, readonly) CAMetalLayer *metalLayer;
 @property (nonatomic, readonly) id<MTLDevice> device;
 @property (nonatomic, readonly) id<MTLBuffer> vertexBuffer;
@@ -45,8 +47,10 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Lifecycle
 
 - (instancetype)initWithFrame:(CGRect)frame
+                     renderer:(id<RDMPEGRenderer>)renderer
                    frameWidth:(NSUInteger)frameWidth
-                  frameHeight:(NSUInteger)frameHeight {
+                  frameHeight:(NSUInteger)frameHeight
+{
     self = [super initWithFrame:frame];
     
     if (nil == self) {
@@ -55,6 +59,7 @@ NS_ASSUME_NONNULL_BEGIN
     
     self.contentMode = UIViewContentModeScaleAspectFit;
     
+    _renderer = renderer;
     _frameWidth = frameWidth;
     _frameHeight = frameHeight;
     
@@ -70,7 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
     
     MTLRenderPipelineDescriptor * const pipelineStateDescriptor = [MTLRenderPipelineDescriptor new];
     pipelineStateDescriptor.vertexFunction = [defaultLibrary newFunctionWithName:@"vertexShader"];
-    pipelineStateDescriptor.fragmentFunction = [defaultLibrary newFunctionWithName:@"samplingShader"];
+    pipelineStateDescriptor.fragmentFunction = [self.renderer newSamplingFunctionFromLibrary:defaultLibrary];
     pipelineStateDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
     
     // TODO: SA CHECK - handle errors
@@ -159,27 +164,24 @@ NS_ASSUME_NONNULL_BEGIN
         [renderEncoder setViewport:viewport];
 
         [renderEncoder setRenderPipelineState:_pipelineState];
-
+        
         [renderEncoder setVertexBuffer:self.vertexBuffer
                                 offset:0
-                              atIndex:AAPLVertexInputIndexVertices];
+                               atIndex:RDMPEGVertexInputIndexVertices];
         
         vector_uint2 viewportSize;
         viewportSize.x = (unsigned int)viewport.width;
         viewportSize.y = (unsigned int)viewport.height;
         
-        id<MTLTexture> texture = [self textureFromFrame:videoFrame];
-        
         [renderEncoder setVertexBytes:&viewportSize
                                length:sizeof(viewportSize)
-                              atIndex:AAPLVertexInputIndexViewportSize];
+                              atIndex:RDMPEGVertexInputIndexViewportSize];
 
-        // Set the texture object.  The AAPLTextureIndexBaseColor enum value corresponds
-        ///  to the 'colorMap' argument in the 'samplingShader' function because its
-        //   texture attribute qualifier also uses AAPLTextureIndexBaseColor for its index.
-        [renderEncoder setFragmentTexture:texture
-                                  atIndex:AAPLTextureIndexBaseColor];
-
+        [self.renderer
+         updateTexturesWithFrame:videoFrame
+         device:self.device
+         renderEncoder:renderEncoder];
+        
         // Draw the triangles.
         [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
                           vertexStart:0
@@ -190,41 +192,6 @@ NS_ASSUME_NONNULL_BEGIN
     
     [commandBuffer presentDrawable:drawable];
     [commandBuffer commit];
-}
-
-- (id<MTLTexture>)textureFromFrame:(RDMPEGVideoFrame *)videoFrame1 {
-    NSParameterAssert(videoFrame1);
-    NSParameterAssert([videoFrame1 isKindOfClass:[RDMPEGVideoFrameRGB class]]);
-    
-    RDMPEGVideoFrameRGB *videoFrame = (RDMPEGVideoFrameRGB *)videoFrame1;
-
-    MTLTextureDescriptor *textureDescriptor = [[MTLTextureDescriptor alloc] init];
-    
-    // Indicate that each pixel has a blue, green, red, and alpha channel, where each channel is
-    // an 8-bit unsigned normalized value (i.e. 0 maps to 0.0 and 255 maps to 1.0)
-    textureDescriptor.pixelFormat = MTLPixelFormatBGRA8Unorm;
-    
-    // Set the pixel dimensions of the texture
-    textureDescriptor.width = videoFrame.width;
-    textureDescriptor.height = videoFrame.height;
-    
-    // Create the texture from the device by using the descriptor
-    id<MTLTexture> texture = [_device newTextureWithDescriptor:textureDescriptor];
-    
-    // Calculate the number of bytes per row in the image.
-    NSUInteger bytesPerRow = 4 * videoFrame.width;
-    
-    MTLRegion region = {
-        { 0, 0, 0 },                   // MTLOrigin
-        {videoFrame.width, videoFrame.height, 1} // MTLSize
-    };
-    
-    // Copy the bytes from the data object into the texture
-    [texture replaceRegion:region
-                mipmapLevel:0
-                  withBytes:[videoFrame rgb].bytes
-                bytesPerRow:bytesPerRow];
-    return texture;
 }
 
 - (void)updateVertices {
@@ -240,8 +207,7 @@ NS_ASSUME_NONNULL_BEGIN
     const double adjustedWidth = halfWidth * scale;
     const double adjustedHeight = halfHeight * scale;
     
-    const AAPLVertex quadVertices[] =
-    {
+    const RDMPEGVertex quadVertices[] = {
         // Pixel positions, Texture coordinates
         { {  adjustedWidth,  -adjustedHeight },  { 1.f, 1.f } },
         { { -adjustedWidth,  -adjustedHeight },  { 0.f, 1.f } },

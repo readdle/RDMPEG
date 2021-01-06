@@ -12,7 +12,8 @@
 using namespace metal;
 
 // Include header shared between this Metal shader code and C code executing Metal API commands
-#import "AAPLShaderTypes.h"
+#import "RDMPEGShaderTypes.h"
+
 
 typedef struct
 {
@@ -29,16 +30,12 @@ typedef struct
 
 } RasterizerData;
 
-// Vertex Function
-vertex RasterizerData
-vertexShader(uint vertexID [[ vertex_id ]],
-             constant AAPLVertex *vertexArray [[ buffer(AAPLVertexInputIndexVertices) ]],
-             constant vector_uint2 *viewportSizePointer  [[ buffer(AAPLVertexInputIndexViewportSize) ]])
-
+vertex RasterizerData vertexShader(uint vertexID [[ vertex_id ]],
+                                   constant RDMPEGVertex *vertexArray [[ buffer(RDMPEGVertexInputIndexVertices) ]],
+                                   constant vector_uint2 *viewportSizePointer  [[ buffer(RDMPEGVertexInputIndexViewportSize) ]])
 {
-
     RasterizerData out;
-
+    
     // Index into the array of positions to get the current vertex.
     //   Positions are specified in pixel dimensions (i.e. a value of 100 is 100 pixels from
     //   the origin)
@@ -61,10 +58,8 @@ vertexShader(uint vertexID [[ vertex_id ]],
     return out;
 }
 
-// Fragment function
-fragment float4
-samplingShader(RasterizerData in [[stage_in]],
-               texture2d<half> colorTexture [[ texture(AAPLTextureIndexBaseColor) ]])
+fragment float4 samplingShaderRGB(RasterizerData in [[stage_in]],
+                               texture2d<half> colorTexture [[ texture(RDMPEGTextureIndexRGBBaseColor) ]])
 {
     constexpr sampler textureSampler (mag_filter::linear,
                                       min_filter::linear);
@@ -74,4 +69,30 @@ samplingShader(RasterizerData in [[stage_in]],
 
     // return the color of the texture
     return float4(colorSample);
+}
+
+fragment float4 samplingShaderYUV(RasterizerData in [[stage_in]],
+                                  texture2d<half> yTexture [[ texture(RDMPEGTextureIndexY) ]],
+                                  texture2d<half> uTexture [[ texture(RDMPEGTextureIndexU) ]],
+                                  texture2d<half> vTexture [[ texture(RDMPEGTextureIndexV) ]])
+{
+    constexpr sampler textureSampler (mag_filter::linear,
+                                      min_filter::linear);
+
+    // Sample the texture to obtain a color
+    const half4 ySample = yTexture.sample(textureSampler, in.textureCoordinate);
+    const half4 uSample = uTexture.sample(textureSampler, in.textureCoordinate);
+    const half4 vSample = vTexture.sample(textureSampler, in.textureCoordinate);
+    
+    float3 colorOffset = float3(0, -0.5, -0.5);
+    float3x3 colorMatrix = float3x3(float3(1, 1, 1),
+                                    float3(0, -0.344, 1.770),
+                                    float3(1.403, -0.714, 0));
+    
+    float3 yuv = float3(ySample[0], uSample[0], vSample[0]);
+    
+    float3 rgb = colorMatrix * (yuv + colorOffset);
+    
+    // return the color of the texture
+    return float4(rgb, 1.0);
 }

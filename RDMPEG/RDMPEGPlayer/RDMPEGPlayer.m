@@ -12,6 +12,8 @@
 #import "RDMPEGRenderScheduler.h"
 #import "RDMPEGCorrectionInfo.h"
 #import "RDMPEGPlayerView+Player.h"
+#import "RDMPEGRendererYUV.h"
+#import "RDMPEGRendererRGB.h"
 #import "RDMPEGRenderView.h"
 #import "RDMPEGAudioRenderer.h"
 #import "RDMPEGWeakTimerTarget.h"
@@ -755,9 +757,18 @@ static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInpu
                     
                     strongSelf.decoder.deinterlacingEnabled = strongSelf.isDeinterlacingEnabled;
                     
+                    id<RDMPEGRenderer> renderer = nil;
+                    if (strongSelf.decoder.actualVideoFrameFormat == RDMPEGVideoFrameFormatYUV) {
+                        renderer = [[RDMPEGRendererYUV alloc] init];
+                    }
+                    else {
+                        renderer = [[RDMPEGRendererRGB alloc] init];
+                    }
+                    
                     strongSelf.playerView.renderView =
                     [[RDMPEGRenderView alloc]
                      initWithFrame:strongSelf.playerView.bounds
+                     renderer:renderer
                      frameWidth:strongSelf.decoder.frameWidth
                      frameHeight:strongSelf.decoder.frameHeight];
                     
@@ -816,7 +827,7 @@ static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInpu
         return NO;
     }
     
-    NSError *videoError = [decoder loadVideoStreamWithPreferredVideoFrameFormat:RDMPEGVideoFrameFormatRGB actualVideoFrameFormat:nil];
+    NSError *videoError = [decoder loadVideoStreamWithPreferredVideoFrameFormat:RDMPEGVideoFrameFormatYUV actualVideoFrameFormat:nil];
     NSError *audioError = [decoder loadAudioStreamWithSamplingRate:samplingRate outputChannels:outputChannelsCount];
     
     if (videoError == nil || audioError == nil) {
