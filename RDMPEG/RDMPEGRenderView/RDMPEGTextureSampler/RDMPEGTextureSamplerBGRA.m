@@ -1,12 +1,12 @@
 //
-//  RDMPEGRendererRGB.m
+//  RDMPEGTextureSamplerBGRA.m
 //  RDMPEG
 //
 //  Created by Serhii Alpieiev on 06.01.2021.
 //  Copyright © 2021 Readdle. All rights reserved.
 //
 
-#import "RDMPEGRendererRGB.h"
+#import "RDMPEGTextureSamplerBGRA.h"
 #import "RDMPEGFrames.h"
 #import "RDMPEGShaderTypes.h"
 
@@ -14,12 +14,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@implementation RDMPEGRendererRGB
+@implementation RDMPEGTextureSamplerBGRA
 
-#pragma mark - RDMPEGRenderer
+#pragma mark - RDMPEGTextureSampler
 
 - (id<MTLFunction>)newSamplingFunctionFromLibrary:(id<MTLLibrary>)library {
-    return [library newFunctionWithName:@"samplingShaderRGB"];
+    return [library newFunctionWithName:@"samplingShaderBGRA"];
 }
 
 - (void)updateTexturesWithFrame:(RDMPEGVideoFrame *)videoFrame
@@ -31,22 +31,22 @@ NS_ASSUME_NONNULL_BEGIN
         return;
     }
     
-    if (NO == [videoFrame isKindOfClass:[RDMPEGVideoFrameRGB class]]) {
+    if (NO == [videoFrame isKindOfClass:[RDMPEGVideoFrameBGRA class]]) {
         NSParameterAssert(NO);
         return;
     }
     
-    RDMPEGVideoFrameRGB * const rgbFrame = (RDMPEGVideoFrameRGB *)videoFrame;
+    RDMPEGVideoFrameBGRA * const bgraFrame = (RDMPEGVideoFrameBGRA *)videoFrame;
     
-    id<MTLTexture> texture = [self textureFromFrame:rgbFrame device:device];
+    id<MTLTexture> texture = [self textureFromFrame:bgraFrame device:device];
     
     [renderEncoder setFragmentTexture:texture
-                              atIndex:RDMPEGTextureIndexRGBBaseColor];
+                              atIndex:RDMPEGTextureIndexBGRABaseColor];
 }
 
 #pragma mark - Private Methods
 
-- (id<MTLTexture>)textureFromFrame:(RDMPEGVideoFrameRGB *)videoFrame
+- (id<MTLTexture>)textureFromFrame:(RDMPEGVideoFrameBGRA *)videoFrame
                             device:(id<MTLDevice>)device
 {
     NSParameterAssert(videoFrame);
@@ -75,7 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
     // Copy the bytes from the data object into the texture
     [texture replaceRegion:region
                mipmapLevel:0
-                 withBytes:[videoFrame rgb].bytes
+                 withBytes:videoFrame.bgra.bytes
                bytesPerRow:bytesPerRow];
     
     return texture;

@@ -20,7 +20,7 @@ typedef NS_ENUM(NSUInteger, RDMPEGFrameType) {
 };
 
 typedef NS_ENUM(NSUInteger, RDMPEGVideoFrameFormat) {
-    RDMPEGVideoFrameFormatRGB,
+    RDMPEGVideoFrameFormatBGRA,
     RDMPEGVideoFrameFormatYUV,
 };
 
@@ -46,7 +46,6 @@ typedef NS_ENUM(NSUInteger, RDMPEGVideoFrameFormat) {
 
 @interface RDMPEGVideoFrame : RDMPEGFrame
 
-@property (nonatomic, readonly) RDMPEGVideoFrameFormat format;
 @property (nonatomic, readonly) NSUInteger width;
 @property (nonatomic, readonly) NSUInteger height;
 
@@ -54,10 +53,10 @@ typedef NS_ENUM(NSUInteger, RDMPEGVideoFrameFormat) {
 
 
 
-@interface RDMPEGVideoFrameRGB : RDMPEGVideoFrame
+@interface RDMPEGVideoFrameBGRA : RDMPEGVideoFrame
 
 @property (nonatomic, readonly) NSUInteger linesize;
-@property (nonatomic, readonly) NSData *rgb;
+@property (nonatomic, readonly) NSData *bgra;
 
 - (nullable UIImage *)asImage;
 

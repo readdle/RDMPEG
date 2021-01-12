@@ -12,8 +12,8 @@
 #import "RDMPEGRenderScheduler.h"
 #import "RDMPEGCorrectionInfo.h"
 #import "RDMPEGPlayerView+Player.h"
-#import "RDMPEGRendererYUV.h"
-#import "RDMPEGRendererRGB.h"
+#import "RDMPEGTextureSamplerYUV.h"
+#import "RDMPEGTextureSamplerBGRA.h"
 #import "RDMPEGRenderView.h"
 #import "RDMPEGAudioRenderer.h"
 #import "RDMPEGWeakTimerTarget.h"
@@ -757,18 +757,18 @@ static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInpu
                     
                     strongSelf.decoder.deinterlacingEnabled = strongSelf.isDeinterlacingEnabled;
                     
-                    id<RDMPEGRenderer> renderer = nil;
+                    id<RDMPEGTextureSampler> textureSampler = nil;
                     if (strongSelf.decoder.actualVideoFrameFormat == RDMPEGVideoFrameFormatYUV) {
-                        renderer = [[RDMPEGRendererYUV alloc] init];
+                        textureSampler = [[RDMPEGTextureSamplerYUV alloc] init];
                     }
                     else {
-                        renderer = [[RDMPEGRendererRGB alloc] init];
+                        textureSampler = [[RDMPEGTextureSamplerBGRA alloc] init];
                     }
                     
                     strongSelf.playerView.renderView =
                     [[RDMPEGRenderView alloc]
                      initWithFrame:strongSelf.playerView.bounds
-                     renderer:renderer
+                     textureSampler:textureSampler
                      frameWidth:strongSelf.decoder.frameWidth
                      frameHeight:strongSelf.decoder.frameHeight];
                     

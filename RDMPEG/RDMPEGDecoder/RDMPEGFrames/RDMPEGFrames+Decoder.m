@@ -68,20 +68,20 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 
-@implementation RDMPEGVideoFrameRGB (Decoder)
+@implementation RDMPEGVideoFrameBGRA (Decoder)
 
-@dynamic rgb;
+@dynamic bgra;
 @dynamic linesize;
 
 - (instancetype)initWithPosition:(NSTimeInterval)position
                         duration:(NSTimeInterval)duration
                            width:(NSUInteger)width
                           height:(NSUInteger)height
-                             rgb:(NSData *)rgb
+                            bgra:(NSData *)bgra
                         linesize:(NSUInteger)linesize {
     self = [super initWithPosition:position duration:duration width:width height:height];
     if (self) {
-        self.rgb = rgb;
+        self.bgra = bgra;
         self.linesize = linesize;
     }
     return self;

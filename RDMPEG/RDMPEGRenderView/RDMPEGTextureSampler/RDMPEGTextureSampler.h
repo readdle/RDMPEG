@@ -1,5 +1,5 @@
 //
-//  RDMPEGRenderer.h
+//  RDMPEGTextureSampler.h
 //  RDMPEG
 //
 //  Created by Serhii Alpieiev on 06.01.2021.
@@ -14,7 +14,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol RDMPEGRenderer <NSObject>
+@protocol RDMPEGTextureSampler <NSObject>
 
 - (id<MTLFunction>)newSamplingFunctionFromLibrary:(id<MTLLibrary>)library;
 

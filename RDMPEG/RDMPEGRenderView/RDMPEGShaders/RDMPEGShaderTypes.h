@@ -21,9 +21,9 @@ typedef enum RDMPEGVertexInputIndex {
 // Texture index values shared between shader and C code to ensure Metal shader buffer inputs match
 //   Metal API texture set calls
 
-typedef enum RDMPEGTextureIndexRGB {
-    RDMPEGTextureIndexRGBBaseColor,
-} RDMPEGTextureIndexRGB;
+typedef enum RDMPEGTextureIndexBGRA {
+    RDMPEGTextureIndexBGRABaseColor,
+} RDMPEGTextureIndexBGRA;
 
 typedef enum RDMPEGTextureIndexYUV {
     RDMPEGTextureIndexY,

@@ -7,7 +7,7 @@
 //
 
 #import "RDMPEGRenderView.h"
-#import "RDMPEGRenderer.h"
+#import "RDMPEGTextureSampler.h"
 #import "RDMPEGShaderTypes.h"
 #import "RDMPEGFrames.h"
 #import <Metal/Metal.h>
@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) NSUInteger frameWidth;
 @property (nonatomic, readonly) NSUInteger frameHeight;
-@property (nonatomic, readonly) id<RDMPEGRenderer> renderer;
+@property (nonatomic, readonly) id<RDMPEGTextureSampler> textureSampler;
 @property (nonatomic, readonly) CAMetalLayer *metalLayer;
 @property (nonatomic, readonly) id<MTLDevice> device;
 @property (nonatomic, readonly) id<MTLBuffer> vertexBuffer;
@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Lifecycle
 
 - (instancetype)initWithFrame:(CGRect)frame
-                     renderer:(id<RDMPEGRenderer>)renderer
+               textureSampler:(id<RDMPEGTextureSampler>)textureSampler
                    frameWidth:(NSUInteger)frameWidth
                   frameHeight:(NSUInteger)frameHeight
 {
@@ -59,7 +59,7 @@ NS_ASSUME_NONNULL_BEGIN
     
     self.contentMode = UIViewContentModeScaleAspectFit;
     
-    _renderer = renderer;
+    _textureSampler = textureSampler;
     _frameWidth = frameWidth;
     _frameHeight = frameHeight;
     
@@ -75,7 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
     
     MTLRenderPipelineDescriptor * const pipelineStateDescriptor = [MTLRenderPipelineDescriptor new];
     pipelineStateDescriptor.vertexFunction = [defaultLibrary newFunctionWithName:@"vertexShader"];
-    pipelineStateDescriptor.fragmentFunction = [self.renderer newSamplingFunctionFromLibrary:defaultLibrary];
+    pipelineStateDescriptor.fragmentFunction = [self.textureSampler newSamplingFunctionFromLibrary:defaultLibrary];
     pipelineStateDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
     
     // TODO: SA CHECK - handle errors
@@ -178,7 +178,7 @@ NS_ASSUME_NONNULL_BEGIN
                                length:sizeof(viewportSize)
                               atIndex:RDMPEGVertexInputIndexViewportSize];
 
-        [self.renderer
+        [self.textureSampler
          updateTexturesWithFrame:videoFrame
          device:self.device
          renderEncoder:renderEncoder];

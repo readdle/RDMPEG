@@ -1,12 +1,12 @@
 //
-//  RDMPEGRendererYUV.m
+//  RDMPEGTextureSamplerYUV.m
 //  RDMPEG
 //
 //  Created by Serhii Alpieiev on 06.01.2021.
 //  Copyright © 2021 Readdle. All rights reserved.
 //
 
-#import "RDMPEGRendererYUV.h"
+#import "RDMPEGTextureSamplerYUV.h"
 #import "RDMPEGFrames.h"
 #import "RDMPEGShaderTypes.h"
 
@@ -14,9 +14,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@implementation RDMPEGRendererYUV
+@implementation RDMPEGTextureSamplerYUV
 
-#pragma mark - RDMPEGRenderer
+#pragma mark - RDMPEGTextureSampler
 
 - (id<MTLFunction>)newSamplingFunctionFromLibrary:(id<MTLLibrary>)library {
     return [library newFunctionWithName:@"samplingShaderYUV"];

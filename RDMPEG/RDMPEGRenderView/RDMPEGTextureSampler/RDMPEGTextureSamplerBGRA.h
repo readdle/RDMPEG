@@ -1,5 +1,5 @@
 //
-//  RDMPEGRendererRGB.h
+//  RDMPEGTextureSamplerBGRA.h
 //  RDMPEG
 //
 //  Created by Serhii Alpieiev on 06.01.2021.
@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "RDMPEGRenderer.h"
+#import "RDMPEGTextureSampler.h"
 
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface RDMPEGRendererRGB : NSObject <RDMPEGRenderer>
+@interface RDMPEGTextureSamplerBGRA : NSObject <RDMPEGTextureSampler>
 
 @end
 

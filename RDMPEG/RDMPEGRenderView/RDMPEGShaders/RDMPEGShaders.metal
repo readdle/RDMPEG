@@ -58,8 +58,8 @@ vertex RasterizerData vertexShader(uint vertexID [[ vertex_id ]],
     return out;
 }
 
-fragment float4 samplingShaderRGB(RasterizerData in [[stage_in]],
-                               texture2d<half> colorTexture [[ texture(RDMPEGTextureIndexRGBBaseColor) ]])
+fragment float4 samplingShaderBGRA(RasterizerData in [[stage_in]],
+                                   texture2d<half> colorTexture [[ texture(RDMPEGTextureIndexBGRABaseColor) ]])
 {
     constexpr sampler textureSampler (mag_filter::linear,
                                       min_filter::linear);

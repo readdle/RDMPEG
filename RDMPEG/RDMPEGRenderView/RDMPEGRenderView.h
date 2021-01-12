@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol RDMPEGRenderer;
+@protocol RDMPEGTextureSampler;
 @class RDMPEGVideoFrame;
 
 
@@ -23,7 +23,7 @@ API_AVAILABLE(ios(13.0))
 @property (nonatomic, assign, getter=isAspectFillMode) BOOL aspectFillMode;
 
 - (instancetype)initWithFrame:(CGRect)frame
-                     renderer:(id<RDMPEGRenderer>)renderer
+               textureSampler:(id<RDMPEGTextureSampler>)textureSampler
                    frameWidth:(NSUInteger)frameWidth
                   frameHeight:(NSUInteger)frameHeight;
 
