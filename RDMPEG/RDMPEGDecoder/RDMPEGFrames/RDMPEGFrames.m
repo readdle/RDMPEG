@@ -74,7 +74,6 @@ NS_ASSUME_NONNULL_BEGIN
     
     CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)(self.bgra));
     
-    // TODO: SA CHECK - update for bgra
     CGImageRef imageRef = CGImageCreate(self.width,
                                         self.height,
                                         8,
