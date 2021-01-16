@@ -51,32 +51,22 @@ NS_ASSUME_NONNULL_BEGIN
 {
     NSParameterAssert(videoFrame);
     
-    MTLTextureDescriptor *textureDescriptor = [[MTLTextureDescriptor alloc] init];
-    
-    // Indicate that each pixel has a blue, green, red, and alpha channel, where each channel is
-    // an 8-bit unsigned normalized value (i.e. 0 maps to 0.0 and 255 maps to 1.0)
+    MTLTextureDescriptor * const textureDescriptor = [[MTLTextureDescriptor alloc] init];
     textureDescriptor.pixelFormat = MTLPixelFormatBGRA8Unorm;
-    
-    // Set the pixel dimensions of the texture
     textureDescriptor.width = videoFrame.width;
     textureDescriptor.height = videoFrame.height;
     
-    // Create the texture from the device by using the descriptor
-    id<MTLTexture> texture = [device newTextureWithDescriptor:textureDescriptor];
+    id<MTLTexture> const texture = [device newTextureWithDescriptor:textureDescriptor];
     
-    // Calculate the number of bytes per row in the image.
-    NSUInteger bytesPerRow = 4 * videoFrame.width;
+    MTLRegion region;
+    region.origin = MTLOriginMake(0, 0, 0);
+    region.size = MTLSizeMake(width, height, 1);
     
-    MTLRegion region = {
-        { 0, 0, 0 },                   // MTLOrigin
-        {videoFrame.width, videoFrame.height, 1} // MTLSize
-    };
-    
-    // Copy the bytes from the data object into the texture
-    [texture replaceRegion:region
-               mipmapLevel:0
-                 withBytes:videoFrame.bgra.bytes
-               bytesPerRow:bytesPerRow];
+    [texture
+     replaceRegion:region
+     mipmapLevel:0
+     withBytes:videoFrame.bgra.bytes
+     bytesPerRow:(4 * videoFrame.width)];
     
     return texture;
 }
