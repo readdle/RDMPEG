@@ -22,7 +22,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) NSUInteger frameWidth;
 @property (nonatomic, readonly) NSUInteger frameHeight;
 @property (nonatomic, readonly) id<RDMPEGTextureSampler> textureSampler;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunguarded-availability-new"
 @property (nonatomic, readonly) CAMetalLayer *metalLayer;
+#pragma clang diagnostic pop
 @property (nonatomic, readonly) id<MTLDevice> device;
 @property (nonatomic, readonly) id<MTLBuffer> vertexBuffer;
 @property (nonatomic, readonly) id<MTLRenderPipelineState> pipelineState;
@@ -36,9 +39,24 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Overridden Class Methods
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunguarded-availability-new"
+
 + (Class)layerClass {
+    // Warning -Wunguarded-availability-new suppressed in some parts of this file.
+    // This is due to CAMetalLayer availability on simulator starting from iOS 13.
+    // There is no such issue on device. Warning suppress can be removed after iOS 12 drop.
+    
+#if TARGET_IPHONE_SIMULATOR
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_13_0
+    NSAssert(NO, @"-Wunguarded-availability-new warning suppress can be safely removed in this file");
+#endif
+#endif // TARGET_IPHONE_SIMULATOR
+    
     return [CAMetalLayer class];
 }
+
+#pragma clang diagnostic pop
 
 + (L4Logger *)l4Logger {
     return [L4Logger loggerForName:@"rd.mediaplayer.RDMPEGRenderView"];
@@ -100,9 +118,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Public Accessors
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunguarded-availability-new"
+
 - (CAMetalLayer *)metalLayer {
     return (CAMetalLayer *)self.layer;
 }
+
+#pragma clang diagnostic pop
 
 - (CGRect)videoFrame {
     return self.isAspectFillMode ? self.bounds : self.aspectFitVideoFrame;
