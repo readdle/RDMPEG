@@ -52,96 +52,64 @@ NS_ASSUME_NONNULL_BEGIN
 - (id<MTLTexture>)yTextureFromFrame:(RDMPEGVideoFrameYUV *)videoFrame
                              device:(id<MTLDevice>)device
 {
-    MTLTextureDescriptor *textureDescriptor = [[MTLTextureDescriptor alloc] init];
-    
-    // Indicate that each pixel has a blue, green, red, and alpha channel, where each channel is
-    // an 8-bit unsigned normalized value (i.e. 0 maps to 0.0 and 255 maps to 1.0)
-    textureDescriptor.pixelFormat = MTLPixelFormatR8Unorm;
-    
-    // Set the pixel dimensions of the texture
-    textureDescriptor.width = videoFrame.width;
-    textureDescriptor.height = videoFrame.height;
-    
-    // Create the texture from the device by using the descriptor
-    id<MTLTexture> texture = [device newTextureWithDescriptor:textureDescriptor];
-    
-    // Calculate the number of bytes per row in the image.
-    NSUInteger bytesPerRow = videoFrame.width;
-    
-    MTLRegion region = {
-        { 0, 0, 0 },                   // MTLOrigin
-        {videoFrame.width, videoFrame.height, 1} // MTLSize
-    };
-    
-    // Copy the bytes from the data object into the texture
-    [texture replaceRegion:region
-                mipmapLevel:0
-                  withBytes:[videoFrame luma].bytes
-                bytesPerRow:bytesPerRow];
-    return texture;
+    return
+    [self
+     textureFromData:videoFrame.luma
+     device:device
+     width:videoFrame.width
+     height:videoFrame.height
+     bytesPerRow:videoFrame.width];
 }
 
 - (id<MTLTexture>)uTextureFromFrame:(RDMPEGVideoFrameYUV *)videoFrame
                              device:(id<MTLDevice>)device
 {
-    MTLTextureDescriptor *textureDescriptor = [[MTLTextureDescriptor alloc] init];
-    
-    // Indicate that each pixel has a blue, green, red, and alpha channel, where each channel is
-    // an 8-bit unsigned normalized value (i.e. 0 maps to 0.0 and 255 maps to 1.0)
-    textureDescriptor.pixelFormat = MTLPixelFormatR8Unorm;
-    
-    // Set the pixel dimensions of the texture
-    textureDescriptor.width = videoFrame.width / 2;
-    textureDescriptor.height = videoFrame.height / 2;
-    
-    // Create the texture from the device by using the descriptor
-    id<MTLTexture> texture = [device newTextureWithDescriptor:textureDescriptor];
-    
-    // Calculate the number of bytes per row in the image.
-    NSUInteger bytesPerRow = videoFrame.width / 2;
-    
-    MTLRegion region = {
-        { 0, 0, 0 },                   // MTLOrigin
-        {videoFrame.width / 2, videoFrame.height / 2, 1} // MTLSize
-    };
-    
-    // Copy the bytes from the data object into the texture
-    [texture replaceRegion:region
-                mipmapLevel:0
-                  withBytes:[videoFrame chromaB].bytes
-                bytesPerRow:bytesPerRow];
-    return texture;
+    return
+    [self
+     textureFromData:videoFrame.chromaB
+     device:device
+     width:(videoFrame.width / 2)
+     height:(videoFrame.height / 2)
+     bytesPerRow:(videoFrame.width / 2)];
 }
 
 - (id<MTLTexture>)vTextureFromFrame:(RDMPEGVideoFrameYUV *)videoFrame
                              device:(id<MTLDevice>)device
 {
-    MTLTextureDescriptor *textureDescriptor = [[MTLTextureDescriptor alloc] init];
-    
-    // Indicate that each pixel has a blue, green, red, and alpha channel, where each channel is
-    // an 8-bit unsigned normalized value (i.e. 0 maps to 0.0 and 255 maps to 1.0)
+    return
+    [self
+     textureFromData:videoFrame.chromaR
+     device:device
+     width:(videoFrame.width / 2)
+     height:(videoFrame.height / 2)
+     bytesPerRow:(videoFrame.width / 2)];
+}
+
+#pragma mark - Private Methods
+
+- (id<MTLTexture>)textureFromData:(NSData *)textureData
+                           device:(id<MTLDevice>)device
+                            width:(NSUInteger)width
+                           height:(NSUInteger)height
+                      bytesPerRow:(NSUInteger)bytesPerRow
+{
+    MTLTextureDescriptor * const textureDescriptor = [[MTLTextureDescriptor alloc] init];
     textureDescriptor.pixelFormat = MTLPixelFormatR8Unorm;
+    textureDescriptor.width = width;
+    textureDescriptor.height = height;
     
-    // Set the pixel dimensions of the texture
-    textureDescriptor.width = videoFrame.width / 2;
-    textureDescriptor.height = videoFrame.height / 2;
+    id<MTLTexture> const texture = [device newTextureWithDescriptor:textureDescriptor];
     
-    // Create the texture from the device by using the descriptor
-    id<MTLTexture> texture = [device newTextureWithDescriptor:textureDescriptor];
+    MTLRegion region;
+    region.origin = MTLOriginMake(0, 0, 0);
+    region.size = MTLSizeMake(width, height, 1);
     
-    // Calculate the number of bytes per row in the image.
-    NSUInteger bytesPerRow = videoFrame.width / 2;
+    [texture
+     replaceRegion:region
+     mipmapLevel:0
+     withBytes:textureData.bytes
+     bytesPerRow:bytesPerRow];
     
-    MTLRegion region = {
-        { 0, 0, 0 },                   // MTLOrigin
-        {videoFrame.width / 2, videoFrame.height / 2, 1} // MTLSize
-    };
-    
-    // Copy the bytes from the data object into the texture
-    [texture replaceRegion:region
-                mipmapLevel:0
-                  withBytes:[videoFrame chromaR].bytes
-                bytesPerRow:bytesPerRow];
     return texture;
 }
 
