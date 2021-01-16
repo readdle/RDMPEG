@@ -60,7 +60,7 @@ NS_ASSUME_NONNULL_BEGIN
     
     MTLRegion region;
     region.origin = MTLOriginMake(0, 0, 0);
-    region.size = MTLSizeMake(width, height, 1);
+    region.size = MTLSizeMake(videoFrame.width, videoFrame.height, 1);
     
     [texture
      replaceRegion:region

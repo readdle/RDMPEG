@@ -28,8 +28,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)render:(nullable RDMPEGVideoFrame *)videoFrame;
 
-- (void)updateView;
-
 @end
 
 NS_ASSUME_NONNULL_END

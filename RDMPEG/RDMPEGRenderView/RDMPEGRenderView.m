@@ -26,10 +26,10 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
 @property (nonatomic, readonly) CAMetalLayer *metalLayer;
 #pragma clang diagnostic pop
-@property (nonatomic, readonly) id<MTLDevice> device;
 @property (nonatomic, readonly) id<MTLBuffer> vertexBuffer;
 @property (nonatomic, readonly) id<MTLRenderPipelineState> pipelineState;
 @property (nonatomic, readonly) id<MTLCommandQueue> commandQueue;
+@property (nonatomic, strong, nullable) RDMPEGVideoFrame *currentFrame;
 
 @end
 
@@ -81,26 +81,28 @@ NS_ASSUME_NONNULL_BEGIN
     _frameWidth = frameWidth;
     _frameHeight = frameHeight;
     
-    _device = MTLCreateSystemDefaultDevice();
-    
-    self.metalLayer.device = self.device;
+    self.metalLayer.device = MTLCreateSystemDefaultDevice();
     self.metalLayer.pixelFormat = MTLPixelFormatBGRA8Unorm;
     self.metalLayer.framebufferOnly = YES;
     
-    [self updateVertices];
-    
-    id<MTLLibrary> const defaultLibrary = [self.device newDefaultLibrary];
+    id<MTLLibrary> const defaultLibrary = [self.metalLayer.device newDefaultLibrary];
     
     MTLRenderPipelineDescriptor * const pipelineStateDescriptor = [MTLRenderPipelineDescriptor new];
     pipelineStateDescriptor.vertexFunction = [defaultLibrary newFunctionWithName:@"vertexShader"];
     pipelineStateDescriptor.fragmentFunction = [self.textureSampler newSamplingFunctionFromLibrary:defaultLibrary];
     pipelineStateDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
     
-    // TODO: SA CHECK - handle errors
     NSError *renderPipelineError = nil;
-    _pipelineState = [self.device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor error:&renderPipelineError];
+    _pipelineState =
+    [self.metalLayer.device
+     newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+     error:&renderPipelineError];
+    log4Assert(nil == renderPipelineError, @"Unable to create render pipeline: %@", renderPipelineError);
     
-    _commandQueue = [self.device newCommandQueue];
+    _commandQueue = [self.metalLayer.device newCommandQueue];
+    
+    [self updateVertices];
+    [self listenNotifications];
     
     return self;
 }
@@ -110,8 +112,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    self.metalLayer.drawableSize = CGSizeMake(CGRectGetWidth(self.bounds) * [UIScreen mainScreen].scale,
-                                              CGRectGetHeight(self.bounds) * [UIScreen mainScreen].scale);
+    self.metalLayer.drawableSize =
+    CGSizeMake(CGRectGetWidth(self.bounds) * [UIScreen mainScreen].scale,
+               CGRectGetHeight(self.bounds) * [UIScreen mainScreen].scale);
     
     [self updateVertices];
 }
@@ -138,19 +141,15 @@ NS_ASSUME_NONNULL_BEGIN
     
     _aspectFillMode = aspectFillMode;
     
-    [self updateView];
-}
-
-- (void)updateView{
     [self updateVertices];
-//    if (self.renderer.isValid) {
-//        [self render:nil];
-//    }
+    [self render:self.currentFrame];
 }
 
 #pragma mark - Public Methods
 
 - (void)render:(nullable RDMPEGVideoFrame *)videoFrame {
+    self.currentFrame = videoFrame;
+    
     if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive) {
         return;
     }
@@ -163,59 +162,53 @@ NS_ASSUME_NONNULL_BEGIN
     
     id<MTLCommandBuffer> const commandBuffer = [self.commandQueue commandBuffer];
     
-    // Obtain a renderPassDescriptor generated from the view's drawable textures
-//    MTLRenderPassDescriptor *renderPassDescriptor = view.currentRenderPassDescriptor;
-    MTLRenderPassDescriptor * const renderPassDescriptor = [MTLRenderPassDescriptor new];
+    MTLRenderPassDescriptor * const renderPassDescriptor = [MTLRenderPassDescriptor renderPassDescriptor];
     renderPassDescriptor.colorAttachments[0].texture = drawable.texture;
     renderPassDescriptor.colorAttachments[0].loadAction = MTLLoadActionClear;
     renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(0.0, 0.0, 0.0, 1.0);
-
-    if(renderPassDescriptor != nil)
-    {
-        id<MTLRenderCommandEncoder> renderEncoder =
-        [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
-        renderEncoder.label = @"MyRenderEncoder";
-
-        // Set the region of the drawable to draw into.
-        MTLViewport viewport;
-        viewport.originX = 0.0;
-        viewport.originY = 0.0;
-        viewport.width = CGRectGetWidth(self.bounds) * [UIScreen mainScreen].scale;
-        viewport.height = CGRectGetHeight(self.bounds) * [UIScreen mainScreen].scale;
-        viewport.znear = -1.0;
-        viewport.zfar = 1.0;
-        
-        [renderEncoder setViewport:viewport];
-
-        [renderEncoder setRenderPipelineState:_pipelineState];
-        
-        [renderEncoder setVertexBuffer:self.vertexBuffer
-                                offset:0
-                               atIndex:RDMPEGVertexInputIndexVertices];
-        
-        vector_uint2 viewportSize;
-        viewportSize.x = (unsigned int)viewport.width;
-        viewportSize.y = (unsigned int)viewport.height;
-        
-        [renderEncoder setVertexBytes:&viewportSize
-                               length:sizeof(viewportSize)
-                              atIndex:RDMPEGVertexInputIndexViewportSize];
-
+    
+    id<MTLRenderCommandEncoder> renderEncoder =
+    [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+    
+    MTLViewport viewport;
+    viewport.originX = 0.0;
+    viewport.originY = 0.0;
+    viewport.width = CGRectGetWidth(self.bounds) * [UIScreen mainScreen].scale;
+    viewport.height = CGRectGetHeight(self.bounds) * [UIScreen mainScreen].scale;
+    viewport.znear = -1.0;
+    viewport.zfar = 1.0;
+    
+    vector_uint2 viewportSize;
+    viewportSize.x = (unsigned int)viewport.width;
+    viewportSize.y = (unsigned int)viewport.height;
+    
+    [renderEncoder setViewport:viewport];
+    [renderEncoder setRenderPipelineState:_pipelineState];
+    [renderEncoder setVertexBuffer:self.vertexBuffer offset:0 atIndex:RDMPEGVertexInputIndexVertices];
+    [renderEncoder setVertexBytes:&viewportSize length:sizeof(viewportSize) atIndex:RDMPEGVertexInputIndexViewportSize];
+    
+    if (videoFrame) {
         [self.textureSampler
          updateTexturesWithFrame:videoFrame
-         device:self.device
+         device:self.metalLayer.device
          renderEncoder:renderEncoder];
-        
-        // Draw the triangles.
-        [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
-                          vertexStart:0
-                          vertexCount:6];
-
-        [renderEncoder endEncoding];
     }
+    
+    [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:6];
+    [renderEncoder endEncoding];
     
     [commandBuffer presentDrawable:drawable];
     [commandBuffer commit];
+}
+
+#pragma mark - Private Methods
+
+- (void)listenNotifications {
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(applicationDidBecomeActiveNotification:)
+     name:UIApplicationDidBecomeActiveNotification
+     object:nil];
 }
 
 - (void)updateVertices {
@@ -233,20 +226,26 @@ NS_ASSUME_NONNULL_BEGIN
     
     const RDMPEGVertex quadVertices[] = {
         // Pixel positions, Texture coordinates
-        { {  adjustedWidth,  -adjustedHeight },  { 1.f, 1.f } },
-        { { -adjustedWidth,  -adjustedHeight },  { 0.f, 1.f } },
-        { { -adjustedWidth,   adjustedHeight },  { 0.f, 0.f } },
+        { {  adjustedWidth,  -adjustedHeight },  { 1.0f, 1.0f } },
+        { { -adjustedWidth,  -adjustedHeight },  { 0.0f, 1.0f } },
+        { { -adjustedWidth,   adjustedHeight },  { 0.0f, 0.0f } },
 
-        { {  adjustedWidth,  -adjustedHeight },  { 1.f, 1.f } },
-        { { -adjustedWidth,   adjustedHeight },  { 0.f, 0.f } },
-        { {  adjustedWidth,   adjustedHeight },  { 1.f, 0.f } },
+        { {  adjustedWidth,  -adjustedHeight },  { 1.0f, 1.0f } },
+        { { -adjustedWidth,   adjustedHeight },  { 0.0f, 0.0f } },
+        { {  adjustedWidth,   adjustedHeight },  { 1.0f, 0.0f } },
     };
     
     _vertexBuffer =
-    [self.device
+    [self.metalLayer.device
      newBufferWithBytes:quadVertices
      length:sizeof(quadVertices)
      options:MTLResourceStorageModeShared];
+}
+
+#pragma mark - Notifications
+
+- (void)applicationDidBecomeActiveNotification:(NSNotification *)notification {
+    [self render:self.currentFrame];
 }
 
 @end
