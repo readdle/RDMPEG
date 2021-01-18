@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MetalKit/MetalKit.h>
 
 @protocol RDMPEGTextureSampler;
 @class RDMPEGVideoFrame;
@@ -15,7 +16,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface RDMPEGRenderView : UIView
+@interface RDMPEGRenderView : MTKView
 
 @property (nonatomic, readonly) CGRect videoFrame;
 @property (nonatomic, readonly) CGRect aspectFitVideoFrame;
