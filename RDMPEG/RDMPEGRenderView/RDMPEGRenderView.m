@@ -66,6 +66,8 @@ NS_ASSUME_NONNULL_BEGIN
     pipelineStateDescriptor.fragmentFunction = [self.textureSampler newSamplingFunctionFromLibrary:defaultLibrary];
     pipelineStateDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
     
+    [self.textureSampler setupTexturesWithDevice:self.device frameWidth:frameWidth frameHeight:frameHeight];
+    
     NSError *renderPipelineError = nil;
     _pipelineState =
     [self.device
@@ -155,7 +157,6 @@ NS_ASSUME_NONNULL_BEGIN
     if (videoFrame) {
         [self.textureSampler
          updateTexturesWithFrame:videoFrame
-         device:self.device
          renderEncoder:renderEncoder];
     }
     

@@ -14,6 +14,16 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@interface RDMPEGTextureSamplerYUV ()
+
+@property (nonatomic, strong, nullable) id<MTLTexture> yTexture;
+@property (nonatomic, strong, nullable) id<MTLTexture> uTexture;
+@property (nonatomic, strong, nullable) id<MTLTexture> vTexture;
+
+@end
+
+
+
 @implementation RDMPEGTextureSamplerYUV
 
 #pragma mark - RDMPEGTextureSampler
@@ -22,10 +32,39 @@ NS_ASSUME_NONNULL_BEGIN
     return [library newFunctionWithName:@"samplingShaderYUV"];
 }
 
+- (void)setupTexturesWithDevice:(id<MTLDevice>)device
+                     frameWidth:(NSUInteger)frameWidth
+                    frameHeight:(NSUInteger)frameHeight
+{
+    if (self.yTexture || self.uTexture || self.vTexture) {
+        NSAssert(NO, @"Textures are already created");
+        return;
+    }
+    
+    MTLTextureDescriptor * const yTextureDescriptor = [[MTLTextureDescriptor alloc] init];
+    yTextureDescriptor.pixelFormat = MTLPixelFormatR8Unorm;
+    yTextureDescriptor.width = frameWidth;
+    yTextureDescriptor.height = frameHeight;
+    
+    MTLTextureDescriptor * const uvTextureDescriptor = [[MTLTextureDescriptor alloc] init];
+    uvTextureDescriptor.pixelFormat = MTLPixelFormatR8Unorm;
+    uvTextureDescriptor.width = frameWidth / 2;
+    uvTextureDescriptor.height = frameHeight / 2;
+    
+    self.yTexture = [device newTextureWithDescriptor:yTextureDescriptor];
+    self.uTexture = [device newTextureWithDescriptor:uvTextureDescriptor];
+    self.vTexture = [device newTextureWithDescriptor:uvTextureDescriptor];
+}
+
 - (void)updateTexturesWithFrame:(RDMPEGVideoFrame *)videoFrame
-                         device:(id<MTLDevice>)device
                   renderEncoder:(id<MTLRenderCommandEncoder>)renderEncoder
 {
+    if (nil == self.yTexture || nil == self.uTexture || nil == self.vTexture) {
+        NSAssert(NO, @"'%@' must be called before updating textures",
+                 NSStringFromSelector(@selector(setupTexturesWithDevice:frameWidth:frameHeight:)));
+        return;
+    }
+    
     if (nil == videoFrame) {
         NSParameterAssert(NO);
         return;
@@ -38,79 +77,35 @@ NS_ASSUME_NONNULL_BEGIN
     
     RDMPEGVideoFrameYUV * const yuvFrame = (RDMPEGVideoFrameYUV *)videoFrame;
     
-    id<MTLTexture> yTexture = [self yTextureFromFrame:yuvFrame device:device];
-    id<MTLTexture> uTexture = [self uTextureFromFrame:yuvFrame device:device];
-    id<MTLTexture> vTexture = [self vTextureFromFrame:yuvFrame device:device];
+    MTLRegion yRegion;
+    yRegion.origin = MTLOriginMake(0, 0, 0);
+    yRegion.size = MTLSizeMake(videoFrame.width, videoFrame.height, 1);
     
-    [renderEncoder setFragmentTexture:yTexture atIndex:RDMPEGTextureIndexY];
-    [renderEncoder setFragmentTexture:uTexture atIndex:RDMPEGTextureIndexU];
-    [renderEncoder setFragmentTexture:vTexture atIndex:RDMPEGTextureIndexV];
-}
-
-#pragma mark - Private Methods
-
-- (id<MTLTexture>)yTextureFromFrame:(RDMPEGVideoFrameYUV *)videoFrame
-                             device:(id<MTLDevice>)device
-{
-    return
-    [self
-     textureFromData:videoFrame.luma
-     device:device
-     width:videoFrame.width
-     height:videoFrame.height
-     bytesPerRow:videoFrame.width];
-}
-
-- (id<MTLTexture>)uTextureFromFrame:(RDMPEGVideoFrameYUV *)videoFrame
-                             device:(id<MTLDevice>)device
-{
-    return
-    [self
-     textureFromData:videoFrame.chromaB
-     device:device
-     width:(videoFrame.width / 2)
-     height:(videoFrame.height / 2)
-     bytesPerRow:(videoFrame.width / 2)];
-}
-
-- (id<MTLTexture>)vTextureFromFrame:(RDMPEGVideoFrameYUV *)videoFrame
-                             device:(id<MTLDevice>)device
-{
-    return
-    [self
-     textureFromData:videoFrame.chromaR
-     device:device
-     width:(videoFrame.width / 2)
-     height:(videoFrame.height / 2)
-     bytesPerRow:(videoFrame.width / 2)];
-}
-
-#pragma mark - Private Methods
-
-- (id<MTLTexture>)textureFromData:(NSData *)textureData
-                           device:(id<MTLDevice>)device
-                            width:(NSUInteger)width
-                           height:(NSUInteger)height
-                      bytesPerRow:(NSUInteger)bytesPerRow
-{
-    MTLTextureDescriptor * const textureDescriptor = [[MTLTextureDescriptor alloc] init];
-    textureDescriptor.pixelFormat = MTLPixelFormatR8Unorm;
-    textureDescriptor.width = width;
-    textureDescriptor.height = height;
+    MTLRegion uvRegion;
+    uvRegion.origin = MTLOriginMake(0, 0, 0);
+    uvRegion.size = MTLSizeMake(videoFrame.width / 2, videoFrame.height / 2, 1);
     
-    id<MTLTexture> const texture = [device newTextureWithDescriptor:textureDescriptor];
-    
-    MTLRegion region;
-    region.origin = MTLOriginMake(0, 0, 0);
-    region.size = MTLSizeMake(width, height, 1);
-    
-    [texture
-     replaceRegion:region
+    [self.yTexture
+     replaceRegion:yRegion
      mipmapLevel:0
-     withBytes:textureData.bytes
-     bytesPerRow:bytesPerRow];
+     withBytes:yuvFrame.luma.bytes
+     bytesPerRow:videoFrame.width];
     
-    return texture;
+    [self.uTexture
+     replaceRegion:uvRegion
+     mipmapLevel:0
+     withBytes:yuvFrame.chromaB.bytes
+     bytesPerRow:videoFrame.width / 2];
+    
+    [self.vTexture
+     replaceRegion:uvRegion
+     mipmapLevel:0
+     withBytes:yuvFrame.chromaR.bytes
+     bytesPerRow:videoFrame.width / 2];
+    
+    [renderEncoder setFragmentTexture:self.yTexture atIndex:RDMPEGTextureIndexY];
+    [renderEncoder setFragmentTexture:self.uTexture atIndex:RDMPEGTextureIndexU];
+    [renderEncoder setFragmentTexture:self.vTexture atIndex:RDMPEGTextureIndexV];
 }
 
 @end

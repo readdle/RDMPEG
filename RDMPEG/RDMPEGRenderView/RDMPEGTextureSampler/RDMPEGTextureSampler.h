@@ -18,8 +18,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (id<MTLFunction>)newSamplingFunctionFromLibrary:(id<MTLLibrary>)library;
 
+- (void)setupTexturesWithDevice:(id<MTLDevice>)device
+                     frameWidth:(NSUInteger)frameWidth
+                    frameHeight:(NSUInteger)frameHeight;
+
 - (void)updateTexturesWithFrame:(RDMPEGVideoFrame *)videoFrame
-                         device:(id<MTLDevice>)device
                   renderEncoder:(id<MTLRenderCommandEncoder>)renderEncoder;
 
 @end
