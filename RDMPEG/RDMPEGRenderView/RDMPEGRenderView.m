@@ -87,8 +87,8 @@ NS_ASSUME_NONNULL_BEGIN
     [super layoutSubviews];
     
     self.drawableSize =
-    CGSizeMake(CGRectGetWidth(self.bounds) * [UIScreen mainScreen].scale,
-               CGRectGetHeight(self.bounds) * [UIScreen mainScreen].scale);
+    CGSizeMake(CGRectGetWidth(self.bounds) * self.contentScaleFactor,
+               CGRectGetHeight(self.bounds) * self.contentScaleFactor);
     
     [self updateVertices];
 }
@@ -138,8 +138,8 @@ NS_ASSUME_NONNULL_BEGIN
     MTLViewport viewport;
     viewport.originX = 0.0;
     viewport.originY = 0.0;
-    viewport.width = CGRectGetWidth(self.bounds) * [UIScreen mainScreen].scale;
-    viewport.height = CGRectGetHeight(self.bounds) * [UIScreen mainScreen].scale;
+    viewport.width = self.drawableSize.width;
+    viewport.height = self.drawableSize.height;
     viewport.znear = -1.0;
     viewport.zfar = 1.0;
     
@@ -177,8 +177,8 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)updateVertices {
-    const double xScale = CGRectGetWidth(self.bounds) * [UIScreen mainScreen].scale / self.frameWidth;
-    const double yScale = CGRectGetHeight(self.bounds) * [UIScreen mainScreen].scale / self.frameHeight;
+    const double xScale = self.drawableSize.width / self.frameWidth;
+    const double yScale = self.drawableSize.height / self.frameHeight;
     const double minScale = MIN(xScale, yScale);
     const double maxScale = MAX(xScale, yScale);
     const double scale = self.isAspectFillMode ? maxScale : minScale;
