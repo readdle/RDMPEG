@@ -9,6 +9,7 @@
 #import "RDMPEGTextureSamplerBGRA.h"
 #import "RDMPEGFrames.h"
 #import "RDMPEGShaderTypes.h"
+#import <Log4Cocoa/Log4Cocoa.h>
 
 
 
@@ -63,6 +64,17 @@ NS_ASSUME_NONNULL_BEGIN
     
     if (NO == [videoFrame isKindOfClass:[RDMPEGVideoFrameBGRA class]]) {
         NSParameterAssert(NO);
+        return;
+    }
+    
+    if (self.bgraTexture.width != videoFrame.width ||
+        self.bgraTexture.height != videoFrame.height)
+    {
+        log4Assert(NO, @"Video frame size (%ld %ld) does not equal to texture size (%ld %ld)",
+                   videoFrame.width,
+                   videoFrame.height,
+                   self.bgraTexture.width,
+                   self.bgraTexture.height);
         return;
     }
     

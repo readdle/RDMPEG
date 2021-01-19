@@ -9,6 +9,7 @@
 #import "RDMPEGTextureSamplerYUV.h"
 #import "RDMPEGFrames.h"
 #import "RDMPEGShaderTypes.h"
+#import <Log4Cocoa/Log4Cocoa.h>
 
 
 
@@ -72,6 +73,25 @@ NS_ASSUME_NONNULL_BEGIN
     
     if (NO == [videoFrame isKindOfClass:[RDMPEGVideoFrameYUV class]]) {
         NSParameterAssert(NO);
+        return;
+    }
+    
+    if (self.yTexture.width != videoFrame.width ||
+        self.yTexture.height != videoFrame.height ||
+        self.uTexture.width != videoFrame.width / 2 ||
+        self.uTexture.height != videoFrame.height / 2 ||
+        self.vTexture.width != videoFrame.width / 2 ||
+        self.vTexture.height != videoFrame.height / 2)
+    {
+        log4Assert(NO, @"Video frame size (%ld %ld) does not correspond to texture sizes Y(%ld %ld) U(%ld %ld) V(%ld %ld)",
+                   videoFrame.width,
+                   videoFrame.height,
+                   self.yTexture.width,
+                   self.yTexture.height,
+                   self.uTexture.width,
+                   self.uTexture.height,
+                   self.vTexture.width,
+                   self.vTexture.height);
         return;
     }
     
