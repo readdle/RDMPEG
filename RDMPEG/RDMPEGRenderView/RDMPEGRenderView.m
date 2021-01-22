@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RDMPEGRenderView ()
 
+@property (nonatomic, readonly) BOOL isAbleToRender;
 @property (nonatomic, readonly) NSUInteger frameWidth;
 @property (nonatomic, readonly) NSUInteger frameHeight;
 @property (nonatomic, readonly) id<RDMPEGTextureSampler> textureSampler;
@@ -82,30 +83,9 @@ NS_ASSUME_NONNULL_BEGIN
     _frameWidth = frameWidth;
     _frameHeight = frameHeight;
     
-    self.metalLayer.device = MTLCreateSystemDefaultDevice();
-    self.metalLayer.pixelFormat = MTLPixelFormatBGRA8Unorm;
-    self.metalLayer.framebufferOnly = YES;
-    
-    id<MTLLibrary> const defaultLibrary = [self.metalLayer.device newDefaultLibrary];
-    
-    MTLRenderPipelineDescriptor * const pipelineStateDescriptor = [MTLRenderPipelineDescriptor new];
-    pipelineStateDescriptor.vertexFunction = [defaultLibrary newFunctionWithName:@"vertexShader"];
-    pipelineStateDescriptor.fragmentFunction = [self.textureSampler newSamplingFunctionFromLibrary:defaultLibrary];
-    pipelineStateDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
-    
-    [self.textureSampler setupTexturesWithDevice:self.metalLayer.device frameWidth:frameWidth frameHeight:frameHeight];
-    
-    NSError *renderPipelineError = nil;
-    _pipelineState =
-    [self.metalLayer.device
-     newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-     error:&renderPipelineError];
-    log4Assert(nil == renderPipelineError, @"Unable to create render pipeline: %@", renderPipelineError);
-    
-    _commandQueue = [self.metalLayer.device newCommandQueue];
-    
-    [self updateVertices];
-    [self listenNotifications];
+    if (self.isAbleToRender) {
+        [self setupRenderingPipeline];
+    }
     
     return self;
 }
@@ -148,9 +128,20 @@ NS_ASSUME_NONNULL_BEGIN
     [self render:self.currentFrame];
 }
 
+#pragma mark - Private Accessors
+
+- (BOOL)isAbleToRender {
+    return self.frameWidth > 0 && self.frameHeight > 0;
+}
+
 #pragma mark - Public Methods
 
 - (void)render:(nullable RDMPEGVideoFrame *)videoFrame {
+    if (NO == self.isAbleToRender) {
+        log4Assert(nil == videoFrame, @"Attempt to render frame in invalid state");
+        return;
+    }
+    
     self.currentFrame = videoFrame;
     
     if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive) {
@@ -205,6 +196,36 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Private Methods
 
+- (void)setupRenderingPipeline {
+    self.metalLayer.device = MTLCreateSystemDefaultDevice();
+    self.metalLayer.pixelFormat = MTLPixelFormatBGRA8Unorm;
+    self.metalLayer.framebufferOnly = YES;
+    
+    id<MTLLibrary> const defaultLibrary = [self.metalLayer.device newDefaultLibrary];
+    
+    MTLRenderPipelineDescriptor * const pipelineStateDescriptor = [MTLRenderPipelineDescriptor new];
+    pipelineStateDescriptor.vertexFunction = [defaultLibrary newFunctionWithName:@"vertexShader"];
+    pipelineStateDescriptor.fragmentFunction = [self.textureSampler newSamplingFunctionFromLibrary:defaultLibrary];
+    pipelineStateDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
+    
+    [self.textureSampler
+     setupTexturesWithDevice:self.metalLayer.device
+     frameWidth:self.frameWidth
+     frameHeight:self.frameHeight];
+    
+    NSError *renderPipelineError = nil;
+    _pipelineState =
+    [self.metalLayer.device
+     newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+     error:&renderPipelineError];
+    log4Assert(nil == renderPipelineError, @"Unable to create render pipeline: %@", renderPipelineError);
+    
+    _commandQueue = [self.metalLayer.device newCommandQueue];
+    
+    [self updateVertices];
+    [self listenNotifications];
+}
+
 - (void)listenNotifications {
     [[NSNotificationCenter defaultCenter]
      addObserver:self
@@ -214,6 +235,10 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)updateVertices {
+    if (NO == self.isAbleToRender) {
+        return;
+    }
+    
     const double xScale = self.metalLayer.drawableSize.width / self.frameWidth;
     const double yScale = self.metalLayer.drawableSize.height / self.frameHeight;
     const double minScale = MIN(xScale, yScale);
