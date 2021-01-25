@@ -23,10 +23,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) NSUInteger frameWidth;
 @property (nonatomic, readonly) NSUInteger frameHeight;
 @property (nonatomic, readonly) id<RDMPEGTextureSampler> textureSampler;
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunguarded-availability-new"
-@property (nonatomic, readonly) CAMetalLayer *metalLayer;
-#pragma clang diagnostic pop
 @property (nonatomic, readonly) id<MTLBuffer> vertexBuffer;
 @property (nonatomic, readonly) id<MTLRenderPipelineState> pipelineState;
 @property (nonatomic, readonly) id<MTLCommandQueue> commandQueue;
@@ -37,27 +33,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @implementation RDMPEGRenderView
-
-#pragma mark - Overridden Class Methods
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunguarded-availability-new"
-
-+ (Class)layerClass {
-    // Warning -Wunguarded-availability-new suppressed in some parts of this file.
-    // This is due to CAMetalLayer availability on simulator starting from iOS 13.
-    // There is no such issue on device. Warning suppress can be removed after iOS 12 drop.
-    
-#if TARGET_IPHONE_SIMULATOR
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_13_0
-    NSAssert(NO, @"-Wunguarded-availability-new warning suppress can be safely removed in this file");
-#endif
-#endif // TARGET_IPHONE_SIMULATOR
-    
-    return [CAMetalLayer class];
-}
-
-#pragma clang diagnostic pop
 
 + (L4Logger *)l4Logger {
     return [L4Logger loggerForName:@"rd.mediaplayer.RDMPEGRenderView"];
@@ -70,14 +45,15 @@ NS_ASSUME_NONNULL_BEGIN
                    frameWidth:(NSUInteger)frameWidth
                   frameHeight:(NSUInteger)frameHeight
 {
-    self = [super initWithFrame:frame];
+    self = [super initWithFrame:frame device:MTLCreateSystemDefaultDevice()];
     
     if (nil == self) {
         return nil;
     }
     
     self.contentMode = UIViewContentModeScaleAspectFit;
-    self.contentScaleFactor = [UIScreen mainScreen].scale;
+    self.colorPixelFormat = MTLPixelFormatBGRA8Unorm;
+    self.framebufferOnly = YES;
     
     _textureSampler = textureSampler;
     _frameWidth = frameWidth;
@@ -95,7 +71,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    self.metalLayer.drawableSize =
+    self.drawableSize =
     CGSizeMake(CGRectGetWidth(self.bounds) * self.contentScaleFactor,
                CGRectGetHeight(self.bounds) * self.contentScaleFactor);
     
@@ -103,15 +79,6 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 #pragma mark - Public Accessors
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunguarded-availability-new"
-
-- (CAMetalLayer *)metalLayer {
-    return (CAMetalLayer *)self.layer;
-}
-
-#pragma clang diagnostic pop
 
 - (CGRect)videoFrame {
     return self.isAspectFillMode ? self.bounds : self.aspectFitVideoFrame;
@@ -148,7 +115,7 @@ NS_ASSUME_NONNULL_BEGIN
         return;
     }
     
-    id<CAMetalDrawable> const drawable = self.metalLayer.nextDrawable;
+    id<CAMetalDrawable> const drawable = self.currentDrawable;
     
     if (nil == drawable) {
         return;
@@ -167,8 +134,8 @@ NS_ASSUME_NONNULL_BEGIN
     MTLViewport viewport;
     viewport.originX = 0.0;
     viewport.originY = 0.0;
-    viewport.width = self.metalLayer.drawableSize.width;
-    viewport.height = self.metalLayer.drawableSize.height;
+    viewport.width = self.drawableSize.width;
+    viewport.height = self.drawableSize.height;
     viewport.znear = -1.0;
     viewport.zfar = 1.0;
     
@@ -192,16 +159,17 @@ NS_ASSUME_NONNULL_BEGIN
     
     [commandBuffer presentDrawable:drawable];
     [commandBuffer commit];
+    
+    [self draw];
 }
 
 #pragma mark - Private Methods
 
 - (void)setupRenderingPipeline {
-    self.metalLayer.device = MTLCreateSystemDefaultDevice();
-    self.metalLayer.pixelFormat = MTLPixelFormatBGRA8Unorm;
-    self.metalLayer.framebufferOnly = YES;
+    self.colorPixelFormat = MTLPixelFormatBGRA8Unorm;
+    self.framebufferOnly = YES;
     
-    id<MTLLibrary> const defaultLibrary = [self.metalLayer.device newDefaultLibrary];
+    id<MTLLibrary> const defaultLibrary = [self.device newDefaultLibrary];
     
     MTLRenderPipelineDescriptor * const pipelineStateDescriptor = [MTLRenderPipelineDescriptor new];
     pipelineStateDescriptor.vertexFunction = [defaultLibrary newFunctionWithName:@"vertexShader"];
@@ -209,18 +177,18 @@ NS_ASSUME_NONNULL_BEGIN
     pipelineStateDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
     
     [self.textureSampler
-     setupTexturesWithDevice:self.metalLayer.device
+     setupTexturesWithDevice:self.device
      frameWidth:self.frameWidth
      frameHeight:self.frameHeight];
     
     NSError *renderPipelineError = nil;
     _pipelineState =
-    [self.metalLayer.device
+    [self.device
      newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
      error:&renderPipelineError];
     log4Assert(nil == renderPipelineError, @"Unable to create render pipeline: %@", renderPipelineError);
     
-    _commandQueue = [self.metalLayer.device newCommandQueue];
+    _commandQueue = [self.device newCommandQueue];
     
     [self updateVertices];
     [self listenNotifications];
@@ -239,8 +207,8 @@ NS_ASSUME_NONNULL_BEGIN
         return;
     }
     
-    const double xScale = self.metalLayer.drawableSize.width / self.frameWidth;
-    const double yScale = self.metalLayer.drawableSize.height / self.frameHeight;
+    const double xScale = self.drawableSize.width / self.frameWidth;
+    const double yScale = self.drawableSize.height / self.frameHeight;
     const double minScale = MIN(xScale, yScale);
     const double maxScale = MAX(xScale, yScale);
     const double scale = self.isAspectFillMode ? maxScale : minScale;
@@ -263,7 +231,7 @@ NS_ASSUME_NONNULL_BEGIN
     };
     
     _vertexBuffer =
-    [self.metalLayer.device
+    [self.device
      newBufferWithBytes:quadVertices
      length:sizeof(quadVertices)
      options:MTLResourceStorageModeShared];
