@@ -55,6 +55,13 @@ NS_ASSUME_NONNULL_BEGIN
     self.colorPixelFormat = MTLPixelFormatBGRA8Unorm;
     self.framebufferOnly = YES;
     
+    // Fix:
+    // https://readdle-j.atlassian.net/browse/DOC-5892
+    // https://readdle-j.atlassian.net/browse/DOC-5899
+    // https://readdle-j.atlassian.net/browse/DOC-5912
+    self.paused = YES;
+    self.enableSetNeedsDisplay = NO;
+    
     _textureSampler = textureSampler;
     _frameWidth = frameWidth;
     _frameHeight = frameHeight;
