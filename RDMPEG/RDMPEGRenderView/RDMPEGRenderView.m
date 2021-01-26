@@ -26,6 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) id<MTLBuffer> vertexBuffer;
 @property (nonatomic, readonly) id<MTLRenderPipelineState> pipelineState;
 @property (nonatomic, readonly) id<MTLCommandQueue> commandQueue;
+@property (nonatomic, assign) CGRect aspectFitVideoFrame;
 @property (nonatomic, strong, nullable) RDMPEGVideoFrame *currentFrame;
 
 @end
@@ -242,6 +243,28 @@ NS_ASSUME_NONNULL_BEGIN
      newBufferWithBytes:quadVertices
      length:sizeof(quadVertices)
      options:MTLResourceStorageModeShared];
+    
+    [self updateAspectFitVideoFrame];
+}
+
+- (void)updateAspectFitVideoFrame {
+    if (self.frameWidth == 0 || self.frameHeight == 0) {
+        self.aspectFitVideoFrame = self.bounds;
+        return;
+    }
+
+    const CGFloat horizontalAspectRatio = CGRectGetWidth(self.bounds) / self.frameWidth;
+    const CGFloat verticalAspectRatio = CGRectGetHeight(self.bounds) / self.frameHeight;
+    const CGFloat fitAspectRatio = MIN(horizontalAspectRatio, verticalAspectRatio);
+    
+    const CGSize aspectFitVideoSize = CGSizeMake(self.frameWidth * fitAspectRatio,
+                                                 self.frameHeight * fitAspectRatio);
+    
+    const CGRect aspectFitFrame = CGRectMake((CGRectGetWidth(self.bounds) - aspectFitVideoSize.width) / 2.0,
+                                             (CGRectGetHeight(self.bounds) - aspectFitVideoSize.height) / 2.0,
+                                             aspectFitVideoSize.width,
+                                             aspectFitVideoSize.height);
+    self.aspectFitVideoFrame = CGRectIntegral(aspectFitFrame);
 }
 
 #pragma mark - Notifications
