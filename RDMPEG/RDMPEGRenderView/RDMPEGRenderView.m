@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RDMPEGRenderView ()
 
+@property (nonatomic, readonly) BOOL isAbleToRender;
 @property (nonatomic, readonly) NSUInteger frameWidth;
 @property (nonatomic, readonly) NSUInteger frameHeight;
 @property (nonatomic, readonly) id<RDMPEGTextureSampler> textureSampler;
@@ -51,34 +52,23 @@ NS_ASSUME_NONNULL_BEGIN
     }
     
     self.contentMode = UIViewContentModeScaleAspectFit;
+    self.colorPixelFormat = MTLPixelFormatBGRA8Unorm;
+    self.framebufferOnly = YES;
+    
+    // Fix:
+    // https://readdle-j.atlassian.net/browse/DOC-5892
+    // https://readdle-j.atlassian.net/browse/DOC-5899
+    // https://readdle-j.atlassian.net/browse/DOC-5912
+    self.paused = YES;
+    self.enableSetNeedsDisplay = NO;
     
     _textureSampler = textureSampler;
     _frameWidth = frameWidth;
     _frameHeight = frameHeight;
     
-    self.colorPixelFormat = MTLPixelFormatBGRA8Unorm;
-    self.framebufferOnly = YES;
-    
-    id<MTLLibrary> const defaultLibrary = [self.device newDefaultLibrary];
-    
-    MTLRenderPipelineDescriptor * const pipelineStateDescriptor = [MTLRenderPipelineDescriptor new];
-    pipelineStateDescriptor.vertexFunction = [defaultLibrary newFunctionWithName:@"vertexShader"];
-    pipelineStateDescriptor.fragmentFunction = [self.textureSampler newSamplingFunctionFromLibrary:defaultLibrary];
-    pipelineStateDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
-    
-    [self.textureSampler setupTexturesWithDevice:self.device frameWidth:frameWidth frameHeight:frameHeight];
-    
-    NSError *renderPipelineError = nil;
-    _pipelineState =
-    [self.device
-     newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
-     error:&renderPipelineError];
-    log4Assert(nil == renderPipelineError, @"Unable to create render pipeline: %@", renderPipelineError);
-    
-    _commandQueue = [self.device newCommandQueue];
-    
-    [self updateVertices];
-    [self listenNotifications];
+    if (self.isAbleToRender) {
+        [self setupRenderingPipeline];
+    }
     
     return self;
 }
@@ -112,9 +102,20 @@ NS_ASSUME_NONNULL_BEGIN
     [self render:self.currentFrame];
 }
 
+#pragma mark - Private Accessors
+
+- (BOOL)isAbleToRender {
+    return self.frameWidth > 0 && self.frameHeight > 0;
+}
+
 #pragma mark - Public Methods
 
 - (void)render:(nullable RDMPEGVideoFrame *)videoFrame {
+    if (NO == self.isAbleToRender) {
+        log4Assert(nil == videoFrame, @"Attempt to render frame in invalid state");
+        return;
+    }
+    
     self.currentFrame = videoFrame;
     
     if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive) {
@@ -165,9 +166,40 @@ NS_ASSUME_NONNULL_BEGIN
     
     [commandBuffer presentDrawable:drawable];
     [commandBuffer commit];
+    
+    [self draw];
 }
 
 #pragma mark - Private Methods
+
+- (void)setupRenderingPipeline {
+    self.colorPixelFormat = MTLPixelFormatBGRA8Unorm;
+    self.framebufferOnly = YES;
+    
+    id<MTLLibrary> const defaultLibrary = [self.device newDefaultLibrary];
+    
+    MTLRenderPipelineDescriptor * const pipelineStateDescriptor = [MTLRenderPipelineDescriptor new];
+    pipelineStateDescriptor.vertexFunction = [defaultLibrary newFunctionWithName:@"vertexShader"];
+    pipelineStateDescriptor.fragmentFunction = [self.textureSampler newSamplingFunctionFromLibrary:defaultLibrary];
+    pipelineStateDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
+    
+    [self.textureSampler
+     setupTexturesWithDevice:self.device
+     frameWidth:self.frameWidth
+     frameHeight:self.frameHeight];
+    
+    NSError *renderPipelineError = nil;
+    _pipelineState =
+    [self.device
+     newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+     error:&renderPipelineError];
+    log4Assert(nil == renderPipelineError, @"Unable to create render pipeline: %@", renderPipelineError);
+    
+    _commandQueue = [self.device newCommandQueue];
+    
+    [self updateVertices];
+    [self listenNotifications];
+}
 
 - (void)listenNotifications {
     [[NSNotificationCenter defaultCenter]
@@ -178,6 +210,10 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)updateVertices {
+    if (NO == self.isAbleToRender) {
+        return;
+    }
+    
     const double xScale = self.drawableSize.width / self.frameWidth;
     const double yScale = self.drawableSize.height / self.frameHeight;
     const double minScale = MIN(xScale, yScale);
