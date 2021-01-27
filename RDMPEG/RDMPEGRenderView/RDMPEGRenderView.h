@@ -2,33 +2,32 @@
 //  RDMPEGRenderView.h
 //  RDMPEG
 //
-//  Created by Serhii Alpieiev on 10/3/17.
-//  Copyright © 2017 Readdle. All rights reserved.
+//  Created by Serhii Alpieiev on 03.12.2020.
+//  Copyright © 2020 Readdle. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
+#import <MetalKit/MetalKit.h>
 
+@protocol RDMPEGTextureSampler;
 @class RDMPEGVideoFrame;
-@protocol RDMPEGRenderer;
 
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface RDMPEGRenderView : UIView
+@interface RDMPEGRenderView : MTKView
 
 @property (nonatomic, readonly) CGRect videoFrame;
 @property (nonatomic, readonly) CGRect aspectFitVideoFrame;
 @property (nonatomic, assign, getter=isAspectFillMode) BOOL aspectFillMode;
 
 - (instancetype)initWithFrame:(CGRect)frame
-                     renderer:(id<RDMPEGRenderer>)renderer
+               textureSampler:(id<RDMPEGTextureSampler>)textureSampler
                    frameWidth:(NSUInteger)frameWidth
                   frameHeight:(NSUInteger)frameHeight;
 
 - (void)render:(nullable RDMPEGVideoFrame *)videoFrame;
-
-- (void)updateView;
 
 @end
 

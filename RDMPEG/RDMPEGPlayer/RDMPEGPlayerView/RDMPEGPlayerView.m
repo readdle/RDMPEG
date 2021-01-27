@@ -81,10 +81,6 @@ NS_ASSUME_NONNULL_BEGIN
     
 }
 
-- (void)updateView{
-    [self.renderView updateView];
-}
-
 #pragma mark - Public Accessors
 
 - (void)setAspectFillMode:(BOOL)aspectFillMode {

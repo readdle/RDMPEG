@@ -17,8 +17,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) CGRect videoFrame;
 @property (nonatomic, assign, getter=isAspectFillMode) BOOL aspectFillMode;
 
-- (void)updateView;
-
 @end
 
 NS_ASSUME_NONNULL_END

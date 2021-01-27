@@ -2,58 +2,38 @@
 //  RDMPEGRenderView.m
 //  RDMPEG
 //
-//  Created by Serhii Alpieiev on 10/3/17.
-//  Copyright © 2017 Readdle. All rights reserved.
+//  Created by Serhii Alpieiev on 03.12.2020.
+//  Copyright © 2020 Readdle. All rights reserved.
 //
 
 #import "RDMPEGRenderView.h"
+#import "RDMPEGTextureSampler.h"
+#import "RDMPEGShaderTypes.h"
 #import "RDMPEGFrames.h"
-#import "RDMPEGShaders.h"
-#import "RDMPEGRenderer.h"
-#import <OpenGLES/ES2/gl.h>
+#import <Metal/Metal.h>
 #import <Log4Cocoa/Log4Cocoa.h>
 
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-static BOOL validate_program(GLuint prog);
-static GLuint compile_shader(GLenum type, NSString *shaderString);
-static void mat4f_load_ortho(float left, float right, float bottom, float top, float near, float far, float *mout);
+@interface RDMPEGRenderView ()
 
-enum {
-    ATTRIBUTE_VERTEX,
-    ATTRIBUTE_TEXCOORD,
-};
-
-
-
-@interface RDMPEGRenderView () {
-    EAGLContext *_context;
-    GLuint _framebuffer;
-    GLuint _renderbuffer;
-    GLint _backingWidth;
-    GLint _backingHeight;
-    GLuint _program;
-    GLint _uniformMatrix;
-    GLfloat _vertices[8];
-}
-
-@property (nonatomic, strong, nullable) id<RDMPEGRenderer> renderer;
-@property (nonatomic, assign) NSUInteger frameWidth;
-@property (nonatomic, assign) NSUInteger frameHeight;
+@property (nonatomic, readonly) BOOL isAbleToRender;
+@property (nonatomic, readonly) NSUInteger frameWidth;
+@property (nonatomic, readonly) NSUInteger frameHeight;
+@property (nonatomic, readonly) id<RDMPEGTextureSampler> textureSampler;
+@property (nonatomic, readonly) id<MTLBuffer> vertexBuffer;
+@property (nonatomic, readonly) id<MTLRenderPipelineState> pipelineState;
+@property (nonatomic, readonly) id<MTLCommandQueue> commandQueue;
+@property (nonatomic, assign) CGRect aspectFitVideoFrame;
+@property (nonatomic, strong, nullable) RDMPEGVideoFrame *currentFrame;
 
 @end
 
 
 
 @implementation RDMPEGRenderView
-
-#pragma mark - Overridden Class Methods
-
-+ (Class)layerClass {
-    return [CAEAGLLayer class];
-}
 
 + (L4Logger *)l4Logger {
     return [L4Logger loggerForName:@"rd.mediaplayer.RDMPEGRenderView"];
@@ -62,90 +42,36 @@ enum {
 #pragma mark - Lifecycle
 
 - (instancetype)initWithFrame:(CGRect)frame
-                     renderer:(id<RDMPEGRenderer>)renderer
+               textureSampler:(id<RDMPEGTextureSampler>)textureSampler
                    frameWidth:(NSUInteger)frameWidth
-                  frameHeight:(NSUInteger)frameHeight {
-    self = [super initWithFrame:frame];
-    if (self) {
-        self.contentMode = UIViewContentModeScaleAspectFit;
-        
-        self.renderer = renderer;
-        self.frameWidth = frameWidth;
-        self.frameHeight = frameHeight;
-        
-        CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
-        eaglLayer.opaque = YES;
-        eaglLayer.drawableProperties = @{kEAGLDrawablePropertyRetainedBacking: @NO,
-                                         kEAGLDrawablePropertyColorFormat: kEAGLColorFormatRGBA8};
-        
-        _context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-        
-        self.contentScaleFactor = [UIScreen mainScreen].scale;
-        eaglLayer.contentsScale = [UIScreen mainScreen].scale;
-        
-        if (_context == NULL || [EAGLContext setCurrentContext:_context] == NO) {
-            log4Assert(NO, @"Failed to setup EAGLContext");
-            return nil;
-        }
-        
-        glGenFramebuffers(1, &_framebuffer);
-        glGenRenderbuffers(1, &_renderbuffer);
-        glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, _renderbuffer);
-        [_context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
-        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &_backingWidth);
-        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_backingHeight);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _renderbuffer);
-        
-        GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-        if (status != GL_FRAMEBUFFER_COMPLETE) {
-            log4Assert(NO, @"Failed to make complete framebuffer object %x", status);
-            return nil;
-        }
-        
-        GLenum glError = glGetError();
-        if (GL_NO_ERROR != glError) {
-            log4Assert(NO, @"Failed to setup GL %x", glError);
-            return nil;
-        }
-        
-        if (![self loadShaders]) {
-            log4Assert(NO, @"Failed to load shaders");
-            return nil;
-        }
-        
-        _vertices[0] = -1.0f;  // x0
-        _vertices[1] = -1.0f;  // y0
-        _vertices[2] =  1.0f;  // ..
-        _vertices[3] = -1.0f;
-        _vertices[4] = -1.0f;
-        _vertices[5] =  1.0f;
-        _vertices[6] =  1.0f;  // x3
-        _vertices[7] =  1.0f;  // y3
+                  frameHeight:(NSUInteger)frameHeight
+{
+    self = [super initWithFrame:frame device:MTLCreateSystemDefaultDevice()];
+    
+    if (nil == self) {
+        return nil;
+    }
+    
+    self.contentMode = UIViewContentModeScaleAspectFit;
+    self.colorPixelFormat = MTLPixelFormatBGRA8Unorm;
+    self.framebufferOnly = YES;
+    
+    // Fix:
+    // https://readdle-j.atlassian.net/browse/DOC-5892
+    // https://readdle-j.atlassian.net/browse/DOC-5899
+    // https://readdle-j.atlassian.net/browse/DOC-5912
+    self.paused = YES;
+    self.enableSetNeedsDisplay = NO;
+    
+    _textureSampler = textureSampler;
+    _frameWidth = frameWidth;
+    _frameHeight = frameHeight;
+    
+    if (self.isAbleToRender) {
+        [self setupRenderingPipeline];
     }
     
     return self;
-}
-
-- (void)dealloc {
-    if (_framebuffer) {
-        glDeleteFramebuffers(1, &_framebuffer);
-        _framebuffer = 0;
-    }
-    
-    if (_renderbuffer) {
-        glDeleteRenderbuffers(1, &_renderbuffer);
-        _renderbuffer = 0;
-    }
-    
-    if (_program) {
-        glDeleteProgram(_program);
-        _program = 0;
-    }
-    
-    if ([EAGLContext currentContext] == _context) {
-        [EAGLContext setCurrentContext:nil];
-    }
 }
 
 #pragma mark - Overridden
@@ -153,13 +79,9 @@ enum {
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    glBindRenderbuffer(GL_RENDERBUFFER, _renderbuffer);
-    [_context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &_backingWidth);
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_backingHeight);
-    
-    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    log4Assert(status == GL_FRAMEBUFFER_COMPLETE, @"Failed to make complete framebuffer object %x", status);
+    self.drawableSize =
+    CGSizeMake(CGRectGetWidth(self.bounds) * self.contentScaleFactor,
+               CGRectGetHeight(self.bounds) * self.contentScaleFactor);
     
     [self updateVertices];
 }
@@ -177,237 +99,182 @@ enum {
     
     _aspectFillMode = aspectFillMode;
     
-    [self updateView];
+    [self updateVertices];
+    [self render:self.currentFrame];
 }
 
-- (void)updateView{
-    [self updateVertices];
-    if (self.renderer.isValid) {
-        [self render:nil];
-    }
+#pragma mark - Private Accessors
+
+- (BOOL)isAbleToRender {
+    return self.frameWidth > 0 && self.frameHeight > 0;
 }
 
 #pragma mark - Public Methods
 
 - (void)render:(nullable RDMPEGVideoFrame *)videoFrame {
+    if (NO == self.isAbleToRender) {
+        log4Assert(nil == videoFrame, @"Attempt to render frame in invalid state");
+        return;
+    }
+    
+    self.currentFrame = videoFrame;
+    
     if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive) {
         return;
     }
     
-    static const GLfloat texCoords[] = {
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-    };
+    id<CAMetalDrawable> const drawable = self.currentDrawable;
     
-    [EAGLContext setCurrentContext:_context];
+    if (nil == drawable) {
+        return;
+    }
     
-    glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
-    glViewport(0, 0, _backingWidth, _backingHeight);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glUseProgram(_program);
+    id<MTLCommandBuffer> const commandBuffer = [self.commandQueue commandBuffer];
     
-    log4Assert(self.renderer, @"Renderer not specified");
+    MTLRenderPassDescriptor * const renderPassDescriptor = [MTLRenderPassDescriptor renderPassDescriptor];
+    renderPassDescriptor.colorAttachments[0].texture = drawable.texture;
+    renderPassDescriptor.colorAttachments[0].loadAction = MTLLoadActionClear;
+    renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(0.0, 0.0, 0.0, 1.0);
+    
+    id<MTLRenderCommandEncoder> renderEncoder =
+    [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+    
+    MTLViewport viewport;
+    viewport.originX = 0.0;
+    viewport.originY = 0.0;
+    viewport.width = self.drawableSize.width;
+    viewport.height = self.drawableSize.height;
+    viewport.znear = -1.0;
+    viewport.zfar = 1.0;
+    
+    vector_uint2 viewportSize;
+    viewportSize.x = (unsigned int)viewport.width;
+    viewportSize.y = (unsigned int)viewport.height;
+    
+    [renderEncoder setViewport:viewport];
+    [renderEncoder setRenderPipelineState:_pipelineState];
+    [renderEncoder setVertexBuffer:self.vertexBuffer offset:0 atIndex:RDMPEGVertexInputIndexVertices];
+    [renderEncoder setVertexBytes:&viewportSize length:sizeof(viewportSize) atIndex:RDMPEGVertexInputIndexViewportSize];
     
     if (videoFrame) {
-        [self.renderer generateTextureForFrame:videoFrame];
+        [self.textureSampler
+         updateTexturesWithFrame:videoFrame
+         renderEncoder:renderEncoder];
     }
     
-    if ([self.renderer prepareRender]) {
-        GLfloat modelviewProj[16];
-        mat4f_load_ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, modelviewProj);
-        glUniformMatrix4fv(_uniformMatrix, 1, GL_FALSE, modelviewProj);
-        
-        glVertexAttribPointer(ATTRIBUTE_VERTEX, 2, GL_FLOAT, 0, 0, _vertices);
-        glEnableVertexAttribArray(ATTRIBUTE_VERTEX);
-        glVertexAttribPointer(ATTRIBUTE_TEXCOORD, 2, GL_FLOAT, 0, 0, texCoords);
-        glEnableVertexAttribArray(ATTRIBUTE_TEXCOORD);
-        
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    }
+    [renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:6];
+    [renderEncoder endEncoding];
     
-    glBindRenderbuffer(GL_RENDERBUFFER, _renderbuffer);
-    [_context presentRenderbuffer:GL_RENDERBUFFER];
+    [commandBuffer presentDrawable:drawable];
+    [commandBuffer commit];
+    
+    [self draw];
 }
 
 #pragma mark - Private Methods
 
-- (BOOL)loadShaders {
-    BOOL result = NO;
-    GLuint vertShader = 0, fragShader = 0;
+- (void)setupRenderingPipeline {
+    self.colorPixelFormat = MTLPixelFormatBGRA8Unorm;
+    self.framebufferOnly = YES;
     
-    _program = glCreateProgram();
+    id<MTLLibrary> const defaultLibrary = [self.device newDefaultLibrary];
     
-    vertShader = compile_shader(GL_VERTEX_SHADER, vertexShaderString);
-    if (vertShader == 0) {
-        goto exit;
-    }
+    MTLRenderPipelineDescriptor * const pipelineStateDescriptor = [MTLRenderPipelineDescriptor new];
+    pipelineStateDescriptor.vertexFunction = [defaultLibrary newFunctionWithName:@"vertexShader"];
+    pipelineStateDescriptor.fragmentFunction = [self.textureSampler newSamplingFunctionFromLibrary:defaultLibrary];
+    pipelineStateDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
     
-    fragShader = compile_shader(GL_FRAGMENT_SHADER, self.renderer.fragmentShader);
-    if (fragShader == 0) {
-        goto exit;
-    }
+    [self.textureSampler
+     setupTexturesWithDevice:self.device
+     frameWidth:self.frameWidth
+     frameHeight:self.frameHeight];
     
-    glAttachShader(_program, vertShader);
-    glAttachShader(_program, fragShader);
-    glBindAttribLocation(_program, ATTRIBUTE_VERTEX, "position");
-    glBindAttribLocation(_program, ATTRIBUTE_TEXCOORD, "texcoord");
+    NSError *renderPipelineError = nil;
+    _pipelineState =
+    [self.device
+     newRenderPipelineStateWithDescriptor:pipelineStateDescriptor
+     error:&renderPipelineError];
+    log4Assert(nil == renderPipelineError, @"Unable to create render pipeline: %@", renderPipelineError);
     
-    glLinkProgram(_program);
+    _commandQueue = [self.device newCommandQueue];
     
-    GLint status;
-    glGetProgramiv(_program, GL_LINK_STATUS, &status);
-    if (status == GL_FALSE) {
-        log4Error(@"Failed to link program %d", _program);
-        goto exit;
-    }
-    
-    result = validate_program(_program);
-    
-    _uniformMatrix = glGetUniformLocation(_program, "modelViewProjectionMatrix");
-    [self.renderer resolveUniforms:_program];
-    
-exit:
-    
-    if (vertShader) {
-        glDeleteShader(vertShader);
-    }
-    
-    if (fragShader) {
-        glDeleteShader(fragShader);
-    }
-    
-    if (result == NO) {
-        glDeleteProgram(_program);
-        _program = 0;
-    }
-    
-    return result;
+    [self updateVertices];
+    [self listenNotifications];
+}
+
+- (void)listenNotifications {
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(applicationDidBecomeActiveNotification:)
+     name:UIApplicationDidBecomeActiveNotification
+     object:nil];
 }
 
 - (void)updateVertices {
-    const BOOL fit = (self.isAspectFillMode == NO);
-    const float width = self.frameWidth > 0 ? self.frameWidth : _backingWidth;
-    const float height = self.frameHeight > 0 ? self.frameHeight : _backingHeight;
-    const float dH = (float)_backingHeight / height;
-    const float dW = (float)_backingWidth / width;
-    const float mindd = MIN(dH, dW);
-    const float maxdd = MAX(dH, dW);
-    const float minh = (height * mindd / (float)_backingHeight);
-    const float maxh = (height * maxdd / (float)_backingHeight);
-    const float minw = (width * mindd / (float)_backingWidth);
-    const float maxw = (width * maxdd / (float)_backingWidth);
-    const float h = fit ? minh : maxh;
-    const float w = fit ? minw : maxw;
+    if (NO == self.isAbleToRender) {
+        return;
+    }
     
-    _vertices[0] = - w;
-    _vertices[1] = - h;
-    _vertices[2] =   w;
-    _vertices[3] = - h;
-    _vertices[4] = - w;
-    _vertices[5] =   h;
-    _vertices[6] =   w;
-    _vertices[7] =   h;
+    const double xScale = self.drawableSize.width / self.frameWidth;
+    const double yScale = self.drawableSize.height / self.frameHeight;
+    const double minScale = MIN(xScale, yScale);
+    const double maxScale = MAX(xScale, yScale);
+    const double scale = self.isAspectFillMode ? maxScale : minScale;
     
-    _aspectFitVideoFrame = CGRectMake(((_backingWidth - (_backingWidth * minw)) / 2.0) / self.contentScaleFactor,
-                                      ((_backingHeight - (_backingHeight * minh)) / 2.0) / self.contentScaleFactor,
-                                      (_backingWidth * minw) / self.contentScaleFactor,
-                                      (_backingHeight * minh) / self.contentScaleFactor);
-    _aspectFitVideoFrame = CGRectIntegral(_aspectFitVideoFrame);
+    const double halfWidth = self.frameWidth / 2.0;
+    const double halfHeight = self.frameHeight / 2.0;
+    
+    const double adjustedWidth = halfWidth * scale;
+    const double adjustedHeight = halfHeight * scale;
+    
+    const RDMPEGVertex quadVertices[] = {
+        // Pixel positions, Texture coordinates
+        { {  adjustedWidth,  -adjustedHeight },  { 1.0f, 1.0f } },
+        { { -adjustedWidth,  -adjustedHeight },  { 0.0f, 1.0f } },
+        { { -adjustedWidth,   adjustedHeight },  { 0.0f, 0.0f } },
+
+        { {  adjustedWidth,  -adjustedHeight },  { 1.0f, 1.0f } },
+        { { -adjustedWidth,   adjustedHeight },  { 0.0f, 0.0f } },
+        { {  adjustedWidth,   adjustedHeight },  { 1.0f, 0.0f } },
+    };
+    
+    _vertexBuffer =
+    [self.device
+     newBufferWithBytes:quadVertices
+     length:sizeof(quadVertices)
+     options:MTLResourceStorageModeShared];
+    
+    [self updateAspectFitVideoFrame];
+}
+
+- (void)updateAspectFitVideoFrame {
+    if (self.frameWidth == 0 || self.frameHeight == 0) {
+        self.aspectFitVideoFrame = self.bounds;
+        return;
+    }
+
+    const CGFloat horizontalAspectRatio = CGRectGetWidth(self.bounds) / self.frameWidth;
+    const CGFloat verticalAspectRatio = CGRectGetHeight(self.bounds) / self.frameHeight;
+    const CGFloat fitAspectRatio = MIN(horizontalAspectRatio, verticalAspectRatio);
+    
+    const CGSize aspectFitVideoSize = CGSizeMake(self.frameWidth * fitAspectRatio,
+                                                 self.frameHeight * fitAspectRatio);
+    
+    const CGRect aspectFitFrame = CGRectMake((CGRectGetWidth(self.bounds) - aspectFitVideoSize.width) / 2.0,
+                                             (CGRectGetHeight(self.bounds) - aspectFitVideoSize.height) / 2.0,
+                                             aspectFitVideoSize.width,
+                                             aspectFitVideoSize.height);
+    self.aspectFitVideoFrame = CGRectIntegral(aspectFitFrame);
+    
+    NSParameterAssert(CGRectContainsRect(self.bounds, self.aspectFitVideoFrame));
+}
+
+#pragma mark - Notifications
+
+- (void)applicationDidBecomeActiveNotification:(NSNotification *)notification {
+    [self render:self.currentFrame];
 }
 
 @end
-
-
-
-static BOOL validate_program(GLuint prog) {
-    GLint status;
-    
-    glValidateProgram(prog);
-    
-#ifdef DEBUG
-    GLint logLength;
-    glGetProgramiv(prog, GL_INFO_LOG_LENGTH, &logLength);
-    if (logLength > 0) {
-        GLchar *log = (GLchar *)malloc(logLength);
-        glGetProgramInfoLog(prog, logLength, &logLength, log);
-        log4CDebug(@"Program validate log:\n%s", log);
-        free(log);
-    }
-#endif
-    
-    glGetProgramiv(prog, GL_VALIDATE_STATUS, &status);
-    if (status == GL_FALSE) {
-        log4CError(@"Failed to validate program %d", prog);
-        return NO;
-    }
-    
-    return YES;
-}
-
-static GLuint compile_shader(GLenum type, NSString *shaderString) {
-    GLint status;
-    const GLchar *sources = (GLchar *)shaderString.UTF8String;
-    
-    GLuint shader = glCreateShader(type);
-    if (shader == 0 || shader == GL_INVALID_ENUM) {
-        log4CError(@"Failed to create shader %d", type);
-        return 0;
-    }
-    
-    glShaderSource(shader, 1, &sources, NULL);
-    glCompileShader(shader);
-    
-#ifdef DEBUG
-    GLint logLength;
-    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
-    if (logLength > 0) {
-        GLchar *log = (GLchar *)malloc(logLength);
-        glGetShaderInfoLog(shader, logLength, &logLength, log);
-        log4CDebug(@"Shader compile log:\n%s", log);
-        free(log);
-    }
-#endif
-    
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-    if (status == GL_FALSE) {
-        glDeleteShader(shader);
-        log4CDebug(@"Failed to compile shader:\n");
-        return 0;
-    }
-    
-    return shader;
-}
-
-static void mat4f_load_ortho(float left, float right, float bottom, float top, float near, float far, float *mout) {
-    float r_l = right - left;
-    float t_b = top - bottom;
-    float f_n = far - near;
-    float tx = - (right + left) / (right - left);
-    float ty = - (top + bottom) / (top - bottom);
-    float tz = - (far + near) / (far - near);
-    
-    mout[0] = 2.0f / r_l;
-    mout[1] = 0.0f;
-    mout[2] = 0.0f;
-    mout[3] = 0.0f;
-    
-    mout[4] = 0.0f;
-    mout[5] = 2.0f / t_b;
-    mout[6] = 0.0f;
-    mout[7] = 0.0f;
-    
-    mout[8] = 0.0f;
-    mout[9] = 0.0f;
-    mout[10] = -2.0f / f_n;
-    mout[11] = 0.0f;
-    
-    mout[12] = tx;
-    mout[13] = ty;
-    mout[14] = tz;
-    mout[15] = 1.0f;
-}
 
 NS_ASSUME_NONNULL_END

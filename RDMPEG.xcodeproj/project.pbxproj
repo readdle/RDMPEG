@@ -7,12 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		732D4DC11F8634280005C682 /* RDMPEGRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 732D4DC01F8634280005C682 /* RDMPEGRenderer.h */; };
-		732D4DC41F8634870005C682 /* RDMPEGRendererRGB.h in Headers */ = {isa = PBXBuildFile; fileRef = 732D4DC21F8634870005C682 /* RDMPEGRendererRGB.h */; };
-		732D4DC51F8634870005C682 /* RDMPEGRendererRGB.m in Sources */ = {isa = PBXBuildFile; fileRef = 732D4DC31F8634870005C682 /* RDMPEGRendererRGB.m */; };
-		732D4DC81F8634950005C682 /* RDMPEGRendererYUV.h in Headers */ = {isa = PBXBuildFile; fileRef = 732D4DC61F8634950005C682 /* RDMPEGRendererYUV.h */; };
-		732D4DC91F8634950005C682 /* RDMPEGRendererYUV.m in Sources */ = {isa = PBXBuildFile; fileRef = 732D4DC71F8634950005C682 /* RDMPEGRendererYUV.m */; };
-		732D4DCC1F86363C0005C682 /* RDMPEGShaders.h in Headers */ = {isa = PBXBuildFile; fileRef = 732D4DCA1F86363C0005C682 /* RDMPEGShaders.h */; };
 		732D4DCE1F864AD50005C682 /* RDMPEGPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73450B201F8290FA009E8F5F /* RDMPEGPlayerView.m */; };
 		732D4DCF1F864AD70005C682 /* RDMPEGPlayerView.h in Headers */ = {isa = PBXBuildFile; fileRef = 73450B1F1F8290FA009E8F5F /* RDMPEGPlayerView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		73309E0F1F9E3F22006ED07D /* RDMPEGStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 73309E0D1F9E3F22006ED07D /* RDMPEGStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -20,6 +14,11 @@
 		73309ECA1F9E47A7006ED07D /* RDMPEGStream+Decoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 73309EC81F9E47A7006ED07D /* RDMPEGStream+Decoder.h */; };
 		73309ECB1F9E47A7006ED07D /* RDMPEGStream+Decoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 73309EC91F9E47A7006ED07D /* RDMPEGStream+Decoder.m */; };
 		73398C981F9E0122003C9022 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73398C951F9E0113003C9022 /* VideoToolbox.framework */; };
+		73437A9325797077005546B5 /* RDMPEGRenderView.h in Headers */ = {isa = PBXBuildFile; fileRef = 73437A9125797077005546B5 /* RDMPEGRenderView.h */; };
+		73437A9B2579755F005546B5 /* RDMPEGPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 73450B281F8290FA009E8F5F /* RDMPEGPlayer.m */; };
+		73437A9E257975B0005546B5 /* RDMPEGRenderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73437A9225797077005546B5 /* RDMPEGRenderView.m */; };
+		73437AA3257979C8005546B5 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73437AA2257979C8005546B5 /* Metal.framework */; };
+		73437AA625798426005546B5 /* RDMPEGShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 73437AA525798426005546B5 /* RDMPEGShaders.metal */; };
 		73450B131F82906B009E8F5F /* RDMPEG.h in Headers */ = {isa = PBXBuildFile; fileRef = 73450B111F82906B009E8F5F /* RDMPEG.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		73450B651F8292EE009E8F5F /* RDMPEGPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 73450B1D1F8290FA009E8F5F /* RDMPEGPlayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		734C697E1F8297340031761D /* RDMPEGAudioRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 73450B1B1F8290FA009E8F5F /* RDMPEGAudioRenderer.h */; };
@@ -32,7 +31,6 @@
 		734C69851F8297340031761D /* RDMPEGFramebuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 73450B2C1F8290FA009E8F5F /* RDMPEGFramebuffer.m */; };
 		734C69861F8297340031761D /* RDMPEGRenderScheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = 73450B2F1F8290FA009E8F5F /* RDMPEGRenderScheduler.m */; };
 		734C69871F8297340031761D /* RDMPEGRenderScheduler.h in Headers */ = {isa = PBXBuildFile; fileRef = 73450B311F8290FA009E8F5F /* RDMPEGRenderScheduler.h */; };
-		734C69891F8297510031761D /* RDMPEGPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 73450B281F8290FA009E8F5F /* RDMPEGPlayer.m */; };
 		737C20311F83C0300067E318 /* RDMPEGDecoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 737C202F1F83C0300067E318 /* RDMPEGDecoder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		737C20321F83C0300067E318 /* RDMPEGDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 737C20301F83C0300067E318 /* RDMPEGDecoder.m */; };
 		737C20351F83C1C50067E318 /* RDMPEGFrames.h in Headers */ = {isa = PBXBuildFile; fileRef = 737C20331F83C1C50067E318 /* RDMPEGFrames.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -40,13 +38,15 @@
 		737C203C1F83D15C0067E318 /* RDMPEGFrames+Decoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 737C203A1F83D15C0067E318 /* RDMPEGFrames+Decoder.h */; };
 		737C203D1F83D15C0067E318 /* RDMPEGFrames+Decoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 737C203B1F83D15C0067E318 /* RDMPEGFrames+Decoder.m */; };
 		737C203E1F83DC360067E318 /* RDMPEGIOStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 737C20381F83CEA70067E318 /* RDMPEGIOStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		737C20421F83E3830067E318 /* RDMPEGRenderView.h in Headers */ = {isa = PBXBuildFile; fileRef = 737C20401F83E3830067E318 /* RDMPEGRenderView.h */; };
-		737C20431F83E3830067E318 /* RDMPEGRenderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 737C20411F83E3830067E318 /* RDMPEGRenderView.m */; };
 		737C204B1F83EC970067E318 /* RDMPEGSubtitleASSParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 737C20491F83EC970067E318 /* RDMPEGSubtitleASSParser.h */; };
 		737C204C1F83EC970067E318 /* RDMPEGSubtitleASSParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 737C204A1F83EC970067E318 /* RDMPEGSubtitleASSParser.m */; };
 		739F77581F82A06F009E27EA /* RDMPEGWeakTimerTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = 739F77561F82A06F009E27EA /* RDMPEGWeakTimerTarget.h */; };
 		739F77591F82A06F009E27EA /* RDMPEGWeakTimerTarget.m in Sources */ = {isa = PBXBuildFile; fileRef = 739F77571F82A06F009E27EA /* RDMPEGWeakTimerTarget.m */; };
 		73C4FFCC1FA0C9CA0084D489 /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 73C4FFC91FA0C9C90084D489 /* libbz2.tbd */; };
+		73DCB83125A636E000DDD8D2 /* RDMPEGTextureSamplerYUV.h in Headers */ = {isa = PBXBuildFile; fileRef = 73DCB82F25A636E000DDD8D2 /* RDMPEGTextureSamplerYUV.h */; };
+		73DCB83225A636E000DDD8D2 /* RDMPEGTextureSamplerYUV.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DCB83025A636E000DDD8D2 /* RDMPEGTextureSamplerYUV.m */; };
+		73DCB83625A6371100DDD8D2 /* RDMPEGTextureSamplerBGRA.h in Headers */ = {isa = PBXBuildFile; fileRef = 73DCB83425A6371100DDD8D2 /* RDMPEGTextureSamplerBGRA.h */; };
+		73DCB83725A6371100DDD8D2 /* RDMPEGTextureSamplerBGRA.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DCB83525A6371100DDD8D2 /* RDMPEGTextureSamplerBGRA.m */; };
 		73DE14D11F82A7D100E96055 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 73DE142F1F82A3B200E96055 /* libz.tbd */; };
 		73DE14D21F82A7D600E96055 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 73DE14331F82A3F100E96055 /* libiconv.tbd */; };
 		73DE14D31F82A7E200E96055 /* Log4Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 739F77B61F82A270009E27EA /* Log4Cocoa.framework */; };
@@ -243,17 +243,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		732D4DC01F8634280005C682 /* RDMPEGRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGRenderer.h; sourceTree = "<group>"; };
-		732D4DC21F8634870005C682 /* RDMPEGRendererRGB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGRendererRGB.h; sourceTree = "<group>"; };
-		732D4DC31F8634870005C682 /* RDMPEGRendererRGB.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMPEGRendererRGB.m; sourceTree = "<group>"; };
-		732D4DC61F8634950005C682 /* RDMPEGRendererYUV.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGRendererYUV.h; sourceTree = "<group>"; };
-		732D4DC71F8634950005C682 /* RDMPEGRendererYUV.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMPEGRendererYUV.m; sourceTree = "<group>"; };
-		732D4DCA1F86363C0005C682 /* RDMPEGShaders.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGShaders.h; sourceTree = "<group>"; };
 		73309E0D1F9E3F22006ED07D /* RDMPEGStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGStream.h; sourceTree = "<group>"; };
 		73309E0E1F9E3F22006ED07D /* RDMPEGStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMPEGStream.m; sourceTree = "<group>"; };
 		73309EC81F9E47A7006ED07D /* RDMPEGStream+Decoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RDMPEGStream+Decoder.h"; sourceTree = "<group>"; };
 		73309EC91F9E47A7006ED07D /* RDMPEGStream+Decoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RDMPEGStream+Decoder.m"; sourceTree = "<group>"; };
 		73398C951F9E0113003C9022 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
+		73437A9125797077005546B5 /* RDMPEGRenderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGRenderView.h; sourceTree = "<group>"; };
+		73437A9225797077005546B5 /* RDMPEGRenderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMPEGRenderView.m; sourceTree = "<group>"; };
+		73437AA2257979C8005546B5 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk/System/Library/Frameworks/Metal.framework; sourceTree = DEVELOPER_DIR; };
+		73437AA525798426005546B5 /* RDMPEGShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = RDMPEGShaders.metal; sourceTree = "<group>"; };
 		73450B0E1F82906B009E8F5F /* RDMPEG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RDMPEG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		73450B111F82906B009E8F5F /* RDMPEG.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEG.h; sourceTree = "<group>"; };
 		73450B121F82906B009E8F5F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -278,14 +276,18 @@
 		737C20381F83CEA70067E318 /* RDMPEGIOStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGIOStream.h; sourceTree = "<group>"; };
 		737C203A1F83D15C0067E318 /* RDMPEGFrames+Decoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RDMPEGFrames+Decoder.h"; sourceTree = "<group>"; };
 		737C203B1F83D15C0067E318 /* RDMPEGFrames+Decoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RDMPEGFrames+Decoder.m"; sourceTree = "<group>"; };
-		737C20401F83E3830067E318 /* RDMPEGRenderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGRenderView.h; sourceTree = "<group>"; };
-		737C20411F83E3830067E318 /* RDMPEGRenderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMPEGRenderView.m; sourceTree = "<group>"; };
 		737C20491F83EC970067E318 /* RDMPEGSubtitleASSParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGSubtitleASSParser.h; sourceTree = "<group>"; };
 		737C204A1F83EC970067E318 /* RDMPEGSubtitleASSParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMPEGSubtitleASSParser.m; sourceTree = "<group>"; };
 		739F77561F82A06F009E27EA /* RDMPEGWeakTimerTarget.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGWeakTimerTarget.h; sourceTree = "<group>"; };
 		739F77571F82A06F009E27EA /* RDMPEGWeakTimerTarget.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMPEGWeakTimerTarget.m; sourceTree = "<group>"; };
 		739F77AB1F82A270009E27EA /* Log4Cocoa.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Log4Cocoa.xcodeproj; path = ../Thirdparty/log4cocoa/Log4Cocoa.xcodeproj; sourceTree = "<group>"; };
 		73C4FFC91FA0C9C90084D489 /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
+		73DCB82725A6324500DDD8D2 /* RDMPEGShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGShaderTypes.h; sourceTree = "<group>"; };
+		73DCB82D25A635E200DDD8D2 /* RDMPEGTextureSampler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGTextureSampler.h; sourceTree = "<group>"; };
+		73DCB82F25A636E000DDD8D2 /* RDMPEGTextureSamplerYUV.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGTextureSamplerYUV.h; sourceTree = "<group>"; };
+		73DCB83025A636E000DDD8D2 /* RDMPEGTextureSamplerYUV.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMPEGTextureSamplerYUV.m; sourceTree = "<group>"; };
+		73DCB83425A6371100DDD8D2 /* RDMPEGTextureSamplerBGRA.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGTextureSamplerBGRA.h; sourceTree = "<group>"; };
+		73DCB83525A6371100DDD8D2 /* RDMPEGTextureSamplerBGRA.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMPEGTextureSamplerBGRA.m; sourceTree = "<group>"; };
 		73DE142F1F82A3B200E96055 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		73DE14331F82A3F100E96055 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };
 		73DE5F361F86BA8300FAD4E1 /* RDMPEGPlayerView+Player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RDMPEGPlayerView+Player.h"; sourceTree = "<group>"; };
@@ -454,6 +456,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73437AA3257979C8005546B5 /* Metal.framework in Frameworks */,
 				7890013422AE86E800D17F31 /* AudioToolbox.framework in Frameworks */,
 				ACA4A46724F434E5006015F5 /* libmp3lame.a in Frameworks */,
 				7890013222AE855000D17F31 /* libc++.tbd in Frameworks */,
@@ -476,19 +479,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		732D4DBB1F8633DC0005C682 /* RDMPEGRenderer */ = {
-			isa = PBXGroup;
-			children = (
-				732D4DC01F8634280005C682 /* RDMPEGRenderer.h */,
-				732D4DCA1F86363C0005C682 /* RDMPEGShaders.h */,
-				732D4DC21F8634870005C682 /* RDMPEGRendererRGB.h */,
-				732D4DC31F8634870005C682 /* RDMPEGRendererRGB.m */,
-				732D4DC61F8634950005C682 /* RDMPEGRendererYUV.h */,
-				732D4DC71F8634950005C682 /* RDMPEGRendererYUV.m */,
-			);
-			path = RDMPEGRenderer;
-			sourceTree = "<group>";
-		};
 		73309E0A1F9E3F09006ED07D /* RDMPEGStream */ = {
 			isa = PBXGroup;
 			children = (
@@ -632,9 +622,10 @@
 		737C203F1F83E36C0067E318 /* RDMPEGRenderView */ = {
 			isa = PBXGroup;
 			children = (
-				732D4DBB1F8633DC0005C682 /* RDMPEGRenderer */,
-				737C20401F83E3830067E318 /* RDMPEGRenderView.h */,
-				737C20411F83E3830067E318 /* RDMPEGRenderView.m */,
+				73DCB82C25A6358F00DDD8D2 /* RDMPEGShaders */,
+				73DCB82A25A6325A00DDD8D2 /* RDMPEGTextureSampler */,
+				73437A9125797077005546B5 /* RDMPEGRenderView.h */,
+				73437A9225797077005546B5 /* RDMPEGRenderView.m */,
 			);
 			name = RDMPEGRenderView;
 			path = ../../RDMPEGRenderView;
@@ -661,6 +652,7 @@
 		739F77AA1F82A22F009E27EA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				73437AA2257979C8005546B5 /* Metal.framework */,
 				7890013322AE86E800D17F31 /* AudioToolbox.framework */,
 				7890012F22AE855000D17F31 /* libc++.tbd */,
 				73C4FFC91FA0C9C90084D489 /* libbz2.tbd */,
@@ -680,6 +672,27 @@
 				739F77B61F82A270009E27EA /* Log4Cocoa.framework */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		73DCB82A25A6325A00DDD8D2 /* RDMPEGTextureSampler */ = {
+			isa = PBXGroup;
+			children = (
+				73DCB82D25A635E200DDD8D2 /* RDMPEGTextureSampler.h */,
+				73DCB82F25A636E000DDD8D2 /* RDMPEGTextureSamplerYUV.h */,
+				73DCB83025A636E000DDD8D2 /* RDMPEGTextureSamplerYUV.m */,
+				73DCB83425A6371100DDD8D2 /* RDMPEGTextureSamplerBGRA.h */,
+				73DCB83525A6371100DDD8D2 /* RDMPEGTextureSamplerBGRA.m */,
+			);
+			path = RDMPEGTextureSampler;
+			sourceTree = "<group>";
+		};
+		73DCB82C25A6358F00DDD8D2 /* RDMPEGShaders */ = {
+			isa = PBXGroup;
+			children = (
+				73DCB82725A6324500DDD8D2 /* RDMPEGShaderTypes.h */,
+				73437AA525798426005546B5 /* RDMPEGShaders.metal */,
+			);
+			path = RDMPEGShaders;
 			sourceTree = "<group>";
 		};
 		789001E122AEB89100D17F31 /* RDMPEGConverter */ = {
@@ -1002,6 +1015,7 @@
 				789002EB22AF84BF00D17F31 /* camellia.h in Headers */,
 				789002D022AF84BF00D17F31 /* sha.h in Headers */,
 				7890033D22AF84BF00D17F31 /* LogDelegate.h in Headers */,
+				73DCB83625A6371100DDD8D2 /* RDMPEGTextureSamplerBGRA.h in Headers */,
 				789002C922AF84BF00D17F31 /* version.h in Headers */,
 				789002DB22AF84BF00D17F31 /* cast5.h in Headers */,
 				7890031222AF84BF00D17F31 /* timestamp.h in Headers */,
@@ -1033,6 +1047,7 @@
 				789002C422AF84BF00D17F31 /* fifo.h in Headers */,
 				73450B651F8292EE009E8F5F /* RDMPEGPlayer.h in Headers */,
 				734C69871F8297340031761D /* RDMPEGRenderScheduler.h in Headers */,
+				73DCB83125A636E000DDD8D2 /* RDMPEGTextureSamplerYUV.h in Headers */,
 				789002E822AF84BF00D17F31 /* hwcontext_dxva2.h in Headers */,
 				7890031822AF84BF00D17F31 /* avstring.h in Headers */,
 				7890033822AF84BF00D17F31 /* ac3_parser.h in Headers */,
@@ -1042,7 +1057,6 @@
 				7890033B22AF84BF00D17F31 /* dv_profile.h in Headers */,
 				7890030422AF84BF00D17F31 /* twofish.h in Headers */,
 				789002EE22AF84BF00D17F31 /* hwcontext_drm.h in Headers */,
-				732D4DC41F8634870005C682 /* RDMPEGRendererRGB.h in Headers */,
 				789002F122AF84BF00D17F31 /* eval.h in Headers */,
 				7890032322AF84BF00D17F31 /* version.h in Headers */,
 				789002B722AF84BF00D17F31 /* ArchDetect.h in Headers */,
@@ -1059,12 +1073,10 @@
 				789002D322AF84BF00D17F31 /* lfg.h in Headers */,
 				7890030E22AF84BF00D17F31 /* hwcontext_qsv.h in Headers */,
 				7890032222AF84BF00D17F31 /* avformat.h in Headers */,
-				732D4DCC1F86363C0005C682 /* RDMPEGShaders.h in Headers */,
 				789002BA22AF84BF00D17F31 /* version.h in Headers */,
 				73450B131F82906B009E8F5F /* RDMPEG.h in Headers */,
 				789002C722AF84BF00D17F31 /* replaygain.h in Headers */,
 				789002FE22AF84BF00D17F31 /* tea.h in Headers */,
-				732D4DC81F8634950005C682 /* RDMPEGRendererYUV.h in Headers */,
 				7890031122AF84BF00D17F31 /* timer.h in Headers */,
 				789002F522AF84BF00D17F31 /* mastering_display_metadata.h in Headers */,
 				7890031022AF84BF00D17F31 /* aes_ctr.h in Headers */,
@@ -1091,7 +1103,6 @@
 				7890030B22AF84BF00D17F31 /* ripemd.h in Headers */,
 				7890033522AF84BF00D17F31 /* dirac.h in Headers */,
 				789002E922AF84BF00D17F31 /* display.h in Headers */,
-				737C20421F83E3830067E318 /* RDMPEGRenderView.h in Headers */,
 				789002E622AF84BF00D17F31 /* sha512.h in Headers */,
 				789002CC22AF84BF00D17F31 /* samplefmt.h in Headers */,
 				7890033722AF84BF00D17F31 /* mathops.h in Headers */,
@@ -1101,9 +1112,9 @@
 				7890030322AF84BF00D17F31 /* encryption_info.h in Headers */,
 				7890031B22AF84BF00D17F31 /* version.h in Headers */,
 				734C697E1F8297340031761D /* RDMPEGAudioRenderer.h in Headers */,
+				73437A9325797077005546B5 /* RDMPEGRenderView.h in Headers */,
 				789002D622AF84BF00D17F31 /* crc.h in Headers */,
 				734C69801F8297340031761D /* RDMPEGCorrectionInfo.h in Headers */,
-				732D4DC11F8634280005C682 /* RDMPEGRenderer.h in Headers */,
 				789002F422AF84BF00D17F31 /* opt.h in Headers */,
 				789002DC22AF84BF00D17F31 /* hwcontext_vaapi.h in Headers */,
 				7890031322AF84BF00D17F31 /* downmix_info.h in Headers */,
@@ -1239,22 +1250,23 @@
 			files = (
 				73309E101F9E3F22006ED07D /* RDMPEGStream.m in Sources */,
 				734C69811F8297340031761D /* RDMPEGCorrectionInfo.m in Sources */,
+				73437AA625798426005546B5 /* RDMPEGShaders.metal in Sources */,
 				737C203D1F83D15C0067E318 /* RDMPEGFrames+Decoder.m in Sources */,
 				734C69831F8297340031761D /* RDMPEGRawAudioFrame.m in Sources */,
 				73DE5F391F86BA8300FAD4E1 /* RDMPEGPlayerView+Player.m in Sources */,
 				734C697F1F8297340031761D /* RDMPEGAudioRenderer.m in Sources */,
 				ACA4A46B24F44F44006015F5 /* RDMobileFFmpegOperation.m in Sources */,
+				73437A9E257975B0005546B5 /* RDMPEGRenderView.m in Sources */,
 				737C20321F83C0300067E318 /* RDMPEGDecoder.m in Sources */,
 				737C20361F83C1C50067E318 /* RDMPEGFrames.m in Sources */,
 				732D4DCE1F864AD50005C682 /* RDMPEGPlayerView.m in Sources */,
-				732D4DC91F8634950005C682 /* RDMPEGRendererYUV.m in Sources */,
 				739F77591F82A06F009E27EA /* RDMPEGWeakTimerTarget.m in Sources */,
-				734C69891F8297510031761D /* RDMPEGPlayer.m in Sources */,
-				737C20431F83E3830067E318 /* RDMPEGRenderView.m in Sources */,
 				73309ECB1F9E47A7006ED07D /* RDMPEGStream+Decoder.m in Sources */,
 				737C204C1F83EC970067E318 /* RDMPEGSubtitleASSParser.m in Sources */,
-				732D4DC51F8634870005C682 /* RDMPEGRendererRGB.m in Sources */,
 				734C69851F8297340031761D /* RDMPEGFramebuffer.m in Sources */,
+				73DCB83225A636E000DDD8D2 /* RDMPEGTextureSamplerYUV.m in Sources */,
+				73437A9B2579755F005546B5 /* RDMPEGPlayer.m in Sources */,
+				73DCB83725A6371100DDD8D2 /* RDMPEGTextureSamplerBGRA.m in Sources */,
 				734C69861F8297340031761D /* RDMPEGRenderScheduler.m in Sources */,
 				AC21AEF624CB2DB800D47C3D /* RDMPEGSelectableInputStream.m in Sources */,
 			);

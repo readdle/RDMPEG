@@ -44,7 +44,7 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     AVIOContext *_avioContext;
     AVFrame *_videoFrame;
     AVFrame *_filteredVideoFrame;
-    AVFrame *_rgbVideoFrame;
+    AVFrame *_bgraVideoFrame;
     AVFrame *_audioFrame;
     double _videoTimeBase;
     double _audioTimeBase;
@@ -627,7 +627,7 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
         self.actualVideoFrameFormat = RDMPEGVideoFrameFormatYUV;
     }
     else {
-        self.actualVideoFrameFormat = RDMPEGVideoFrameFormatRGB;
+        self.actualVideoFrameFormat = RDMPEGVideoFrameFormatBGRA;
     }
     
     if (actualVideoFrameFormat) {
@@ -972,18 +972,18 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
                   avFrame->linesize,
                   0,
                   self.activeVideoStream.codecContext->height,
-                  _rgbVideoFrame->data,
-                  _rgbVideoFrame->linesize);
+                  _bgraVideoFrame->data,
+                  _bgraVideoFrame->linesize);
         
-        NSUInteger linesize = _rgbVideoFrame->linesize[0];
-        NSData *rgb = [NSData dataWithBytes:_rgbVideoFrame->data[0] length:(linesize * self.activeVideoStream.codecContext->height)];
+        NSUInteger linesize = _bgraVideoFrame->linesize[0];
+        NSData *bgra = [NSData dataWithBytes:_bgraVideoFrame->data[0] length:(linesize * self.activeVideoStream.codecContext->height)];
         
-        videoFrame = [[RDMPEGVideoFrameRGB alloc] initWithPosition:framePosition
-                                                          duration:frameDuration
-                                                             width:self.frameWidth
-                                                            height:self.frameHeight
-                                                               rgb:rgb
-                                                          linesize:linesize];
+        videoFrame = [[RDMPEGVideoFrameBGRA alloc] initWithPosition:framePosition
+                                                           duration:frameDuration
+                                                              width:self.frameWidth
+                                                             height:self.frameHeight
+                                                               bgra:bgra
+                                                           linesize:linesize];
     }
     
     return videoFrame;
@@ -1122,27 +1122,27 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
 - (BOOL)setupVideoScaler {
     [self closeVideoScaler];
     
-    _rgbVideoFrame = av_frame_alloc();
+    _bgraVideoFrame = av_frame_alloc();
     
-    if (_rgbVideoFrame == NULL) {
+    if (_bgraVideoFrame == NULL) {
         return NO;
     }
     
-    _rgbVideoFrame->width = self.activeVideoStream.codecContext->width;
-    _rgbVideoFrame->height = self.activeVideoStream.codecContext->height;
-    _rgbVideoFrame->format = AV_PIX_FMT_RGB24;
+    _bgraVideoFrame->width = self.activeVideoStream.codecContext->width;
+    _bgraVideoFrame->height = self.activeVideoStream.codecContext->height;
+    _bgraVideoFrame->format = AV_PIX_FMT_BGRA;
     
-    int imageStatusCode = av_image_alloc(_rgbVideoFrame->data,
-                                         _rgbVideoFrame->linesize,
-                                         _rgbVideoFrame->width,
-                                         _rgbVideoFrame->height,
-                                         _rgbVideoFrame->format,
+    int imageStatusCode = av_image_alloc(_bgraVideoFrame->data,
+                                         _bgraVideoFrame->linesize,
+                                         _bgraVideoFrame->width,
+                                         _bgraVideoFrame->height,
+                                         _bgraVideoFrame->format,
                                          1);
     
     if (imageStatusCode < 0) {
         log4Error(@"Allocate image error: %s", av_err2str(imageStatusCode));
         
-        av_freep(_rgbVideoFrame);
+        av_freep(_bgraVideoFrame);
         
         return NO;
     }
@@ -1151,9 +1151,9 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
                                        self.activeVideoStream.codecContext->width,
                                        self.activeVideoStream.codecContext->height,
                                        self.activeVideoStream.codecContext->pix_fmt,
-                                       _rgbVideoFrame->width,
-                                       _rgbVideoFrame->height,
-                                       _rgbVideoFrame->format,
+                                       _bgraVideoFrame->width,
+                                       _bgraVideoFrame->height,
+                                       _bgraVideoFrame->format,
                                        SWS_FAST_BILINEAR,
                                        NULL, NULL, NULL);
     
@@ -1166,9 +1166,9 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
         _swsContext = NULL;
     }
     
-    if (_rgbVideoFrame) {
-        av_freep(_rgbVideoFrame->data);
-        av_freep(_rgbVideoFrame);
+    if (_bgraVideoFrame) {
+        av_freep(_bgraVideoFrame->data);
+        av_freep(_bgraVideoFrame);
     }
 }
 

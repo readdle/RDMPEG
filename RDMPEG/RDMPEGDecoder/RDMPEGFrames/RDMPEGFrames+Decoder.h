@@ -50,16 +50,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 
-@interface RDMPEGVideoFrameRGB (Decoder)
+@interface RDMPEGVideoFrameBGRA (Decoder)
 
 @property (nonatomic, assign) NSUInteger linesize;
-@property (nonatomic, strong) NSData *rgb;
+@property (nonatomic, strong) NSData *bgra;
 
 - (instancetype)initWithPosition:(NSTimeInterval)position
                         duration:(NSTimeInterval)duration
                            width:(NSUInteger)width
                           height:(NSUInteger)height
-                             rgb:(NSData *)rgb
+                            bgra:(NSData *)bgra
                         linesize:(NSUInteger)linesize;
 
 @end

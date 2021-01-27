@@ -57,18 +57,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 
-@interface RDMPEGVideoFrameRGB ()
+@interface RDMPEGVideoFrameBGRA ()
 
 @property (nonatomic, assign) NSUInteger linesize;
-@property (nonatomic, strong) NSData *rgb;
+@property (nonatomic, strong) NSData *bgra;
 
 @end
 
-@implementation RDMPEGVideoFrameRGB
-
-- (RDMPEGVideoFrameFormat)format {
-    return RDMPEGVideoFrameFormatRGB;
-}
+@implementation RDMPEGVideoFrameBGRA
 
 - (nullable UIImage *)asImage {
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
@@ -76,15 +72,15 @@ NS_ASSUME_NONNULL_BEGIN
         return nil;
     }
     
-    CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)(self.rgb));
+    CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)(self.bgra));
     
     CGImageRef imageRef = CGImageCreate(self.width,
                                         self.height,
                                         8,
-                                        24,
+                                        32,
                                         self.linesize,
                                         colorSpace,
-                                        kCGBitmapByteOrderDefault,
+                                        kCGBitmapByteOrder32Little | kCGImageAlphaNoneSkipFirst,
                                         provider,
                                         NULL,
                                         YES,
@@ -112,10 +108,6 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @implementation RDMPEGVideoFrameYUV
-
-- (RDMPEGVideoFrameFormat)format {
-    return RDMPEGVideoFrameFormatYUV;
-}
 
 @end
 
