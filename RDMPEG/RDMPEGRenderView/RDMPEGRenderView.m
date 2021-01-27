@@ -265,6 +265,8 @@ NS_ASSUME_NONNULL_BEGIN
                                              aspectFitVideoSize.width,
                                              aspectFitVideoSize.height);
     self.aspectFitVideoFrame = CGRectIntegral(aspectFitFrame);
+    
+    NSParameterAssert(CGRectContainsRect(self.bounds, self.aspectFitVideoFrame));
 }
 
 #pragma mark - Notifications
