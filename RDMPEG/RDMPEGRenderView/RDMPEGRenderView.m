@@ -264,7 +264,12 @@ NS_ASSUME_NONNULL_BEGIN
                                              (CGRectGetHeight(self.bounds) - aspectFitVideoSize.height) / 2.0,
                                              aspectFitVideoSize.width,
                                              aspectFitVideoSize.height);
-    self.aspectFitVideoFrame = CGRectIntegral(aspectFitFrame);
+    
+    // CGRectIntegral may cause assert because it uses ceilf and this is an issue with floating point precision
+    self.aspectFitVideoFrame = CGRectMake(roundf(aspectFitFrame.origin.x),
+                                          roundf(aspectFitFrame.origin.y),
+                                          roundf(aspectFitFrame.size.width),
+                                          roundf(aspectFitFrame.size.height));
     
     NSParameterAssert(CGRectContainsRect(self.bounds, self.aspectFitVideoFrame));
 }
