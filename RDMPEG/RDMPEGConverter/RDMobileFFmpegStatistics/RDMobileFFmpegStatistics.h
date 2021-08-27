@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RDMobileFFmpegStatistics : NSObject
 
+- (instancetype)init NS_UNAVAILABLE;
+
 @property (nonatomic, readonly) NSInteger frameNumber;
 @property (nonatomic, readonly) double fps;
 @property (nonatomic, readonly) double quality;
