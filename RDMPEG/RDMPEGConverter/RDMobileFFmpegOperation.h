@@ -6,19 +6,19 @@
 //  Copyright © 2020 Readdle. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "RDMPEGOperation.h"
 
-@class Statistics;
+@class RDMobileFFmpegStatistics;
+
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef void(^RDMobileFFmpegOperationStatisticsBlock)(Statistics * _Nonnull statistics);
+
+typedef void(^RDMobileFFmpegOperationStatisticsBlock)(RDMobileFFmpegStatistics *statistics);
 typedef void(^RDMobileFFmpegOperationResultBlock)(int result);
 
-//to build mobile-ffmpeg:
-//mobile-ffmpeg ./ios.sh --enable-lame
 
-@interface RDMobileFFmpegOperation : NSOperation
+@interface RDMobileFFmpegOperation : RDMPEGOperation
 
 + (instancetype)new NS_UNAVAILABLE;
 - (instancetype)init NS_UNAVAILABLE;
