@@ -10,14 +10,13 @@
 
 @class RDMobileFFmpegStatistics;
 
+
 NS_ASSUME_NONNULL_BEGIN
+
 
 typedef void(^RDMobileFFmpegOperationStatisticsBlock)(RDMobileFFmpegStatistics *statistics);
 typedef void(^RDMobileFFmpegOperationResultBlock)(int result);
 
-
-//to build mobile-ffmpeg:
-//mobile-ffmpeg ./ios.sh --enable-lame
 
 @interface RDMobileFFmpegOperation : RDMPEGOperation
 
