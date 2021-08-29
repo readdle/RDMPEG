@@ -1,1 +1,1 @@
-dependencies/mobile-ffmpeg = { git@github.com:readdle/mobile-ffmpeg.git, 3182fb0721cb0468caa6498b921ba30973121b52, master }
+Dependencies/FFmpegKit = { git@github.com:readdle/ffmpeg-kit.git, 46afc3f34a91efffb3c2bc595d64e2d714d48245, main }
