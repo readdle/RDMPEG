@@ -51,8 +51,8 @@ NS_ASSUME_NONNULL_BEGIN
     }
     
     [self willChangeValueForKey:@"isExecuting"];
-    [self main];
     _executing = YES;
+    [self main];
     [self didChangeValueForKey:@"isExecuting"];
 }
 
