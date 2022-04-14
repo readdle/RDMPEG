@@ -190,7 +190,7 @@ static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInpu
     log4Assert([NSOperationQueue currentQueue] == self.decodingQueue, @"Method '%@' called from wrong queue", NSStringFromSelector(_cmd));
     
     if (self.decoder.isVideoStreamExist) {
-        if (self.decoder.activeAudioStreamIndex) {
+        if (nil != self.decoder.activeAudioStreamIndex) {
             log4Assert(self.externalAudioDecoder == nil, @"External audio decoder should be nil when main audio stream activated");
             
             if (self.decoder.isEndReached) {
@@ -207,7 +207,7 @@ static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInpu
             
             return NO;
         }
-        else if (self.externalAudioDecoder.activeAudioStreamIndex) {
+        else if (nil != self.externalAudioDecoder.activeAudioStreamIndex) {
             if (self.externalAudioDecoder.isEndReached) {
                 return YES;
             }
@@ -235,7 +235,7 @@ static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInpu
     log4Assert([NSOperationQueue currentQueue] == self.decodingQueue, @"Method '%@' called from wrong queue", NSStringFromSelector(_cmd));
     
     if (self.decoder.isVideoStreamExist) {
-        if (self.decoder.activeSubtitleStreamIndex) {
+        if (nil != self.decoder.activeSubtitleStreamIndex) {
             log4Assert(self.externalSubtitleDecoder == nil, @"External subtitle decoder should be nil when main subtitle stream activated");
             
             if (self.decoder.isEndReached) {
@@ -248,7 +248,7 @@ static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInpu
             
             return self.framebuffer.bufferedSubtitleFramesCount > 0;
         }
-        else if (self.externalSubtitleDecoder.activeSubtitleStreamIndex) {
+        else if (nil != self.externalSubtitleDecoder.activeSubtitleStreamIndex) {
             if (self.externalSubtitleDecoder.isEndReached) {
                 return YES;
             }
@@ -483,7 +483,7 @@ static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInpu
     RDMPEGDecoder *decoder = nil;
     NSNumber *decoderStreamToActivate = nil;
     
-    if (streamIndex) {
+    if (nil != streamIndex) {
         decoder = [self decoderForStreamAtIndex:streamIndex streamsKey:RDMPEGPlayerInputAudioStreamsKey decoderStreamIndex:&decoderStreamToActivate];
     }
     
@@ -535,7 +535,7 @@ static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInpu
     RDMPEGDecoder *decoder = nil;
     NSNumber *decoderStreamToActivate = nil;
     
-    if (streamIndex) {
+    if (nil != streamIndex) {
         decoder = [self decoderForStreamAtIndex:streamIndex streamsKey:RDMPEGPlayerInputSubtitleStreamsKey decoderStreamIndex:&decoderStreamToActivate];
     }
     
@@ -976,19 +976,19 @@ static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInpu
             }
             
             if (strongSelf.isAudioBufferReady == NO) {
-                if (strongSelf.decoder.activeAudioStreamIndex) {
+                if (nil != strongSelf.decoder.activeAudioStreamIndex) {
                     [strongSelf decodeFrames];
                 }
-                else if (strongSelf.externalAudioDecoder.activeAudioStreamIndex) {
+                else if (nil != strongSelf.externalAudioDecoder.activeAudioStreamIndex) {
                     [strongSelf decodeExternalAudioFrames];
                 }
             }
             
             if (strongSelf.isSubtitleBufferReady == NO) {
-                if (strongSelf.decoder.activeSubtitleStreamIndex) {
+                if (nil != strongSelf.decoder.activeSubtitleStreamIndex) {
                     [strongSelf decodeFrames];
                 }
-                else if (strongSelf.externalSubtitleDecoder.activeSubtitleStreamIndex) {
+                else if (nil != strongSelf.externalSubtitleDecoder.activeSubtitleStreamIndex) {
                     [strongSelf decodeExternalSubtitleFrames];
                 }
             }
