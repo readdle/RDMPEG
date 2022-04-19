@@ -725,7 +725,10 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     
     _subtitleASSEvents = nil;
     
-    log4Info(@"subtitle codec: '%s' mode: %d enc: %s", codecDesc->name, self.activeSubtitleStream.codecContext->sub_charenc_mode, self.activeSubtitleStream.codecContext->sub_charenc);
+    log4Info(@"subtitle codec: '%s' mode: %d enc: %s",
+             nil != codecDesc ? codecDesc->name : "unknown",
+             self.activeSubtitleStream.codecContext->sub_charenc_mode,
+             self.activeSubtitleStream.codecContext->sub_charenc);
     
     if (self.activeSubtitleStream.codecContext->subtitle_header_size) {
         NSString *subtitleHeader = [[NSString alloc] initWithBytes:self.activeSubtitleStream.codecContext->subtitle_header
