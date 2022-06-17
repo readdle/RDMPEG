@@ -6,7 +6,7 @@
 //  Copyright © 2020 Readdle. All rights reserved.
 //
 
-#import "RDMPEGOperation.h"
+#import <RDMPEG/RDMPEGOperation.h>
 
 @class RDMobileFFmpegStatistics;
 
