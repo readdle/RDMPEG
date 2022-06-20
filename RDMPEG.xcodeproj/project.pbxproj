@@ -526,7 +526,7 @@
 		73450B051F82906B009E8F5F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1200;
+				LastUpgradeCheck = 1400;
 				ORGANIZATIONNAME = Readdle;
 				TargetAttributes = {
 					73450B0D1F82906B009E8F5F = {
