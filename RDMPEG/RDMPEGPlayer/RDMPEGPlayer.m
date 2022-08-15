@@ -112,7 +112,7 @@ static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInpu
         self.externalInputsQueue.maxConcurrentOperationCount = 1;
         
         self.framebuffer = [[RDMPEGFramebuffer alloc] init];
-        self.playerView = [[RDMPEGPlayerView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        self.playerView = [[RDMPEGPlayerView alloc] init];
         self.audioRenderer = [[RDMPEGAudioRenderer alloc] init];
         self.selectableInputs = [NSMutableArray array];
         
