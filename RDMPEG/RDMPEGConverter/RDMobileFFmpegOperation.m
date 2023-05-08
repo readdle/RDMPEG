@@ -18,6 +18,7 @@
 @property (nonatomic,strong)NSArray<NSString *> *arguments;
 @property (nonatomic,copy)RDMobileFFmpegOperationResultBlock resultBlock;
 @property (nonatomic,copy)RDMobileFFmpegOperationStatisticsBlock statisticsBlock;
+@property (nonatomic, copy, nullable) RDMobileFFmpegOperationLogBlock logBlock;
 @property (atomic, strong) FFmpegSession *session;
 
 @end
@@ -28,6 +29,13 @@
 - (instancetype)initWithArguments:(NSArray<NSString *> *)arguments
                   statisticsBlock:(RDMobileFFmpegOperationStatisticsBlock)statisticsBlock
                       resultBlock:(RDMobileFFmpegOperationResultBlock)resultBlock{
+    return [self initWithArguments:arguments statisticsBlock:statisticsBlock resultBlock:resultBlock logBlock:nil];
+}
+
+- (instancetype)initWithArguments:(NSArray<NSString *> *)arguments
+                  statisticsBlock:(RDMobileFFmpegOperationStatisticsBlock)statisticsBlock
+                      resultBlock:(RDMobileFFmpegOperationResultBlock)resultBlock
+                         logBlock:(__nullable RDMobileFFmpegOperationLogBlock)logBlock {
     NSParameterAssert(arguments);
     if(arguments == nil){
         return nil;
@@ -37,6 +45,7 @@
         self.arguments = arguments;
         self.resultBlock = resultBlock;
         self.statisticsBlock = statisticsBlock;
+        self.logBlock = logBlock;
     }
     return self;
 }
@@ -57,6 +66,9 @@
         [weakSelf completeOperation];
      }
      withLogCallback:^(Log *log) {
+        if (weakSelf.logBlock) {
+            weakSelf.logBlock([log getMessage], [log getLevel]);
+        }
         log4CDebug(@"level: %@, message: %@", @([log getLevel]), [log getMessage]);
      }
      withStatisticsCallback:^(Statistics *statistics) {

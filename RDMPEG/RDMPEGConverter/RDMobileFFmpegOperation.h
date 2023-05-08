@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef void(^RDMobileFFmpegOperationStatisticsBlock)(RDMobileFFmpegStatistics *statistics);
 typedef void(^RDMobileFFmpegOperationResultBlock)(int result);
+typedef void(^RDMobileFFmpegOperationLogBlock)(NSString *log, int level);
 
 
 @interface RDMobileFFmpegOperation : RDMPEGOperation
@@ -26,6 +27,11 @@ typedef void(^RDMobileFFmpegOperationResultBlock)(int result);
 - (instancetype)initWithArguments:(NSArray<NSString *> *)arguments
                   statisticsBlock:(RDMobileFFmpegOperationStatisticsBlock)statisticsBlock
                       resultBlock:(RDMobileFFmpegOperationResultBlock)resultBlock;
+
+- (instancetype)initWithArguments:(NSArray<NSString *> *)arguments
+                  statisticsBlock:(RDMobileFFmpegOperationStatisticsBlock)statisticsBlock
+                      resultBlock:(RDMobileFFmpegOperationResultBlock)resultBlock
+                         logBlock:(__nullable RDMobileFFmpegOperationLogBlock)logBlock;
 
 + (BOOL)isReturnCodeCancel:(int)code;
 
