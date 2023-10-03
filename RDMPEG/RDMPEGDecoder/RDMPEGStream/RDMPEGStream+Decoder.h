@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) AVStream *stream;
 @property (nonatomic, assign) NSUInteger streamIndex;
-@property (nonatomic, assign, nullable) AVCodec *codec;
+@property (nonatomic, assign, nullable) const AVCodec *codec;
 @property (nonatomic, assign, nullable) AVCodecContext *codecContext;
 @property (nonatomic, strong, nullable) NSString *subtitleEncoding;
 

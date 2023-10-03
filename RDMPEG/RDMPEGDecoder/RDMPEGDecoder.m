@@ -656,23 +656,29 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     BOOL audioCodecSupported = NO;
     if (audioStream.codecContext->sample_fmt == AV_SAMPLE_FMT_S16 &&
         audioStream.codecContext->sample_rate == (int)samplingRate &&
-        audioStream.codecContext->channels == outputChannels) {
+        audioStream.codecContext->ch_layout.nb_channels == outputChannels) {
         audioCodecSupported = YES;
     }
     
     SwrContext *swrContext = NULL;
     
     if (audioCodecSupported == NO) {
-        swrContext = swr_alloc_set_opts(NULL,
-                                        av_get_default_channel_layout((int)outputChannels),
-                                        AV_SAMPLE_FMT_S16,
-                                        (int)samplingRate,
-                                        av_get_default_channel_layout(audioStream.codecContext->channels),
-                                        audioStream.codecContext->sample_fmt,
-                                        audioStream.codecContext->sample_rate,
-                                        0,
-                                        NULL);
-        
+        AVChannelLayout outLayout;
+        av_channel_layout_default(&outLayout, (int)outputChannels);
+
+        AVChannelLayout inLayout;
+        av_channel_layout_default(&inLayout, (int)audioStream.codecContext->ch_layout.nb_channels);
+
+        swr_alloc_set_opts2(&swrContext,
+                            &outLayout,
+                            AV_SAMPLE_FMT_S16,
+                            (int)samplingRate,
+                            &inLayout,
+                            audioStream.codecContext->sample_fmt,
+                            audioStream.codecContext->sample_rate,
+                            0,
+                            NULL);
+
         if (swrContext == NULL) {
             [audioStream closeCodec];
             return [self errorWithCode:RDMPEGDecoderErrorCodeSampler];
@@ -702,8 +708,8 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     
     av_stream_FPS_timebase(self.activeAudioStream.stream, 0.025, NULL, &_audioTimeBase);
     
-    log4Info(@"Audio codec smr: %.d fmt: %d chn: %d tb: %f %@", self.activeAudioStream.codecContext->sample_rate, self.activeAudioStream.codecContext->sample_fmt, self.activeAudioStream.codecContext->channels, _audioTimeBase, _swrContext ? @"resample" : @"");
-    
+    log4Info(@"Audio codec smr: %.d fmt: %d chn: %d tb: %f %@", self.activeAudioStream.codecContext->sample_rate, self.activeAudioStream.codecContext->sample_fmt, self.activeAudioStream.codecContext->ch_layout.nb_channels, _audioTimeBase, _swrContext ? @"resample" : @"");
+
     return nil;
 }
 
@@ -939,8 +945,8 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     NSTimeInterval framePosition = avFrame->best_effort_timestamp * _videoTimeBase - frameOffset;
     
     NSTimeInterval frameDuration = 0.0;
-    if (avFrame->pkt_duration) {
-        frameDuration = avFrame->pkt_duration * _videoTimeBase;
+    if (avFrame->duration) {
+        frameDuration = avFrame->duration * _videoTimeBase;
         frameDuration += avFrame->repeat_pict * _videoTimeBase * 0.5;
     }
     else {
@@ -1007,8 +1013,8 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     
     if (_swrContext) {
         const NSUInteger ratio = MAX(1, self.audioSamplingRate / self.activeAudioStream.codecContext->sample_rate) *
-                                 MAX(1, self.audioOutputChannels / self.activeAudioStream.codecContext->channels) * 2;
-        
+                                 MAX(1, self.audioOutputChannels / self.activeAudioStream.codecContext->ch_layout.nb_channels) * 2;
+
         const int bufSize = av_samples_get_buffer_size(NULL,
                                                        (int)self.audioOutputChannels,
                                                        (int)(_audioFrame->nb_samples * ratio),
@@ -1061,8 +1067,8 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     NSTimeInterval framePosition = _audioFrame->best_effort_timestamp * _audioTimeBase - frameOffset;
     
     NSTimeInterval frameDuration = 0.0;
-    if (_audioFrame->pkt_duration) {
-        frameDuration = _audioFrame->pkt_duration * _audioTimeBase;
+    if (_audioFrame->duration) {
+        frameDuration = _audioFrame->duration * _audioTimeBase;
     }
     else {
         // sometimes ffmpeg can't determine the duration of audio frame

@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
         self.stream = stream;
         self.streamIndex = streamIndex;
         
-        AVCodec *codec = avcodec_find_decoder(self.stream->codecpar->codec_id);
+        const AVCodec *codec = avcodec_find_decoder(self.stream->codecpar->codec_id);
         if (codec) {
             AVCodecContext *codecContext = avcodec_alloc_context3(self.codec);
             if (codecContext) {
