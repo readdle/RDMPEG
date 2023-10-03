@@ -54,11 +54,11 @@
     NSParameterAssert(self.session == nil);
     
     __weak __typeof(self) const weakSelf = self;
-    
+
     self.session =
     [FFmpegKit
      executeWithArgumentsAsync:self.arguments
-     withExecuteCallback:^(id<Session> session) {
+     withCompleteCallback:^(id<Session> session) {
         if (weakSelf.resultBlock) {
             weakSelf.resultBlock([[session getReturnCode] getValue]);
         }

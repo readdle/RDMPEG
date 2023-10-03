@@ -134,7 +134,7 @@ static NSData *copy_frame_data(UInt8 *src, int linesize, int width, int height);
     if (_formatCtx == NULL || _formatCtx->duration == AV_NOPTS_VALUE) {
         return 0.0;
     }
-    
+
     return (CGFloat)_formatCtx->duration / AV_TIME_BASE;
 }
 
