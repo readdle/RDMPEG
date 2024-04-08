@@ -177,8 +177,13 @@ NS_ASSUME_NONNULL_BEGIN
     self.colorPixelFormat = MTLPixelFormatBGRA8Unorm;
     self.framebufferOnly = YES;
     
-    id<MTLLibrary> const defaultLibrary = [self.device newDefaultLibrary];
-    
+//    id<MTLLibrary> const defaultLibrary = [self.device newDefaultLibrary];
+
+    NSError *libraryError;
+    id<MTLLibrary> const defaultLibrary = [self.device newDefaultLibraryWithBundle:[NSBundle bundleForClass:[self class]]
+                                                                             error:&libraryError];
+//    log4Assert(nil == defaultLibrary, @"Unable to create MTLLibrary: %@", libraryError);
+
     MTLRenderPipelineDescriptor * const pipelineStateDescriptor = [MTLRenderPipelineDescriptor new];
     pipelineStateDescriptor.vertexFunction = [defaultLibrary newFunctionWithName:@"vertexShader"];
     pipelineStateDescriptor.fragmentFunction = [self.textureSampler newSamplingFunctionFromLibrary:defaultLibrary];
