@@ -176,17 +176,30 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setupRenderingPipeline {
     self.colorPixelFormat = MTLPixelFormatBGRA8Unorm;
     self.framebufferOnly = YES;
-    
-//    id<MTLLibrary> const defaultLibrary = [self.device newDefaultLibrary];
 
-    NSError *libraryError;
+    NSError *loadError;
     id<MTLLibrary> const defaultLibrary = [self.device newDefaultLibraryWithBundle:[NSBundle bundleForClass:[self class]]
-                                                                             error:&libraryError];
-//    log4Assert(nil == defaultLibrary, @"Unable to create MTLLibrary: %@", libraryError);
+                                                                             error:&loadError];
+    if (nil == defaultLibrary) {
+        log4Assert(NO, @"Unable to locate default library: %@", loadError);
+        return;
+    }
 
     MTLRenderPipelineDescriptor * const pipelineStateDescriptor = [MTLRenderPipelineDescriptor new];
-    pipelineStateDescriptor.vertexFunction = [defaultLibrary newFunctionWithName:@"vertexShader"];
-    pipelineStateDescriptor.fragmentFunction = [self.textureSampler newSamplingFunctionFromLibrary:defaultLibrary];
+    id <MTLFunction> vertexShader = [defaultLibrary newFunctionWithName:@"vertexShader"];
+    if (nil == vertexShader) {
+        log4Assert(NO, @"Loaded library does not have 'vertexShader' function...");
+        return;
+    }
+
+    pipelineStateDescriptor.vertexFunction = vertexShader;
+    id <MTLFunction> samplingFunction = [self.textureSampler newSamplingFunctionFromLibrary:defaultLibrary];
+    if (nil == vertexShader) {
+        log4Assert(NO, @"Loaded library does not have sampling function...");
+        return;
+    }
+
+    pipelineStateDescriptor.fragmentFunction = samplingFunction;
     pipelineStateDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
     
     [self.textureSampler
