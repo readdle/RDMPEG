@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5046A76F2C3EA43D00C5D6D0 /* RDMPEGCorrectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5046A76E2C3EA43D00C5D6D0 /* RDMPEGCorrectionInfo.swift */; };
 		732D4DCE1F864AD50005C682 /* RDMPEGPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 73450B201F8290FA009E8F5F /* RDMPEGPlayerView.m */; };
 		732D4DCF1F864AD70005C682 /* RDMPEGPlayerView.h in Headers */ = {isa = PBXBuildFile; fileRef = 73450B1F1F8290FA009E8F5F /* RDMPEGPlayerView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		73309E0F1F9E3F22006ED07D /* RDMPEGStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 73309E0D1F9E3F22006ED07D /* RDMPEGStream.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -23,8 +24,6 @@
 		73450B651F8292EE009E8F5F /* RDMPEGPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 73450B1D1F8290FA009E8F5F /* RDMPEGPlayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		734C697E1F8297340031761D /* RDMPEGAudioRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = 73450B1B1F8290FA009E8F5F /* RDMPEGAudioRenderer.h */; };
 		734C697F1F8297340031761D /* RDMPEGAudioRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 73450B1C1F8290FA009E8F5F /* RDMPEGAudioRenderer.m */; };
-		734C69801F8297340031761D /* RDMPEGCorrectionInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 73450B221F8290FA009E8F5F /* RDMPEGCorrectionInfo.h */; };
-		734C69811F8297340031761D /* RDMPEGCorrectionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73450B231F8290FA009E8F5F /* RDMPEGCorrectionInfo.m */; };
 		734C69821F8297340031761D /* RDMPEGRawAudioFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = 73450B251F8290FA009E8F5F /* RDMPEGRawAudioFrame.h */; };
 		734C69831F8297340031761D /* RDMPEGRawAudioFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 73450B261F8290FA009E8F5F /* RDMPEGRawAudioFrame.m */; };
 		734C69841F8297340031761D /* RDMPEGFramebuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 73450B2A1F8290FA009E8F5F /* RDMPEGFramebuffer.h */; };
@@ -107,6 +106,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5046A76E2C3EA43D00C5D6D0 /* RDMPEGCorrectionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RDMPEGCorrectionInfo.swift; sourceTree = "<group>"; };
 		73309E0D1F9E3F22006ED07D /* RDMPEGStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGStream.h; sourceTree = "<group>"; };
 		73309E0E1F9E3F22006ED07D /* RDMPEGStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMPEGStream.m; sourceTree = "<group>"; };
 		73309EC81F9E47A7006ED07D /* RDMPEGStream+Decoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RDMPEGStream+Decoder.h"; sourceTree = "<group>"; };
@@ -124,8 +124,6 @@
 		73450B1D1F8290FA009E8F5F /* RDMPEGPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGPlayer.h; sourceTree = "<group>"; };
 		73450B1F1F8290FA009E8F5F /* RDMPEGPlayerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGPlayerView.h; sourceTree = "<group>"; };
 		73450B201F8290FA009E8F5F /* RDMPEGPlayerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMPEGPlayerView.m; sourceTree = "<group>"; };
-		73450B221F8290FA009E8F5F /* RDMPEGCorrectionInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGCorrectionInfo.h; sourceTree = "<group>"; };
-		73450B231F8290FA009E8F5F /* RDMPEGCorrectionInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMPEGCorrectionInfo.m; sourceTree = "<group>"; };
 		73450B251F8290FA009E8F5F /* RDMPEGRawAudioFrame.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDMPEGRawAudioFrame.h; sourceTree = "<group>"; };
 		73450B261F8290FA009E8F5F /* RDMPEGRawAudioFrame.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMPEGRawAudioFrame.m; sourceTree = "<group>"; };
 		73450B281F8290FA009E8F5F /* RDMPEGPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDMPEGPlayer.m; sourceTree = "<group>"; };
@@ -290,8 +288,7 @@
 		73450B211F8290FA009E8F5F /* RDMPEGCorrectionInfo */ = {
 			isa = PBXGroup;
 			children = (
-				73450B221F8290FA009E8F5F /* RDMPEGCorrectionInfo.h */,
-				73450B231F8290FA009E8F5F /* RDMPEGCorrectionInfo.m */,
+				5046A76E2C3EA43D00C5D6D0 /* RDMPEGCorrectionInfo.swift */,
 			);
 			path = RDMPEGCorrectionInfo;
 			sourceTree = "<group>";
@@ -487,7 +484,6 @@
 				738312B026D98E6D0036874B /* RDMobileFFmpegStatistics+Internal.h in Headers */,
 				734C697E1F8297340031761D /* RDMPEGAudioRenderer.h in Headers */,
 				73437A9325797077005546B5 /* RDMPEGRenderView.h in Headers */,
-				734C69801F8297340031761D /* RDMPEGCorrectionInfo.h in Headers */,
 				737C204B1F83EC970067E318 /* RDMPEGSubtitleASSParser.h in Headers */,
 				737C20311F83C0300067E318 /* RDMPEGDecoder.h in Headers */,
 				7383129226D9870C0036874B /* RDMPEGOperation.h in Headers */,
@@ -531,6 +527,7 @@
 				TargetAttributes = {
 					73450B0D1F82906B009E8F5F = {
 						CreatedOnToolsVersion = 9.0;
+						LastSwiftMigration = 1540;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -598,9 +595,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5046A76F2C3EA43D00C5D6D0 /* RDMPEGCorrectionInfo.swift in Sources */,
 				738312AD26D98E3A0036874B /* RDMobileFFmpegStatistics.m in Sources */,
 				73309E101F9E3F22006ED07D /* RDMPEGStream.m in Sources */,
-				734C69811F8297340031761D /* RDMPEGCorrectionInfo.m in Sources */,
 				73437AA625798426005546B5 /* RDMPEGShaders.metal in Sources */,
 				737C203D1F83D15C0067E318 /* RDMPEGFrames+Decoder.m in Sources */,
 				734C69831F8297340031761D /* RDMPEGRawAudioFrame.m in Sources */,
@@ -754,6 +751,8 @@
 		73450B171F82906B009E8F5F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CLANG_WARN_STRICT_PROTOTYPES = NO;
 				CODE_SIGN_IDENTITY = "";
@@ -771,6 +770,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c swift";
 				OTHER_LDFLAGS = (
 					"-Xlinker",
 					"-no_compact_unwind",
@@ -779,6 +779,9 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "$(inherited)";
 			};
@@ -787,6 +790,8 @@
 		73450B181F82906B009E8F5F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CLANG_WARN_STRICT_PROTOTYPES = NO;
 				CODE_SIGN_IDENTITY = "";
@@ -804,6 +809,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c swift";
 				OTHER_LDFLAGS = (
 					"-Xlinker",
 					"-no_compact_unwind",
@@ -812,6 +818,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = NO;
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "$(inherited)";
 			};

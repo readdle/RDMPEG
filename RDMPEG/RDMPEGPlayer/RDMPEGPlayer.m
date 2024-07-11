@@ -10,7 +10,6 @@
 #import "RDMPEGFramebuffer.h"
 #import "RDMPEGRawAudioFrame.h"
 #import "RDMPEGRenderScheduler.h"
-#import "RDMPEGCorrectionInfo.h"
 #import "RDMPEGPlayerView+Player.h"
 #import "RDMPEGTextureSamplerYUV.h"
 #import "RDMPEGTextureSamplerBGRA.h"
@@ -24,7 +23,7 @@
 #import "RDMPEGSelectableInputStream.h"
 #import <Log4Cocoa/Log4Cocoa.h>
 
-
+#import <RDMPEG/RDMPEG-Swift.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
