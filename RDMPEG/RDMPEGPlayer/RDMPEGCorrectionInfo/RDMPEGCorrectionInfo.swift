@@ -2,7 +2,7 @@
 //  RDMPEGCorrectionInfo.swift
 //  RDMPEG
 //
-//  Created by Max on 10/07/2024.
+//  Created by Max Berezhnoy on 10/07/2024.
 //  Copyright © 2024 Readdle. All rights reserved.
 //
 
@@ -10,8 +10,8 @@ import Foundation
 import Log4Cocoa
 
 @objc public class RDMPEGCorrectionInfo: NSObject {
-    let playbackStartDate: Date
-    let playbackStartTime: TimeInterval
+    private let playbackStartDate: Date
+    private let playbackStartTime: TimeInterval
 
     @objc public init(playbackStartDate: Date, playbackStartTime: TimeInterval) {
         self.playbackStartDate = playbackStartDate

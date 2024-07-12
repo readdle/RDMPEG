@@ -7,9 +7,9 @@
 //
 
 #import "RDMPEGRenderScheduler.h"
-#import "RDMPEGWeakTimerTarget.h"
 #import <Log4Cocoa/Log4Cocoa.h>
 
+#import <RDMPEG/RDMPEG-Swift.h>
 
 
 NS_ASSUME_NONNULL_BEGIN

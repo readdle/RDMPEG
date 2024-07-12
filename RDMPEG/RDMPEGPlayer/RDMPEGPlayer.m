@@ -15,7 +15,6 @@
 #import "RDMPEGTextureSamplerBGRA.h"
 #import "RDMPEGRenderView.h"
 #import "RDMPEGAudioRenderer.h"
-#import "RDMPEGWeakTimerTarget.h"
 #import "RDMPEGDecoder.h"
 #import "RDMPEGIOStream.h"
 #import "RDMPEGFrames.h"
