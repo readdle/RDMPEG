@@ -9,16 +9,16 @@
 import Metal
 import Log4Cocoa
 
-@objc class RDMPEGTextureSamplerYUV: NSObject, RDMPEGTextureSampler {
+@objc public class RDMPEGTextureSamplerYUV: NSObject, RDMPEGTextureSampler {
     private var yTexture: MTLTexture?
     private var uTexture: MTLTexture?
     private var vTexture: MTLTexture?
 
-    func newSamplingFunction(from library: MTLLibrary) -> MTLFunction? {
+    @objc public func newSamplingFunction(from library: MTLLibrary) -> MTLFunction? {
         return library.makeFunction(name: "samplingShaderYUV")
     }
 
-    func setupTextures(with device: MTLDevice, frameWidth: Int, frameHeight: Int) {
+    @objc public func setupTextures(with device: MTLDevice, frameWidth: Int, frameHeight: Int) {
         guard yTexture == nil, uTexture == nil, vTexture == nil else {
             assertionFailure("Textures are already created")
             return
@@ -39,7 +39,7 @@ import Log4Cocoa
         vTexture = device.makeTexture(descriptor: uvTextureDescriptor)
     }
 
-    func updateTextures(with videoFrame: RDMPEGVideoFrame, renderEncoder: MTLRenderCommandEncoder) {
+    @objc public func updateTextures(with videoFrame: RDMPEGVideoFrame, renderEncoder: MTLRenderCommandEncoder) {
         guard let yTexture = yTexture, let uTexture = uTexture, let vTexture = vTexture else {
             assertionFailure("setupTextures(with:frameWidth:frameHeight:) must be called before updating textures")
             return

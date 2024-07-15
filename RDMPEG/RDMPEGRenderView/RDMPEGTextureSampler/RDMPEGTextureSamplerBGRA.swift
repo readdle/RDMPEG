@@ -9,14 +9,14 @@
 import Metal
 import Log4Cocoa
 
-@objc class RDMPEGTextureSamplerBGRA: NSObject, RDMPEGTextureSampler {
+@objc public class RDMPEGTextureSamplerBGRA: NSObject, RDMPEGTextureSampler {
     private var bgraTexture: MTLTexture?
 
-    func newSamplingFunction(from library: MTLLibrary) -> MTLFunction? {
+    @objc public func newSamplingFunction(from library: MTLLibrary) -> MTLFunction? {
         return library.makeFunction(name: "samplingShaderBGRA")
     }
 
-    func setupTextures(with device: MTLDevice, frameWidth: Int, frameHeight: Int) {
+    @objc public func setupTextures(with device: MTLDevice, frameWidth: Int, frameHeight: Int) {
         guard bgraTexture == nil else {
             assertionFailure("Texture is already created")
             return
@@ -30,7 +30,7 @@ import Log4Cocoa
         bgraTexture = device.makeTexture(descriptor: textureDescriptor)
     }
 
-    func updateTextures(with videoFrame: RDMPEGVideoFrame, renderEncoder: MTLRenderCommandEncoder) {
+    @objc public func updateTextures(with videoFrame: RDMPEGVideoFrame, renderEncoder: MTLRenderCommandEncoder) {
         guard let bgraTexture = bgraTexture else {
             assertionFailure("setupTextures(with:frameWidth:frameHeight:) must be called before updating textures")
             return

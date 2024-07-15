@@ -10,8 +10,6 @@
 #import "RDMPEGFramebuffer.h"
 #import "RDMPEGRenderScheduler.h"
 #import "RDMPEGPlayerView+Player.h"
-#import "RDMPEGTextureSamplerYUV.h"
-#import "RDMPEGTextureSamplerBGRA.h"
 #import "RDMPEGRenderView.h"
 #import "RDMPEGAudioRenderer.h"
 #import "RDMPEGDecoder.h"
