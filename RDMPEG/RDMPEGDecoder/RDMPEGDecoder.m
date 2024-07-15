@@ -8,7 +8,6 @@
 
 #import "RDMPEGDecoder.h"
 #import "RDMPEGIOStream.h"
-#import "RDMPEGSubtitleASSParser.h"
 #import "RDMPEGFrames+Decoder.h"
 #import "RDMPEGStream+Decoder.h"
 #import <Accelerate/Accelerate.h>
@@ -22,7 +21,7 @@
 #import <libavfilter/buffersrc.h>
 #import <Log4Cocoa/Log4Cocoa.h>
 
-
+#import <RDMPEG/RDMPEG-Swift.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
