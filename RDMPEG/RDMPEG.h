@@ -17,3 +17,5 @@
 #import <RDMPEG/RDMobileFFmpegOperation.h>
 #import <RDMPEG/RDMobileFFmpegStatistics.h>
 
+
+#import <RDMPEG/RDMPEGShaderTypes.h>
