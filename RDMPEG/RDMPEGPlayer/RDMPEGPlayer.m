@@ -8,7 +8,6 @@
 
 #import "RDMPEGPlayer.h"
 #import "RDMPEGFramebuffer.h"
-#import "RDMPEGRenderScheduler.h"
 #import "RDMPEGPlayerView+Player.h"
 #import "RDMPEGRenderView.h"
 #import "RDMPEGAudioRenderer.h"
@@ -1022,7 +1021,7 @@ static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInpu
     __weak __typeof(self) weakSelf = self;
     
     self.scheduler = [[RDMPEGRenderScheduler alloc] init];
-    [self.scheduler startWithCallback:^NSDate * _Nullable {
+    [self.scheduler startWith:^NSDate * _Nullable {
         __strong __typeof(weakSelf) strongSelf = weakSelf;
         if (strongSelf == nil || strongSelf.seekOperation) {
             return nil;
