@@ -32,8 +32,4 @@ import Log4Cocoa
         let correctionInterval = continuousPlaybackPlayedTime - continuousPlaybackRealTime
         return correctionInterval
     }
-
-    class var l4Logger: L4Logger {
-        L4Logger(forName: "rd.mediaplayer.RDMPEGCorrectionInfo")
-    }
 }

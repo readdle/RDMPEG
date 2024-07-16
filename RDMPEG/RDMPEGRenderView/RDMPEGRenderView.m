@@ -8,7 +8,6 @@
 
 #import "RDMPEGRenderView.h"
 #import "RDMPEGShaderTypes.h"
-#import "RDMPEGFrames.h"
 #import <Metal/Metal.h>
 #import <Log4Cocoa/Log4Cocoa.h>
 

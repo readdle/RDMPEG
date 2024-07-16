@@ -12,9 +12,7 @@
 #import "RDMPEGAudioRenderer.h"
 #import "RDMPEGDecoder.h"
 #import "RDMPEGIOStream.h"
-#import "RDMPEGFrames.h"
 #import "RDMPEGStream.h"
-#import "RDMPEGSelectableInputStream.h"
 #import <Log4Cocoa/Log4Cocoa.h>
 
 #import <RDMPEG/RDMPEG-Swift.h>

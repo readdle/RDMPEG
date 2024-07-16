@@ -55,7 +55,7 @@ import Foundation
 
     @objc public class func removeCommandsFromEventText(_ text: String) -> String {
         var result = ""
-        var scanner = Scanner(string: text)
+        let scanner = Scanner(string: text)
         scanner.charactersToBeSkipped = nil
 
         while !scanner.isAtEnd {

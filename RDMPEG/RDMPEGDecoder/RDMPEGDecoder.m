@@ -8,7 +8,6 @@
 
 #import "RDMPEGDecoder.h"
 #import "RDMPEGIOStream.h"
-#import "RDMPEGFrames+Decoder.h"
 #import "RDMPEGStream+Decoder.h"
 #import <Accelerate/Accelerate.h>
 #import <libavformat/avformat.h>
