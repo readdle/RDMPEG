@@ -9,7 +9,6 @@
 #import "RDMPEGPlayer.h"
 #import "RDMPEGPlayerView+Player.h"
 #import "RDMPEGRenderView.h"
-#import "RDMPEGAudioRenderer.h"
 #import "RDMPEGDecoder.h"
 #import "RDMPEGIOStream.h"
 #import "RDMPEGStream.h"
