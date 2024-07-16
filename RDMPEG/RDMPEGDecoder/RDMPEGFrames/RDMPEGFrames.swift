@@ -15,11 +15,6 @@ import UIKit
     case subtitle
 }
 
-@objc public enum RDMPEGVideoFrameFormat: UInt {
-    case BGRA
-    case YUV
-}
-
 @objc public class RDMPEGFrame: NSObject {
     @objc public let type: RDMPEGFrameType
     @objc public var position: TimeInterval

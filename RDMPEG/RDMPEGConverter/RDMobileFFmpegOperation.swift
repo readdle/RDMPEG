@@ -73,4 +73,12 @@ import Log4Cocoa
             FFmpegKit.cancel(sessionId)
         }
     }
+
+    @objc public class func isReturnCodeCancel(_ code: Int32) -> Bool {
+        return code == ReturnCodeEnum.cancel.rawValue
+    }
+
+    @objc public class func isReturnCodeSuccess(_ code: Int32) -> Bool {
+        return code == ReturnCodeEnum.success.rawValue
+    }
 }

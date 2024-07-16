@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-typedef NS_ENUM(NSUInteger, RDMPEGVideoFrameFormat);
 @class RDMPEGFrame;
 @protocol RDMPEGIOStream;
 @class RDMPEGStream;
@@ -30,7 +29,11 @@ typedef NS_ENUM(NSUInteger, RDMPEGDecoderErrorCode) {
     RDMPEGDecoderErrorCodeUnsupported
 };
 
-
+// TODO (Max): This was originally defined in RDMPEGFrames, but it causes some funky errors when this enum is used outside framework while this file is still ObjC. To be moved back.
+typedef NS_ENUM(NSUInteger, RDMPEGVideoFrameFormat) {
+    RDMPEGVideoFrameFormatBGRA,
+    RDMPEGVideoFrameFormatYUV,
+};
 
 typedef BOOL (^RDMPEGDecoderInterruptCallback)(void);
 
