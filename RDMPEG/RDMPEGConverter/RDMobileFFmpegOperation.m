@@ -8,9 +8,10 @@
 
 #import "RDMobileFFmpegOperation.h"
 #import "RDMPEGOperation+Protected.h"
-#import "RDMobileFFmpegStatistics+Internal.h"
 #import <FFmpegKit/FFmpegKit.h>
 #import <Log4Cocoa/Log4Cocoa.h>
+
+#import <RDMPEG/RDMPEG-Swift.h>
 
 
 @interface RDMobileFFmpegOperation()

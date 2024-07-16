@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-#import <RDMPEG/RDMPEG-Swift.h>
-
+typedef NS_ENUM(NSUInteger, RDMPEGVideoFrameFormat);
+@class RDMPEGFrame;
 @protocol RDMPEGIOStream;
 @class RDMPEGStream;
 

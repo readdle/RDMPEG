@@ -15,4 +15,3 @@
 #import <RDMPEG/RDMPEGStream.h>
 #import <RDMPEG/RDMPEGShaderTypes.h>
 #import <RDMPEG/RDMobileFFmpegOperation.h>
-#import <RDMPEG/RDMobileFFmpegStatistics.h>
