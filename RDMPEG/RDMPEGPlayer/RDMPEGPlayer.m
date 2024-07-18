@@ -7,7 +7,6 @@
 //
 
 #import "RDMPEGPlayer.h"
-#import "RDMPEGPlayerView+Player.h"
 #import "RDMPEGDecoder.h"
 #import "RDMPEGIOStream.h"
 #import "RDMPEGStream.h"
@@ -753,7 +752,7 @@ static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInpu
                     else {
                         textureSampler = [[RDMPEGTextureSamplerBGRA alloc] init];
                     }
-                    
+
                     strongSelf.playerView.renderView =
                     [[RDMPEGRenderView alloc]
                      initWithFrame:strongSelf.playerView.bounds
