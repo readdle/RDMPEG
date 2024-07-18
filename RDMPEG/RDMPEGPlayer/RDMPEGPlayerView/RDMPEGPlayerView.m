@@ -7,10 +7,9 @@
 //
 
 #import "RDMPEGPlayerView.h"
-#import "RDMPEGRenderView.h"
 #import <Log4Cocoa/Log4Cocoa.h>
 
-
+#import <RDMPEG/RDMPEG-Swift.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -91,7 +90,7 @@ NS_ASSUME_NONNULL_BEGIN
     
     _aspectFillMode = aspectFillMode;
     
-    self.renderView.aspectFillMode = _aspectFillMode;
+    self.renderView.isAspectFillMode = _aspectFillMode;
 }
 
 - (void)setRenderView:(nullable RDMPEGRenderView *)renderView {
@@ -113,7 +112,7 @@ NS_ASSUME_NONNULL_BEGIN
     if (_renderView) {
         _renderView.frame = self.bounds;
         _renderView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        _renderView.aspectFillMode = self.isAspectFillMode;
+        _renderView.isAspectFillMode = self.isAspectFillMode;
         [self addSubview:_renderView];
         
         [self bringSubviewToFront:self.subtitleLabel];
