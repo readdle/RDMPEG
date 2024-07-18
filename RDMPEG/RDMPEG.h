@@ -10,7 +10,6 @@
 #import <VideoToolbox/VideoToolbox.h>
 #import <MetalKit/MetalKit.h>
 #import <libavformat/avformat.h>
-#import <RDMPEG/RDMPEGPlayer.h>
 #import <RDMPEG/RDMPEGDecoder.h>
 #import <RDMPEG/RDMPEGIOStream.h>
 #import <RDMPEG/RDMPEGShaderTypes.h>
