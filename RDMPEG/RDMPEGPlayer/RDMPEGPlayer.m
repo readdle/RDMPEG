@@ -9,7 +9,6 @@
 #import "RDMPEGPlayer.h"
 #import "RDMPEGDecoder.h"
 #import "RDMPEGIOStream.h"
-#import "RDMPEGStream.h"
 #import <Log4Cocoa/Log4Cocoa.h>
 
 #import <RDMPEG/RDMPEG-Swift.h>
@@ -656,7 +655,7 @@ static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInpu
         [streamName appendFormat:@"[%@] - ", inputName];
     }
     
-    if (stream.isCanBeDecoded) {
+    if (stream.canBeDecoded) {
         if (stream.languageCode) {
             NSString *language = [[NSLocale currentLocale] localizedStringForLanguageCode:stream.languageCode];
             if (language.length > 0) {
