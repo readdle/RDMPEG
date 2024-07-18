@@ -7,24 +7,14 @@
 //
 
 #import "RDMPEGPlayer.h"
-#import "RDMPEGFramebuffer.h"
-#import "RDMPEGRawAudioFrame.h"
-#import "RDMPEGRenderScheduler.h"
-#import "RDMPEGCorrectionInfo.h"
 #import "RDMPEGPlayerView+Player.h"
-#import "RDMPEGTextureSamplerYUV.h"
-#import "RDMPEGTextureSamplerBGRA.h"
 #import "RDMPEGRenderView.h"
-#import "RDMPEGAudioRenderer.h"
-#import "RDMPEGWeakTimerTarget.h"
 #import "RDMPEGDecoder.h"
 #import "RDMPEGIOStream.h"
-#import "RDMPEGFrames.h"
 #import "RDMPEGStream.h"
-#import "RDMPEGSelectableInputStream.h"
 #import <Log4Cocoa/Log4Cocoa.h>
 
-
+#import <RDMPEG/RDMPEG-Swift.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -1027,7 +1017,7 @@ static NSString * const RDMPEGPlayerInputSubtitleStreamsKey = @"RDMPEGPlayerInpu
     __weak __typeof(self) weakSelf = self;
     
     self.scheduler = [[RDMPEGRenderScheduler alloc] init];
-    [self.scheduler startWithCallback:^NSDate * _Nullable {
+    [self.scheduler startWith:^NSDate * _Nullable {
         __strong __typeof(weakSelf) strongSelf = weakSelf;
         if (strongSelf == nil || strongSelf.seekOperation) {
             return nil;

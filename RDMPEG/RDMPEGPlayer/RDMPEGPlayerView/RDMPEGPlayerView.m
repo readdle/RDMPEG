@@ -45,6 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
         self.subtitleLabel.layer.cornerRadius = 2.0;
         [self addSubview:self.subtitleLabel];
     }
+
     return self;
 }
 

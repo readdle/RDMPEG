@@ -7,13 +7,11 @@
 //
 
 #import "RDMPEGRenderView.h"
-#import "RDMPEGTextureSampler.h"
 #import "RDMPEGShaderTypes.h"
-#import "RDMPEGFrames.h"
 #import <Metal/Metal.h>
 #import <Log4Cocoa/Log4Cocoa.h>
 
-
+#import <RDMPEG/RDMPEG-Swift.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -158,7 +156,7 @@ NS_ASSUME_NONNULL_BEGIN
     
     if (videoFrame) {
         [self.textureSampler
-         updateTexturesWithFrame:videoFrame
+         updateTexturesWith:videoFrame
          renderEncoder:renderEncoder];
     }
     
@@ -193,7 +191,7 @@ NS_ASSUME_NONNULL_BEGIN
     }
 
     pipelineStateDescriptor.vertexFunction = vertexShader;
-    id <MTLFunction> samplingFunction = [self.textureSampler newSamplingFunctionFromLibrary:defaultLibrary];
+    id <MTLFunction> samplingFunction = [self.textureSampler newSamplingFunctionFrom:defaultLibrary];
     if (nil == vertexShader) {
         log4Assert(NO, @"Loaded library does not have sampling function...");
         return;
@@ -203,7 +201,7 @@ NS_ASSUME_NONNULL_BEGIN
     pipelineStateDescriptor.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
     
     [self.textureSampler
-     setupTexturesWithDevice:self.device
+     setupTexturesWith:self.device
      frameWidth:self.frameWidth
      frameHeight:self.frameHeight];
     

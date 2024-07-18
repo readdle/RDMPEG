@@ -13,7 +13,5 @@
 #import <RDMPEG/RDMPEGDecoder.h>
 #import <RDMPEG/RDMPEGIOStream.h>
 #import <RDMPEG/RDMPEGStream.h>
-#import <RDMPEG/RDMPEGSelectableInputStream.h>
-#import <RDMPEG/RDMobileFFmpegOperation.h>
-#import <RDMPEG/RDMobileFFmpegStatistics.h>
+#import <RDMPEG/RDMPEGShaderTypes.h>
 
