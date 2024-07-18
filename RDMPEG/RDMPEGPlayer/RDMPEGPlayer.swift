@@ -85,8 +85,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
     private var playingBeforeSeek: Bool = false
     private var rawAudioFrame: RDMPEGRawAudioFrame?
     private var correctionInfo: RDMPEGCorrectionInfo?
-    private var decodingOperation: Operation?
-    private var seekOperation: Operation?
+    private weak var decodingOperation: Operation?
+    private weak var seekOperation: Operation?
     private var internalState: RDMPEGPlayerState = .stopped
     private var currentInternalTime: TimeInterval = 0
     private var preparedToPlay: Bool = false
