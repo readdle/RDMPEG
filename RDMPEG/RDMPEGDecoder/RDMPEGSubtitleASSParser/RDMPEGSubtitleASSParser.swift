@@ -22,7 +22,7 @@ import Foundation
         let format = events[position..<newlineRange.lowerBound]
         let fields = format.components(separatedBy: ",")
 
-        guard !fields.isEmpty else { return nil }
+        guard fields.isEmpty == false else { return nil }
 
         return fields.map { $0.trimmingCharacters(in: .whitespaces) }
     }
