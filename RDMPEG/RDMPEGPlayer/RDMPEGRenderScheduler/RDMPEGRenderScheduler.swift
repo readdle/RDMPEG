@@ -47,10 +47,8 @@ class RDMPEGRenderScheduler: NSObject {
     }
 
     private func renderTimerFired(_ timer: Timer) {
-        autoreleasepool {
-            let nextFireDate = callback?() ?? Date(timeIntervalSinceNow: 0.01)
-            timer.fireDate = nextFireDate
-        }
+        let nextFireDate = callback?() ?? Date(timeIntervalSinceNow: 0.01)
+        timer.fireDate = nextFireDate
     }
 }
 
