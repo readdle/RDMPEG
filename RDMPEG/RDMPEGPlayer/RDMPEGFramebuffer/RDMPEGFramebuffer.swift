@@ -15,9 +15,9 @@ class RDMPEGFramebuffer {
     private var videoFrames: [RDMPEGVideoFrame] = []
     private var audioFrames: [RDMPEGAudioFrame] = []
     private var subtitleFrames: [RDMPEGSubtitleFrame] = []
-    private var videoFramesLock = NSLock()
-    private var audioFramesLock = NSLock()
-    private var subtitleFramesLock = NSLock()
+    private var videoFramesLock = NSRecursiveLock()
+    private var audioFramesLock = NSRecursiveLock()
+    private var subtitleFramesLock = NSRecursiveLock()
 
     var bufferedVideoDuration: TimeInterval {
         videoFramesLock.withLock {
