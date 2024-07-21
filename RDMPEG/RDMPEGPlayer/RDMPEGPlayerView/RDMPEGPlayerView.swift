@@ -9,12 +9,12 @@
 import UIKit
 import Log4Cocoa
 
-class RDMPEGPlayerView: UIView {
-    var videoFrame: CGRect {
+@objc public class RDMPEGPlayerView: UIView {
+    @objc public var videoFrame: CGRect {
         return renderView?.videoFrame ?? .zero
     }
 
-    var isAspectFillMode: Bool = false {
+    @objc public var isAspectFillMode: Bool = false {
         didSet {
             if isAspectFillMode != oldValue {
                 renderView?.isAspectFillMode = isAspectFillMode
@@ -97,7 +97,7 @@ class RDMPEGPlayerView: UIView {
 }
 
 extension RDMPEGPlayerView {
-    override class func l4Logger() -> L4Logger {
+    override public class func l4Logger() -> L4Logger {
         return L4Logger(forName: "rd.mediaplayer.RDMPEGPlayerView")
     }
 }

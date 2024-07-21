@@ -19,14 +19,14 @@ private let RDMPEGPlayerInputNameKey = "RDMPEGPlayerInputNameKey"
 private let RDMPEGPlayerInputAudioStreamsKey = "RDMPEGPlayerInputAudioStreamsKey"
 private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStreamsKey"
 
-enum RDMPEGPlayerState: Int {
+@objc public enum RDMPEGPlayerState: Int {
     case stopped
     case failed
     case paused
     case playing
 }
 
-protocol RDMPEGPlayerDelegate: AnyObject {
+@objc public protocol RDMPEGPlayerDelegate: AnyObject {
     func mpegPlayerDidPrepareToPlay(_ player: RDMPEGPlayer)
     func mpegPlayer(_ player: RDMPEGPlayer, didChangeState state: RDMPEGPlayerState)
     func mpegPlayer(_ player: RDMPEGPlayer, didChangeBufferingState state: RDMPEGPlayerState)
@@ -35,19 +35,19 @@ protocol RDMPEGPlayerDelegate: AnyObject {
     func mpegPlayerDidFinishPlaying(_ player: RDMPEGPlayer)
 }
 
-class RDMPEGPlayer: NSObject {
-    private(set) var playerView: RDMPEGPlayerView
-    var state: RDMPEGPlayerState { internalState }
-    private(set) var error: Error?
-    private(set) var audioStreams: [RDMPEGSelectableInputStream]?
-    private(set) var subtitleStreams: [RDMPEGSelectableInputStream]?
-    private(set) var activeAudioStreamIndex: NSNumber?
-    private(set) var activeSubtitleStreamIndex: NSNumber?
-    var currentTime: TimeInterval { currentInternalTime }
-    private(set) var duration: TimeInterval
-    private(set) var isBuffering: Bool
-    private(set) var isSeeking: Bool
-    var timeObservingInterval: TimeInterval {
+@objc public class RDMPEGPlayer: NSObject {
+    @objc public private(set) var playerView: RDMPEGPlayerView
+    @objc public var state: RDMPEGPlayerState { internalState }
+    @objc public private(set) var error: Error?
+    @objc public private(set) var audioStreams: [RDMPEGSelectableInputStream]?
+    @objc public private(set) var subtitleStreams: [RDMPEGSelectableInputStream]?
+    @objc public private(set) var activeAudioStreamIndex: NSNumber?
+    @objc public private(set) var activeSubtitleStreamIndex: NSNumber?
+    @objc public var currentTime: TimeInterval { currentInternalTime }
+    @objc public private(set) var duration: TimeInterval
+    @objc public private(set) var isBuffering: Bool
+    @objc public private(set) var isSeeking: Bool
+    @objc public var timeObservingInterval: TimeInterval {
         didSet {
             if timeObservingInterval != oldValue {
                 if timeObservingTimer != nil {
@@ -57,7 +57,7 @@ class RDMPEGPlayer: NSObject {
             }
         }
     }
-    var isDeinterlacingEnabled: Bool {
+    @objc public var isDeinterlacingEnabled: Bool {
         didSet {
             if isDeinterlacingEnabled != oldValue {
                 decodingQueue.addOperation { [weak self] in
@@ -67,7 +67,7 @@ class RDMPEGPlayer: NSObject {
             }
         }
     }
-    weak var delegate: RDMPEGPlayerDelegate?
+    @objc public weak var delegate: RDMPEGPlayerDelegate?
 
     private var filePath: String
     private var decodingQueue: OperationQueue
@@ -95,7 +95,7 @@ class RDMPEGPlayer: NSObject {
     private var audioStreamExist: Bool = false
     private var subtitleStreamExist: Bool = false
 
-    init(filePath: String) {
+    @objc public init(filePath: String) {
         self.filePath = filePath
         self.stream = nil
         self.decodingQueue = OperationQueue()
@@ -119,7 +119,7 @@ class RDMPEGPlayer: NSObject {
         self.externalInputsQueue.maxConcurrentOperationCount = 1
     }
 
-    init(filePath: String, stream: RDMPEGIOStream?) {
+    @objc public init(filePath: String, stream: RDMPEGIOStream?) {
         self.filePath = filePath
         self.stream = stream
         self.decodingQueue = OperationQueue()
@@ -151,7 +151,7 @@ class RDMPEGPlayer: NSObject {
         externalInputsQueue.cancelAllOperations()
     }
 
-    func attachInput(filePath: String, subtitleEncoding: String?, stream: RDMPEGIOStream?) {
+    @objc public func attachInput(filePath: String, subtitleEncoding: String?, stream: RDMPEGIOStream?) {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
         prepareToPlayIfNeeded { [weak self] in
@@ -181,7 +181,7 @@ class RDMPEGPlayer: NSObject {
         }
     }
 
-    func play() {
+    @objc public func play() {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
         prepareToPlayIfNeeded { [weak self] in
@@ -197,7 +197,7 @@ class RDMPEGPlayer: NSObject {
         }
     }
 
-    func pause() {
+    @objc public func pause() {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
         prepareToPlayIfNeeded { [weak self] in
@@ -219,7 +219,7 @@ class RDMPEGPlayer: NSObject {
         }
     }
 
-    func beginSeeking() {
+    @objc public func beginSeeking() {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
         if !isSeeking {
@@ -232,7 +232,7 @@ class RDMPEGPlayer: NSObject {
         }
     }
 
-    func seek(to time: TimeInterval) {
+    @objc public func seek(to time: TimeInterval) {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
         prepareToPlayIfNeeded { [weak self] in
@@ -274,7 +274,7 @@ class RDMPEGPlayer: NSObject {
         }
     }
 
-    func endSeeking() {
+    @objc public func endSeeking() {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
         if isSeeking {
@@ -287,7 +287,7 @@ class RDMPEGPlayer: NSObject {
         }
     }
 
-    func activateAudioStream(at streamIndex: NSNumber?) {
+    @objc public func activateAudioStream(at streamIndex: NSNumber?) {
         if !preparedToPlay {
             return
         }
@@ -333,7 +333,7 @@ class RDMPEGPlayer: NSObject {
         }
     }
 
-    func activateSubtitleStream(at streamIndex: NSNumber?) {
+    @objc public func activateSubtitleStream(at streamIndex: NSNumber?) {
         if !preparedToPlay {
             return
         }

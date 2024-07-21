@@ -10,7 +10,7 @@ import Foundation
 import ffmpegkit
 import Log4Cocoa
 
-class RDMobileFFmpegOperation: RDMPEGOperation {
+@objcMembers public class RDMobileFFmpegOperation: RDMPEGOperation {
 
     public typealias StatisticsBlock = (RDMobileFFmpegStatistics) -> Void
     public typealias ResultBlock = (Int32) -> Void
@@ -22,7 +22,7 @@ class RDMobileFFmpegOperation: RDMPEGOperation {
     private let logBlock: LogBlock?
     private var session: FFmpegSession?
 
-    init(arguments: [String], statisticsBlock: @escaping StatisticsBlock, resultBlock: @escaping ResultBlock) {
+    public init(arguments: [String], statisticsBlock: @escaping StatisticsBlock, resultBlock: @escaping ResultBlock) {
         self.arguments = arguments
         self.statisticsBlock = statisticsBlock
         self.resultBlock = resultBlock
@@ -30,7 +30,7 @@ class RDMobileFFmpegOperation: RDMPEGOperation {
         super.init()
     }
 
-    init(arguments: [String], statisticsBlock: @escaping StatisticsBlock, resultBlock: @escaping ResultBlock, logBlock: LogBlock?) {
+    public init(arguments: [String], statisticsBlock: @escaping StatisticsBlock, resultBlock: @escaping ResultBlock, logBlock: LogBlock?) {
         self.arguments = arguments
         self.statisticsBlock = statisticsBlock
         self.resultBlock = resultBlock
@@ -74,11 +74,11 @@ class RDMobileFFmpegOperation: RDMPEGOperation {
         }
     }
 
-    class func isReturnCodeCancel(_ code: Int32) -> Bool {
+    public class func isReturnCodeCancel(_ code: Int32) -> Bool {
         return code == ReturnCodeEnum.cancel.rawValue
     }
 
-    class func isReturnCodeSuccess(_ code: Int32) -> Bool {
+    public class func isReturnCodeSuccess(_ code: Int32) -> Bool {
         return code == ReturnCodeEnum.success.rawValue
     }
 }
