@@ -10,9 +10,18 @@ import Foundation
 import Log4Cocoa
 
 class RDMPEGFramebuffer {
+    private(set) var artworkFrame: RDMPEGArtworkFrame?
+
+    private var videoFrames: [RDMPEGVideoFrame] = []
+    private var audioFrames: [RDMPEGAudioFrame] = []
+    private var subtitleFrames: [RDMPEGSubtitleFrame] = []
+    private var videoFramesLock = NSLock()
+    private var audioFramesLock = NSLock()
+    private var subtitleFramesLock = NSLock()
+
     var bufferedVideoDuration: TimeInterval {
         get {
-            synchronized(videoFrames) {
+            videoFramesLock.withLock {
                 return videoFrames.reduce(0) { $0 + $1.duration }
             }
         }
@@ -20,7 +29,7 @@ class RDMPEGFramebuffer {
 
     var bufferedAudioDuration: TimeInterval {
         get {
-            synchronized(audioFrames) {
+            audioFramesLock.withLock {
                 return audioFrames.reduce(0) { $0 + $1.duration }
             }
         }
@@ -28,7 +37,7 @@ class RDMPEGFramebuffer {
 
     var bufferedSubtitleDuration: TimeInterval {
         get {
-            synchronized(subtitleFrames) {
+            subtitleFramesLock.withLock {
                 guard let first = subtitleFrames.first else { return 0 }
                 var minPosition = first.position
                 var maxPosition = first.position + first.duration
@@ -45,7 +54,7 @@ class RDMPEGFramebuffer {
 
     var bufferedVideoFramesCount: Int {
         get {
-            synchronized(videoFrames) {
+            videoFramesLock.withLock {
                 return videoFrames.count
             }
         }
@@ -53,7 +62,7 @@ class RDMPEGFramebuffer {
 
     var bufferedAudioFramesCount: Int {
         get {
-            synchronized(audioFrames) {
+            audioFramesLock.withLock {
                 return audioFrames.count
             }
         }
@@ -61,7 +70,7 @@ class RDMPEGFramebuffer {
 
     var bufferedSubtitleFramesCount: Int {
         get {
-            synchronized(subtitleFrames) {
+            subtitleFramesLock.withLock {
                 return subtitleFrames.count
             }
         }
@@ -69,7 +78,7 @@ class RDMPEGFramebuffer {
 
     var nextVideoFrame: RDMPEGVideoFrame? {
         get {
-            synchronized(videoFrames) {
+            videoFramesLock.withLock {
                 return videoFrames.first
             }
         }
@@ -77,7 +86,7 @@ class RDMPEGFramebuffer {
 
     var nextAudioFrame: RDMPEGAudioFrame? {
         get {
-            synchronized(audioFrames) {
+            audioFramesLock.withLock {
                 return audioFrames.first
             }
         }
@@ -85,17 +94,11 @@ class RDMPEGFramebuffer {
 
     var nextSubtitleFrame: RDMPEGSubtitleFrame? {
         get {
-            synchronized(subtitleFrames) {
+            subtitleFramesLock.withLock {
                 return subtitleFrames.first
             }
         }
     }
-
-    private(set) var artworkFrame: RDMPEGArtworkFrame?
-
-    private var videoFrames: [RDMPEGVideoFrame] = []
-    private var audioFrames: [RDMPEGAudioFrame] = []
-    private var subtitleFrames: [RDMPEGSubtitleFrame] = []
 
     class var l4Logger: L4Logger {
         return L4Logger(forName: "rd.mediaplayer.RDMPEGFramebuffer")
@@ -109,7 +112,7 @@ class RDMPEGFramebuffer {
                 #if RD_DEBUG_MPEG_PLAYER
                 log4Debug("Pushed video frame: \(frame.position) \(frame.duration)")
                 #endif
-                synchronized(videoFrames) {
+                videoFramesLock.withLock {
                     videoFrames.append(videoFrame)
                 }
             case .audio:
@@ -117,7 +120,7 @@ class RDMPEGFramebuffer {
                 #if RD_DEBUG_MPEG_PLAYER
                 log4Debug("Pushed audio frame: \(frame.position) \(frame.duration)")
                 #endif
-                synchronized(audioFrames) {
+                audioFramesLock.withLock {
                     audioFrames.append(audioFrame)
                 }
             case .subtitle:
@@ -125,7 +128,7 @@ class RDMPEGFramebuffer {
                 #if RD_DEBUG_MPEG_PLAYER
                 log4Debug("Pushed subtitle frame: \(subtitleFrame.position) \(subtitleFrame.duration) \(subtitleFrame.text ?? "")")
                 #endif
-                synchronized(subtitleFrames) {
+                subtitleFramesLock.withLock {
                     subtitleFrames.append(subtitleFrame)
                 }
             case .artwork:
@@ -140,40 +143,40 @@ class RDMPEGFramebuffer {
     }
 
     func popVideoFrame() -> RDMPEGVideoFrame? {
-        synchronized(videoFrames) {
+        videoFramesLock.withLock {
             guard !videoFrames.isEmpty else { return nil }
             return videoFrames.removeFirst()
         }
     }
 
     func popAudioFrame() -> RDMPEGAudioFrame? {
-        synchronized(audioFrames) {
+        audioFramesLock.withLock {
             guard !audioFrames.isEmpty else { return nil }
             return audioFrames.removeFirst()
         }
     }
 
     @discardableResult public func popSubtitleFrame() -> RDMPEGSubtitleFrame? {
-        synchronized(subtitleFrames) {
+        subtitleFramesLock.withLock {
             guard !subtitleFrames.isEmpty else { return nil }
             return subtitleFrames.removeFirst()
         }
     }
 
     func atomicVideoFramesAccess(_ accessBlock: () -> Void) {
-        synchronized(videoFrames) {
+        videoFramesLock.withLock {
             accessBlock()
         }
     }
 
     func atomicAudioFramesAccess(_ accessBlock: () -> Void) {
-        synchronized(audioFrames) {
+        audioFramesLock.withLock {
             accessBlock()
         }
     }
 
     func atomicSubtitleFramesAccess(_ accessBlock: () -> Void) {
-        synchronized(subtitleFrames) {
+        subtitleFramesLock.withLock {
             accessBlock()
         }
     }
@@ -186,30 +189,24 @@ class RDMPEGFramebuffer {
     }
 
     func purgeVideoFrames() {
-        synchronized(videoFrames) {
+        videoFramesLock.withLock {
             videoFrames.removeAll()
         }
     }
 
     func purgeAudioFrames() {
-        synchronized(audioFrames) {
+        audioFramesLock.withLock {
             audioFrames.removeAll()
         }
     }
 
     func purgeSubtitleFrames() {
-        synchronized(subtitleFrames) {
+        subtitleFramesLock.withLock {
             subtitleFrames.removeAll()
         }
     }
 
     func purgeArtworkFrame() {
         artworkFrame = nil
-    }
-
-    private func synchronized<T>(_ lock: Any, _ closure: () -> T) -> T {
-        objc_sync_enter(lock)
-        defer { objc_sync_exit(lock) }
-        return closure()
     }
 }
