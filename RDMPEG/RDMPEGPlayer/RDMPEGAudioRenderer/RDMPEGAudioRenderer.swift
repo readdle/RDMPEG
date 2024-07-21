@@ -11,15 +11,15 @@ import AVFoundation
 import Accelerate
 import Log4Cocoa
 
-@objc public class RDMPEGAudioRenderer: NSObject {
+class RDMPEGAudioRenderer: NSObject {
     public typealias OutputCallback = (_ data: UnsafeMutablePointer<Float>, _ numFrames: UInt32, _ numChannels: UInt32) -> Void
 
     private static let maxFrameSize: Int = 4096
     private static let maxChannelsCount: Int = 2
 
-    @objc public private(set) var isPlaying: Bool = false
-    @objc public private(set) var samplingRate: Double
-    @objc public private(set) var outputChannelsCount: Int = 0
+    private(set) var isPlaying: Bool = false
+    private(set) var samplingRate: Double
+    private(set) var outputChannelsCount: Int = 0
 
     private var audioUnit: AudioUnit?
     private var outputCallback: OutputCallback?
@@ -42,7 +42,7 @@ import Log4Cocoa
         outputData = nil
     }
 
-    @objc public func play(withOutputCallback outputCallback: @escaping OutputCallback) -> Bool {
+    func play(withOutputCallback outputCallback: @escaping OutputCallback) -> Bool {
         guard !isPlaying, let audioUnit = audioUnit else {
             log4Assert(false, "Already playing or Audio unit doesn't exist")
             return false
@@ -60,7 +60,7 @@ import Log4Cocoa
         return isPlaying
     }
 
-    @objc public func pause() -> Bool {
+    func pause() -> Bool {
         guard isPlaying, let audioUnit = audioUnit else {
             return true
         }
@@ -271,7 +271,7 @@ private func audioRenderCallback(inRefCon: UnsafeMutableRawPointer,
 }
 
 extension RDMPEGAudioRenderer {
-    @objc public override class func l4Logger() -> L4Logger {
+    override class func l4Logger() -> L4Logger {
         return L4Logger(forName: "rd.mediaplayer.RDMPEGPlayer")
     }
 }

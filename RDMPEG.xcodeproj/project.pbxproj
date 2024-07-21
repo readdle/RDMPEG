@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		5046A76F2C3EA43D00C5D6D0 /* RDMPEGCorrectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5046A76E2C3EA43D00C5D6D0 /* RDMPEGCorrectionInfo.swift */; };
-		5077A0CE2C3FD10100C43187 /* RDMPEGWeakTimerTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5077A0CD2C3FD10100C43187 /* RDMPEGWeakTimerTarget.swift */; };
 		507FD0472C4681A200FA90C4 /* RDMPEGOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 507FD0462C4681A200FA90C4 /* RDMPEGOperation.swift */; };
 		507FD0512C46898600FA90C4 /* RDMobileFFmpegStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 507FD0502C46898600FA90C4 /* RDMobileFFmpegStatistics.swift */; };
 		507FD0532C468BD500FA90C4 /* RDMobileFFmpegOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 507FD0522C468BD500FA90C4 /* RDMobileFFmpegOperation.swift */; };
@@ -88,7 +87,6 @@
 
 /* Begin PBXFileReference section */
 		5046A76E2C3EA43D00C5D6D0 /* RDMPEGCorrectionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RDMPEGCorrectionInfo.swift; sourceTree = "<group>"; };
-		5077A0CD2C3FD10100C43187 /* RDMPEGWeakTimerTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RDMPEGWeakTimerTarget.swift; sourceTree = "<group>"; };
 		507FD0462C4681A200FA90C4 /* RDMPEGOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RDMPEGOperation.swift; sourceTree = "<group>"; };
 		507FD0502C46898600FA90C4 /* RDMobileFFmpegStatistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RDMobileFFmpegStatistics.swift; sourceTree = "<group>"; };
 		507FD0522C468BD500FA90C4 /* RDMobileFFmpegOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RDMobileFFmpegOperation.swift; sourceTree = "<group>"; };
@@ -216,7 +214,6 @@
 				73450B241F8290FA009E8F5F /* RDMPEGRawAudioFrame */,
 				73450B291F8290FA009E8F5F /* RDMPEGFramebuffer */,
 				73450B2E1F8290FA009E8F5F /* RDMPEGRenderScheduler */,
-				739F77551F82A051009E27EA /* RDMPEGWeakTimerTarget */,
 				50A5E6262C49319500222ADC /* RDMPEGPlayer.swift */,
 			);
 			path = RDMPEGPlayer;
@@ -326,14 +323,6 @@
 				507FD0502C46898600FA90C4 /* RDMobileFFmpegStatistics.swift */,
 			);
 			path = RDMobileFFmpegStatistics;
-			sourceTree = "<group>";
-		};
-		739F77551F82A051009E27EA /* RDMPEGWeakTimerTarget */ = {
-			isa = PBXGroup;
-			children = (
-				5077A0CD2C3FD10100C43187 /* RDMPEGWeakTimerTarget.swift */,
-			);
-			path = RDMPEGWeakTimerTarget;
 			sourceTree = "<group>";
 		};
 		739F77AA1F82A22F009E27EA /* Frameworks */ = {
@@ -535,7 +524,6 @@
 				50A5E6272C49319500222ADC /* RDMPEGPlayer.swift in Sources */,
 				50A5E6182C491F8C00222ADC /* RDMPEGStream.swift in Sources */,
 				50AD83F62C4529C20076D53B /* RDMPEGTextureSamplerBGRA.swift in Sources */,
-				5077A0CE2C3FD10100C43187 /* RDMPEGWeakTimerTarget.swift in Sources */,
 				50A5E6202C492B1D00222ADC /* libavformat+Helpers.swift in Sources */,
 				50AD83FF2C4565AF0076D53B /* RDMPEGSubtitleASSParser.swift in Sources */,
 			);

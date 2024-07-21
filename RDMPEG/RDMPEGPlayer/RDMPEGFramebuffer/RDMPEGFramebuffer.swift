@@ -9,8 +9,8 @@
 import Foundation
 import Log4Cocoa
 
-@objc public class RDMPEGFramebuffer: NSObject {
-    @objc public var bufferedVideoDuration: TimeInterval {
+class RDMPEGFramebuffer: NSObject {
+    var bufferedVideoDuration: TimeInterval {
         get {
             synchronized(videoFrames) {
                 return videoFrames.reduce(0) { $0 + $1.duration }
@@ -18,7 +18,7 @@ import Log4Cocoa
         }
     }
 
-    @objc public var bufferedAudioDuration: TimeInterval {
+    var bufferedAudioDuration: TimeInterval {
         get {
             synchronized(audioFrames) {
                 return audioFrames.reduce(0) { $0 + $1.duration }
@@ -26,7 +26,7 @@ import Log4Cocoa
         }
     }
 
-    @objc public var bufferedSubtitleDuration: TimeInterval {
+    var bufferedSubtitleDuration: TimeInterval {
         get {
             synchronized(subtitleFrames) {
                 guard let first = subtitleFrames.first else { return 0 }
@@ -43,7 +43,7 @@ import Log4Cocoa
         }
     }
 
-    @objc public var bufferedVideoFramesCount: Int {
+    var bufferedVideoFramesCount: Int {
         get {
             synchronized(videoFrames) {
                 return videoFrames.count
@@ -51,7 +51,7 @@ import Log4Cocoa
         }
     }
 
-    @objc public var bufferedAudioFramesCount: Int {
+    var bufferedAudioFramesCount: Int {
         get {
             synchronized(audioFrames) {
                 return audioFrames.count
@@ -59,7 +59,7 @@ import Log4Cocoa
         }
     }
 
-    @objc public var bufferedSubtitleFramesCount: Int {
+    var bufferedSubtitleFramesCount: Int {
         get {
             synchronized(subtitleFrames) {
                 return subtitleFrames.count
@@ -67,7 +67,7 @@ import Log4Cocoa
         }
     }
 
-    @objc public var nextVideoFrame: RDMPEGVideoFrame? {
+    var nextVideoFrame: RDMPEGVideoFrame? {
         get {
             synchronized(videoFrames) {
                 return videoFrames.first
@@ -75,7 +75,7 @@ import Log4Cocoa
         }
     }
 
-    @objc public var nextAudioFrame: RDMPEGAudioFrame? {
+    var nextAudioFrame: RDMPEGAudioFrame? {
         get {
             synchronized(audioFrames) {
                 return audioFrames.first
@@ -83,7 +83,7 @@ import Log4Cocoa
         }
     }
 
-    @objc public var nextSubtitleFrame: RDMPEGSubtitleFrame? {
+    var nextSubtitleFrame: RDMPEGSubtitleFrame? {
         get {
             synchronized(subtitleFrames) {
                 return subtitleFrames.first
@@ -91,7 +91,7 @@ import Log4Cocoa
         }
     }
 
-    @objc public private(set) var artworkFrame: RDMPEGArtworkFrame?
+    private(set) var artworkFrame: RDMPEGArtworkFrame?
 
     private var videoFrames: [RDMPEGVideoFrame] = []
     private var audioFrames: [RDMPEGAudioFrame] = []
@@ -101,7 +101,7 @@ import Log4Cocoa
         return L4Logger(forName: "rd.mediaplayer.RDMPEGFramebuffer")
     }
 
-    @objc public func pushFrames(_ frames: [RDMPEGFrame]) {
+    func pushFrames(_ frames: [RDMPEGFrame]) {
         for frame in frames {
             switch frame.type {
             case .video:
@@ -139,71 +139,71 @@ import Log4Cocoa
         }
     }
 
-    @objc public func popVideoFrame() -> RDMPEGVideoFrame? {
+    func popVideoFrame() -> RDMPEGVideoFrame? {
         synchronized(videoFrames) {
             guard !videoFrames.isEmpty else { return nil }
             return videoFrames.removeFirst()
         }
     }
 
-    @objc public func popAudioFrame() -> RDMPEGAudioFrame? {
+    func popAudioFrame() -> RDMPEGAudioFrame? {
         synchronized(audioFrames) {
             guard !audioFrames.isEmpty else { return nil }
             return audioFrames.removeFirst()
         }
     }
 
-    @objc @discardableResult public func popSubtitleFrame() -> RDMPEGSubtitleFrame? {
+    @discardableResult public func popSubtitleFrame() -> RDMPEGSubtitleFrame? {
         synchronized(subtitleFrames) {
             guard !subtitleFrames.isEmpty else { return nil }
             return subtitleFrames.removeFirst()
         }
     }
 
-    @objc public func atomicVideoFramesAccess(_ accessBlock: () -> Void) {
+    func atomicVideoFramesAccess(_ accessBlock: () -> Void) {
         synchronized(videoFrames) {
             accessBlock()
         }
     }
 
-    @objc public func atomicAudioFramesAccess(_ accessBlock: () -> Void) {
+    func atomicAudioFramesAccess(_ accessBlock: () -> Void) {
         synchronized(audioFrames) {
             accessBlock()
         }
     }
 
-    @objc public func atomicSubtitleFramesAccess(_ accessBlock: () -> Void) {
+    func atomicSubtitleFramesAccess(_ accessBlock: () -> Void) {
         synchronized(subtitleFrames) {
             accessBlock()
         }
     }
 
-    @objc public func purge() {
+    func purge() {
         purgeVideoFrames()
         purgeAudioFrames()
         purgeSubtitleFrames()
         purgeArtworkFrame()
     }
 
-    @objc public func purgeVideoFrames() {
+    func purgeVideoFrames() {
         synchronized(videoFrames) {
             videoFrames.removeAll()
         }
     }
 
-    @objc public func purgeAudioFrames() {
+    func purgeAudioFrames() {
         synchronized(audioFrames) {
             audioFrames.removeAll()
         }
     }
 
-    @objc public func purgeSubtitleFrames() {
+    func purgeSubtitleFrames() {
         synchronized(subtitleFrames) {
             subtitleFrames.removeAll()
         }
     }
 
-    @objc public func purgeArtworkFrame() {
+    func purgeArtworkFrame() {
         artworkFrame = nil
     }
 

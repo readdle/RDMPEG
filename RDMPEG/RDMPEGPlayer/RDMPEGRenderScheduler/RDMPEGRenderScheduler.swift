@@ -9,12 +9,12 @@
 import Foundation
 import Log4Cocoa
 
-@objc public class RDMPEGRenderScheduler: NSObject {
+class RDMPEGRenderScheduler: NSObject {
 
     private var timer: Timer?
     private var callback: (() -> Date?)?
 
-    @objc public var isScheduling: Bool {
+    var isScheduling: Bool {
         return timer != nil
     }
 
@@ -22,7 +22,7 @@ import Log4Cocoa
         stop()
     }
 
-    @objc public func start(with callback: @escaping () -> Date?) {
+    func start(with callback: @escaping () -> Date?) {
         guard !isScheduling else {
             log4Assert(false, "Already scheduling")
             return
@@ -30,14 +30,16 @@ import Log4Cocoa
 
         self.callback = callback
 
-        let timerTarget = RDMPEGWeakTimerTarget(target: self, action: #selector(renderTimerFired(_:)))
-        let newTimer = Timer(timeInterval: 0.0, target: timerTarget, selector: #selector(RDMPEGWeakTimerTarget.timerFired(_:)), userInfo: nil, repeats: true)
+        let newTimer = Timer(timeInterval: 0.0, repeats: true) { [weak self] in
+            self?.renderTimerFired($0)
+        }
+
         RunLoop.main.add(newTimer, forMode: .common)
 
         timer = newTimer
     }
 
-    @objc public func stop() {
+    func stop() {
         guard isScheduling else { return }
 
         timer?.invalidate()
@@ -45,7 +47,7 @@ import Log4Cocoa
         callback = nil
     }
 
-    @objc private func renderTimerFired(_ timer: Timer) {
+    private func renderTimerFired(_ timer: Timer) {
         autoreleasepool {
             let nextFireDate = callback?() ?? Date(timeIntervalSinceNow: 0.01)
             timer.fireDate = nextFireDate

@@ -9,17 +9,17 @@
 import Foundation
 import Log4Cocoa
 
-@objc public class RDMPEGCorrectionInfo: NSObject {
+class RDMPEGCorrectionInfo: NSObject {
     private let playbackStartDate: Date
     private let playbackStartTime: TimeInterval
 
-    @objc public init(playbackStartDate: Date, playbackStartTime: TimeInterval) {
+    init(playbackStartDate: Date, playbackStartTime: TimeInterval) {
         self.playbackStartDate = playbackStartDate
         self.playbackStartTime = playbackStartTime
         super.init()
     }
 
-    @objc public func correctionInterval(withCurrentTime currentTime: TimeInterval) -> TimeInterval {
+    func correctionInterval(withCurrentTime currentTime: TimeInterval) -> TimeInterval {
         let continuousPlaybackRealTime = Date().timeIntervalSince(playbackStartDate)
 
         if continuousPlaybackRealTime < 0.0 {

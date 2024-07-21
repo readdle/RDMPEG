@@ -9,12 +9,12 @@
 import UIKit
 import Log4Cocoa
 
-@objc public class RDMPEGPlayerView: UIView {
-    @objc public var videoFrame: CGRect {
+class RDMPEGPlayerView: UIView {
+    var videoFrame: CGRect {
         return renderView?.videoFrame ?? .zero
     }
 
-    @objc public var isAspectFillMode: Bool = false {
+    var isAspectFillMode: Bool = false {
         didSet {
             if isAspectFillMode != oldValue {
                 renderView?.isAspectFillMode = isAspectFillMode
@@ -23,7 +23,7 @@ import Log4Cocoa
     }
 
     private let subtitleLabel: UILabel
-    @objc public var renderView: RDMPEGRenderView? {
+    var renderView: RDMPEGRenderView? {
         didSet {
             if renderView !== oldValue {
                 oldValue?.removeFromSuperview()
@@ -39,7 +39,7 @@ import Log4Cocoa
         }
     }
 
-    @objc public var subtitle: String? {
+    var subtitle: String? {
         get { return subtitleLabel.text }
         set {
             subtitleLabel.text = newValue
@@ -47,7 +47,7 @@ import Log4Cocoa
         }
     }
 
-    @objc public override init(frame: CGRect) {
+    override init(frame: CGRect) {
         subtitleLabel = UILabel()
         subtitleLabel.numberOfLines = 0
         subtitleLabel.textColor = .white
@@ -97,7 +97,7 @@ import Log4Cocoa
 }
 
 extension RDMPEGPlayerView {
-    @objc public override class func l4Logger() -> L4Logger {
+    override class func l4Logger() -> L4Logger {
         return L4Logger(forName: "rd.mediaplayer.RDMPEGPlayerView")
     }
 }

@@ -8,9 +8,9 @@
 
 import Foundation
 
-@objc public class RDMPEGSubtitleASSParser: NSObject {
+@objcMembers public class RDMPEGSubtitleASSParser: NSObject {
 
-    @objc public class func parseEvents(_ events: String) -> [String]? {
+    public class func parseEvents(_ events: String) -> [String]? {
         guard let range = events.range(of: "[Events]") else { return nil }
         var position = range.upperBound
 
@@ -27,7 +27,7 @@ import Foundation
         return fields.map { $0.trimmingCharacters(in: .whitespaces) }
     }
 
-    @objc public class func parseDialogue(_ dialogue: String, numFields: UInt) -> [String]? {
+    public class func parseDialogue(_ dialogue: String, numFields: UInt) -> [String]? {
         guard dialogue.hasPrefix("Dialogue:") else { return nil }
 
         var fields: [String] = []
@@ -53,7 +53,7 @@ import Foundation
         return fields
     }
 
-    @objc public class func removeCommandsFromEventText(_ text: String) -> String {
+    public class func removeCommandsFromEventText(_ text: String) -> String {
         var result = ""
         let scanner = Scanner(string: text)
         scanner.charactersToBeSkipped = nil

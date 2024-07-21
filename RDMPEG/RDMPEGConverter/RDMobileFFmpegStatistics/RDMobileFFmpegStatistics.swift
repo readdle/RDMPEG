@@ -9,38 +9,38 @@
 import Foundation
 import ffmpegkit
 
-@objc public class RDMobileFFmpegStatistics: NSObject {
+class RDMobileFFmpegStatistics: NSObject {
     private let statistics: Statistics
 
-    @objc public var frameNumber: Int {
+    var frameNumber: Int {
         return Int(statistics.getVideoFrameNumber())
     }
 
-    @objc public var fps: Float {
+    var fps: Float {
         return statistics.getVideoFps()
     }
 
-    @objc public var quality: Float {
+    var quality: Float {
         return statistics.getVideoQuality()
     }
 
-    @objc public var size: Int {
+    var size: Int {
         return statistics.getSize()
     }
 
-    @objc public var time: Int {
+    var time: Int {
         return Int(statistics.getTime())
     }
 
-    @objc public var bitrate: Double {
+    var bitrate: Double {
         return statistics.getBitrate()
     }
 
-    @objc public var speed: Double {
+    var speed: Double {
         return statistics.getSpeed()
     }
 
-    @objc public init(statistics: Statistics) {
+    init(statistics: Statistics) {
         self.statistics = statistics
         super.init()
     }

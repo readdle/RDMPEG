@@ -19,14 +19,14 @@ private let RDMPEGPlayerInputNameKey = "RDMPEGPlayerInputNameKey"
 private let RDMPEGPlayerInputAudioStreamsKey = "RDMPEGPlayerInputAudioStreamsKey"
 private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStreamsKey"
 
-@objc public enum RDMPEGPlayerState: Int {
+enum RDMPEGPlayerState: Int {
     case stopped
     case failed
     case paused
     case playing
 }
 
-@objc public protocol RDMPEGPlayerDelegate: AnyObject {
+protocol RDMPEGPlayerDelegate: AnyObject {
     func mpegPlayerDidPrepareToPlay(_ player: RDMPEGPlayer)
     func mpegPlayer(_ player: RDMPEGPlayer, didChangeState state: RDMPEGPlayerState)
     func mpegPlayer(_ player: RDMPEGPlayer, didChangeBufferingState state: RDMPEGPlayerState)
@@ -35,19 +35,19 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
     func mpegPlayerDidFinishPlaying(_ player: RDMPEGPlayer)
 }
 
-@objc public class RDMPEGPlayer: NSObject {
-    @objc public private(set) var playerView: RDMPEGPlayerView
-    @objc public var state: RDMPEGPlayerState { internalState }
-    @objc public private(set) var error: Error?
-    @objc public private(set) var audioStreams: [RDMPEGSelectableInputStream]?
-    @objc public private(set) var subtitleStreams: [RDMPEGSelectableInputStream]?
-    @objc public private(set) var activeAudioStreamIndex: NSNumber?
-    @objc public private(set) var activeSubtitleStreamIndex: NSNumber?
-    @objc public var currentTime: TimeInterval { currentInternalTime }
-    @objc public private(set) var duration: TimeInterval
-    @objc public private(set) var isBuffering: Bool
-    @objc public private(set) var isSeeking: Bool
-    @objc public var timeObservingInterval: TimeInterval {
+class RDMPEGPlayer: NSObject {
+    private(set) var playerView: RDMPEGPlayerView
+    var state: RDMPEGPlayerState { internalState }
+    private(set) var error: Error?
+    private(set) var audioStreams: [RDMPEGSelectableInputStream]?
+    private(set) var subtitleStreams: [RDMPEGSelectableInputStream]?
+    private(set) var activeAudioStreamIndex: NSNumber?
+    private(set) var activeSubtitleStreamIndex: NSNumber?
+    var currentTime: TimeInterval { currentInternalTime }
+    private(set) var duration: TimeInterval
+    private(set) var isBuffering: Bool
+    private(set) var isSeeking: Bool
+    var timeObservingInterval: TimeInterval {
         didSet {
             if timeObservingInterval != oldValue {
                 if timeObservingTimer != nil {
@@ -57,7 +57,7 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
             }
         }
     }
-    @objc public var isDeinterlacingEnabled: Bool {
+    var isDeinterlacingEnabled: Bool {
         didSet {
             if isDeinterlacingEnabled != oldValue {
                 decodingQueue.addOperation { [weak self] in
@@ -67,7 +67,7 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
             }
         }
     }
-    @objc public weak var delegate: RDMPEGPlayerDelegate?
+    weak var delegate: RDMPEGPlayerDelegate?
 
     private var filePath: String
     private var decodingQueue: OperationQueue
@@ -95,7 +95,7 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
     private var audioStreamExist: Bool = false
     private var subtitleStreamExist: Bool = false
 
-    @objc public init(filePath: String) {
+    init(filePath: String) {
         self.filePath = filePath
         self.stream = nil
         self.decodingQueue = OperationQueue()
@@ -119,7 +119,7 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         self.externalInputsQueue.maxConcurrentOperationCount = 1
     }
 
-    @objc public init(filePath: String, stream: RDMPEGIOStream?) {
+    init(filePath: String, stream: RDMPEGIOStream?) {
         self.filePath = filePath
         self.stream = stream
         self.decodingQueue = OperationQueue()
@@ -151,7 +151,7 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         externalInputsQueue.cancelAllOperations()
     }
 
-    @objc public func attachInput(filePath: String, subtitleEncoding: String?, stream: RDMPEGIOStream?) {
+    func attachInput(filePath: String, subtitleEncoding: String?, stream: RDMPEGIOStream?) {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
         prepareToPlayIfNeeded { [weak self] in
@@ -181,7 +181,7 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         }
     }
 
-    @objc public func play() {
+    func play() {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
         prepareToPlayIfNeeded { [weak self] in
@@ -197,7 +197,7 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         }
     }
 
-    @objc public func pause() {
+    func pause() {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
         prepareToPlayIfNeeded { [weak self] in
@@ -219,7 +219,7 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         }
     }
 
-    @objc public func beginSeeking() {
+    func beginSeeking() {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
         if !isSeeking {
@@ -232,7 +232,7 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         }
     }
 
-    @objc public func seek(to time: TimeInterval) {
+    func seek(to time: TimeInterval) {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
         prepareToPlayIfNeeded { [weak self] in
@@ -274,7 +274,7 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         }
     }
 
-    @objc public func endSeeking() {
+    func endSeeking() {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
         if isSeeking {
@@ -287,7 +287,7 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         }
     }
 
-    @objc public func activateAudioStream(at streamIndex: NSNumber?) {
+    func activateAudioStream(at streamIndex: NSNumber?) {
         if !preparedToPlay {
             return
         }
@@ -333,7 +333,7 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         }
     }
 
-    @objc public func activateSubtitleStream(at streamIndex: NSNumber?) {
+    func activateSubtitleStream(at streamIndex: NSNumber?) {
         if !preparedToPlay {
             return
         }

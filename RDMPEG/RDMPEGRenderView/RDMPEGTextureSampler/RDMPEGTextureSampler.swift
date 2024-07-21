@@ -8,10 +8,10 @@
 
 import Metal
 
-@objc public protocol RDMPEGTextureSampler: NSObjectProtocol {
-    @objc func newSamplingFunction(from library: MTLLibrary) -> MTLFunction?
+protocol RDMPEGTextureSampler: NSObjectProtocol {
+    func newSamplingFunction(from library: MTLLibrary) -> MTLFunction?
 
-    @objc func setupTextures(with device: MTLDevice, frameWidth: Int, frameHeight: Int)
+    func setupTextures(with device: MTLDevice, frameWidth: Int, frameHeight: Int)
 
-    @objc func updateTextures(with videoFrame: RDMPEGVideoFrame, renderEncoder: MTLRenderCommandEncoder)
+    func updateTextures(with videoFrame: RDMPEGVideoFrame, renderEncoder: MTLRenderCommandEncoder)
 }

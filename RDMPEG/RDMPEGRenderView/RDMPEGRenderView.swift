@@ -10,12 +10,12 @@ import UIKit
 import MetalKit
 import Log4Cocoa
 
-@objc public class RDMPEGRenderView: MTKView {
-    @objc public var videoFrame: CGRect {
+class RDMPEGRenderView: MTKView {
+    var videoFrame: CGRect {
         return isAspectFillMode ? bounds : aspectFitVideoFrame
     }
-    @objc public private(set) var aspectFitVideoFrame: CGRect = .zero
-    @objc public var isAspectFillMode: Bool = false {
+    private(set) var aspectFitVideoFrame: CGRect = .zero
+    var isAspectFillMode: Bool = false {
         didSet {
             if isAspectFillMode != oldValue {
                 updateVertices()
@@ -39,7 +39,7 @@ import Log4Cocoa
         return L4Logger(forName: "rd.mediaplayer.RDMPEGRenderView")
     }
 
-    @objc public init(frame: CGRect, textureSampler: RDMPEGTextureSampler, frameWidth: Int, frameHeight: Int) {
+    init(frame: CGRect, textureSampler: RDMPEGTextureSampler, frameWidth: Int, frameHeight: Int) {
         self.textureSampler = textureSampler
         self.frameWidth = frameWidth
         self.frameHeight = frameHeight
@@ -71,7 +71,7 @@ import Log4Cocoa
         updateVertices()
     }
 
-    @objc public func render(_ videoFrame: RDMPEGVideoFrame?) {
+    func render(_ videoFrame: RDMPEGVideoFrame?) {
         guard isAbleToRender else {
             log4Assert(videoFrame == nil, "Attempt to render frame in invalid state")
             return
