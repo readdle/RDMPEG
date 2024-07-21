@@ -43,7 +43,10 @@ class RDMPEGTextureSamplerBGRA: NSObject, RDMPEGTextureSampler {
 
         guard bgraTexture.width == videoFrame.width,
               bgraTexture.height == videoFrame.height else {
-            log4Assert(false, "Video frame size (\(videoFrame.width) \(videoFrame.height)) does not equal to texture size (\(bgraTexture.width) \(bgraTexture.height))")
+            log4Assert(false, """
+                Video frame size (\(videoFrame.width) \(videoFrame.height)) does not equal to 
+                texture size (\(bgraTexture.width) \(bgraTexture.height))
+            """)
             return
         }
 
@@ -52,7 +55,13 @@ class RDMPEGTextureSamplerBGRA: NSObject, RDMPEGTextureSampler {
 
         bgraFrame.bgra.withUnsafeBytes { bgraBuffer in
             if let bgraBufferBasePointer = bgraBuffer.baseAddress {
-                bgraTexture.replace(region: region, mipmapLevel: 0, withBytes: bgraBufferBasePointer, bytesPerRow: 4 * Int(videoFrame.width))
+                bgraTexture
+                    .replace(
+                        region: region,
+                        mipmapLevel: 0,
+                        withBytes: bgraBufferBasePointer,
+                        bytesPerRow: 4 * Int(videoFrame.width)
+                    )
             }
         }
 

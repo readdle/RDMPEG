@@ -8,7 +8,8 @@
 
 import Foundation
 
-@objcMembers public class RDMPEGSelectableInputStream: NSObject {
+@objcMembers
+public class RDMPEGSelectableInputStream: NSObject {
     public var title: String?
     public var inputName: String?
 }

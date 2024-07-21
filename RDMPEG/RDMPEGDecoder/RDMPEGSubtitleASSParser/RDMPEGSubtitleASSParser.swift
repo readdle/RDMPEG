@@ -8,7 +8,8 @@
 
 import Foundation
 
-@objcMembers public class RDMPEGSubtitleASSParser: NSObject {
+@objcMembers
+public class RDMPEGSubtitleASSParser: NSObject {
 
     public class func parseEvents(_ events: String) -> [String]? {
         guard let range = events.range(of: "[Events]") else { return nil }
@@ -17,7 +18,12 @@ import Foundation
         guard let formatRange = events.range(of: "Format:", range: position..<events.endIndex) else { return nil }
         position = formatRange.upperBound
 
-        guard let newlineRange = events.rangeOfCharacter(from: .newlines, range: position..<events.endIndex) else { return nil }
+        guard let newlineRange = events.rangeOfCharacter(
+            from: .newlines,
+            range: position..<events.endIndex
+        ) else {
+            return nil
+        }
 
         let format = events[position..<newlineRange.lowerBound]
         let fields = format.components(separatedBy: ",")
@@ -39,7 +45,8 @@ import Foundation
 
             if let commaRange = dialogue.range(of: ",", range: position..<dialogue.endIndex) {
                 range = commaRange.upperBound..<dialogue.endIndex
-            } else {
+            }
+            else {
                 range = dialogue.endIndex..<dialogue.endIndex
             }
 
@@ -59,15 +66,16 @@ import Foundation
         scanner.charactersToBeSkipped = nil
 
         while !scanner.isAtEnd {
-            if let s = scanner.scanUpToString("{\\") {
-                result += s
+            if let scanned = scanner.scanUpToString("{\\") {
+                result += scanned
             }
 
             if scanner.scanString("{\\") != nil,
                scanner.scanUpToString("}") != nil,
                scanner.scanString("}") != nil {
                 continue
-            } else {
+            }
+            else {
                 break
             }
         }

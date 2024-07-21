@@ -39,6 +39,7 @@ class RDMPEGTextureSamplerYUV: NSObject, RDMPEGTextureSampler {
         vTexture = device.makeTexture(descriptor: uvTextureDescriptor)
     }
 
+    // swiftlint:disable:next function_body_length
     func updateTextures(with videoFrame: RDMPEGVideoFrame, renderEncoder: MTLRenderCommandEncoder) {
         guard let yTexture = yTexture, let uTexture = uTexture, let vTexture = vTexture else {
             assertionFailure("setupTextures(with:frameWidth:frameHeight:) must be called before updating textures")
@@ -56,31 +57,60 @@ class RDMPEGTextureSamplerYUV: NSObject, RDMPEGTextureSampler {
               uTexture.height == videoFrame.height / 2,
               vTexture.width == videoFrame.width / 2,
               vTexture.height == videoFrame.height / 2 else {
-            log4Assert(false, "Video frame size (\(videoFrame.width) \(videoFrame.height)) does not correspond to texture sizes Y(\(yTexture.width) \(yTexture.height)) U(\(uTexture.width) \(uTexture.height)) V(\(vTexture.width) \(vTexture.height))")
+            log4Assert(false, """
+            Video frame size (
+                \(videoFrame.width) \(videoFrame.height)) does not correspond to texture sizes 
+                Y(\(yTexture.width) \(yTexture.height)) 
+                U(\(uTexture.width) \(uTexture.height)) 
+                V(\(vTexture.width) \(vTexture.height))
+            """)
             return
         }
 
         let yRegion = MTLRegion(origin: MTLOrigin(x: 0, y: 0, z: 0),
                                 size: MTLSize(width: Int(videoFrame.width), height: Int(videoFrame.height), depth: 1))
 
-        let uvRegion = MTLRegion(origin: MTLOrigin(x: 0, y: 0, z: 0),
-                                 size: MTLSize(width: Int(videoFrame.width) / 2, height: Int(videoFrame.height) / 2, depth: 1))
+        let uvRegion = MTLRegion(
+            origin: MTLOrigin(x: 0, y: 0, z: 0),
+            size: MTLSize(
+                width: Int(videoFrame.width) / 2,
+                height: Int(videoFrame.height) / 2,
+                depth: 1
+            )
+        )
 
         yuvFrame.luma.withUnsafeBytes { lumaBuffer in
             if let lumaBufferBasePointer = lumaBuffer.baseAddress {
-                yTexture.replace(region: yRegion, mipmapLevel: 0, withBytes: lumaBufferBasePointer, bytesPerRow: Int(videoFrame.width))
+                yTexture.replace(
+                        region: yRegion,
+                        mipmapLevel: 0,
+                        withBytes: lumaBufferBasePointer,
+                        bytesPerRow: Int(
+                            videoFrame.width
+                        )
+                    )
             }
         }
         
         yuvFrame.chromaB.withUnsafeBytes { chromaBBuffer in
             if let chromaBBufferBasePointer = chromaBBuffer.baseAddress {
-                uTexture.replace(region: uvRegion, mipmapLevel: 0, withBytes: chromaBBufferBasePointer, bytesPerRow: Int(videoFrame.width) / 2)
+                uTexture.replace(
+                    region: uvRegion,
+                    mipmapLevel: 0,
+                    withBytes: chromaBBufferBasePointer,
+                    bytesPerRow: Int(videoFrame.width) / 2
+                )
             }
         }
 
         yuvFrame.chromaR.withUnsafeBytes { chromaRBuffer in
             if let chromaRBufferBasePointer = chromaRBuffer.baseAddress {
-                vTexture.replace(region: uvRegion, mipmapLevel: 0, withBytes: chromaRBufferBasePointer, bytesPerRow: Int(videoFrame.width) / 2)
+                vTexture.replace(
+                        region: uvRegion,
+                        mipmapLevel: 0,
+                        withBytes: chromaRBufferBasePointer,
+                        bytesPerRow: Int(videoFrame.width) / 2
+                    )
             }
         }
 

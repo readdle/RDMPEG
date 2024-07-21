@@ -6,16 +6,20 @@
 //  Copyright © 2024 Readdle. All rights reserved.
 //
 
+// swiftlint:disable file_types_order
+
 import UIKit
 
-@objc public enum RDMPEGFrameType: UInt {
+@objc
+public enum RDMPEGFrameType: UInt {
     case audio
     case video
     case artwork
     case subtitle
 }
 
-@objcMembers public class RDMPEGFrame: NSObject {
+@objcMembers
+public class RDMPEGFrame: NSObject {
     public let type: RDMPEGFrameType
     public var position: TimeInterval
     public var duration: TimeInterval
@@ -28,7 +32,8 @@ import UIKit
     }
 }
 
-@objcMembers public class RDMPEGAudioFrame: RDMPEGFrame {
+@objcMembers
+public class RDMPEGAudioFrame: RDMPEGFrame {
     public var samples: Data
 
     public init(position: TimeInterval, duration: TimeInterval, samples: Data) {
@@ -37,7 +42,8 @@ import UIKit
     }
 }
 
-@objcMembers public class RDMPEGVideoFrame: RDMPEGFrame {
+@objcMembers
+public class RDMPEGVideoFrame: RDMPEGFrame {
     public var width: UInt
     public var height: UInt
 
@@ -48,7 +54,8 @@ import UIKit
     }
 }
 
-@objcMembers public class RDMPEGVideoFrameBGRA: RDMPEGVideoFrame {
+@objcMembers
+public class RDMPEGVideoFrameBGRA: RDMPEGVideoFrame {
     public var linesize: UInt
     public var bgra: Data
 
@@ -70,7 +77,9 @@ import UIKit
             bitsPerPixel: 32,
             bytesPerRow: Int(linesize),
             space: colorSpace,
-            bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue),
+            bitmapInfo: CGBitmapInfo(
+                rawValue: CGImageAlphaInfo.noneSkipFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
+            ),
             provider: provider!,
             decode: nil,
             shouldInterpolate: true,
@@ -81,12 +90,21 @@ import UIKit
     }
 }
 
-@objcMembers public class RDMPEGVideoFrameYUV: RDMPEGVideoFrame {
+@objcMembers
+public class RDMPEGVideoFrameYUV: RDMPEGVideoFrame {
     public var luma: Data
     public var chromaB: Data
     public var chromaR: Data
 
-    public init(position: TimeInterval, duration: TimeInterval, width: UInt, height: UInt, luma: Data, chromaB: Data, chromaR: Data) {
+    public init(
+        position: TimeInterval,
+        duration: TimeInterval,
+        width: UInt,
+        height: UInt,
+        luma: Data,
+        chromaB: Data,
+        chromaR: Data
+    ) {
         self.luma = luma
         self.chromaB = chromaB
         self.chromaR = chromaR
@@ -94,7 +112,8 @@ import UIKit
     }
 }
 
-@objcMembers public class RDMPEGArtworkFrame: RDMPEGFrame {
+@objcMembers
+public class RDMPEGArtworkFrame: RDMPEGFrame {
     public var picture: Data
 
     public init(picture: Data) {
@@ -114,7 +133,8 @@ import UIKit
     }
 }
 
-@objcMembers public class RDMPEGSubtitleFrame: RDMPEGFrame {
+@objcMembers
+public class RDMPEGSubtitleFrame: RDMPEGFrame {
     public var text: String
 
     public init(position: TimeInterval, duration: TimeInterval, text: String) {
@@ -122,3 +142,5 @@ import UIKit
         super.init(type: .subtitle, position: position, duration: duration)
     }
 }
+
+// swiftlint:enable file_types_order

@@ -9,7 +9,8 @@
 import UIKit
 import Log4Cocoa
 
-@objc public class RDMPEGPlayerView: UIView {
+@objc
+public class RDMPEGPlayerView: UIView {
     @objc public var videoFrame: CGRect {
         return renderView?.videoFrame ?? .zero
     }
@@ -64,12 +65,13 @@ import Log4Cocoa
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func layoutSubviews() {
+    override public func layoutSubviews() {
         super.layoutSubviews()
 
         if subtitleLabel.text?.isEmpty ?? true {
             subtitleLabel.frame = .zero
-        } else {
+        }
+        else {
             let horizontalSubtitleOffset: CGFloat = 10.0
             let verticalSubtitleOffset: CGFloat = 10.0
 

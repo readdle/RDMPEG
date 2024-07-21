@@ -10,7 +10,8 @@ import Foundation
 import ffmpegkit
 import Log4Cocoa
 
-@objcMembers public class RDMobileFFmpegOperation: RDMPEGOperation, @unchecked Sendable {
+@objcMembers
+public class RDMobileFFmpegOperation: RDMPEGOperation, @unchecked Sendable {
 
     public typealias StatisticsBlock = (RDMobileFFmpegStatistics) -> Void
     public typealias ResultBlock = (Int32) -> Void
@@ -30,7 +31,12 @@ import Log4Cocoa
         super.init()
     }
 
-    public init(arguments: [String], statisticsBlock: @escaping StatisticsBlock, resultBlock: @escaping ResultBlock, logBlock: LogBlock?) {
+    public init(
+        arguments: [String],
+        statisticsBlock: @escaping StatisticsBlock,
+        resultBlock: @escaping ResultBlock,
+        logBlock: LogBlock?
+    ) {
         self.arguments = arguments
         self.statisticsBlock = statisticsBlock
         self.resultBlock = resultBlock

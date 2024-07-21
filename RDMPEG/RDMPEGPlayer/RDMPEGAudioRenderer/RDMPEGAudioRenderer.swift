@@ -12,7 +12,11 @@ import Accelerate
 import Log4Cocoa
 
 class RDMPEGAudioRenderer: NSObject {
-    public typealias OutputCallback = (_ data: UnsafeMutablePointer<Float>, _ numFrames: UInt32, _ numChannels: UInt32) -> Void
+    public typealias OutputCallback = (
+        _ data: UnsafeMutablePointer<Float>,
+        _ numFrames: UInt32,
+        _ numChannels: UInt32
+    ) -> Void
 
     private static let maxFrameSize: Int = 4096
     private static let maxChannelsCount: Int = 2
@@ -30,10 +34,15 @@ class RDMPEGAudioRenderer: NSObject {
 
     override public init() {
         self.samplingRate = AVAudioSession.sharedInstance().sampleRate
-        self.outputData = UnsafeMutablePointer<Float>.allocate(capacity: RDMPEGAudioRenderer.maxFrameSize * RDMPEGAudioRenderer.maxChannelsCount)
+        self.outputData = UnsafeMutablePointer<Float>.allocate(
+                capacity: RDMPEGAudioRenderer.maxFrameSize * RDMPEGAudioRenderer.maxChannelsCount
+            )
         super.init()
 
-        self.outputData?.initialize(repeating: 0, count: RDMPEGAudioRenderer.maxFrameSize * RDMPEGAudioRenderer.maxChannelsCount)
+        self.outputData?.initialize(
+                repeating: 0,
+                count: RDMPEGAudioRenderer.maxFrameSize * RDMPEGAudioRenderer.maxChannelsCount
+            )
         self.audioUnitStarted = startAudioUnit()
     }
 
@@ -78,11 +87,13 @@ class RDMPEGAudioRenderer: NSObject {
         return false
     }
 
+    // swiftlint:disable:next function_body_length
     private func startAudioUnit() -> Bool {
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback)
             try AVAudioSession.sharedInstance().setActive(true)
-        } catch {
+        }
+        catch {
             log4Assert(false, "Audio session error: \(error)")
             return false
         }
@@ -143,12 +154,14 @@ class RDMPEGAudioRenderer: NSObject {
             inputProcRefCon: Unmanaged.passUnretained(self).toOpaque()
         )
 
-        status = AudioUnitSetProperty(audioUnit,
-                                      kAudioUnitProperty_SetRenderCallback,
-                                      kAudioUnitScope_Input,
-                                      0,
-                                      &callbackStruct,
-                                      UInt32(MemoryLayout<AURenderCallbackStruct>.size))
+        status = AudioUnitSetProperty(
+            audioUnit,
+            kAudioUnitProperty_SetRenderCallback,
+            kAudioUnitScope_Input,
+            0,
+            &callbackStruct,
+            UInt32(MemoryLayout<AURenderCallbackStruct>.size)
+        )
 
         guard status == noErr else {
             log4Assert(false, "Couldn't set the render callback on the audio unit with error: \(status)")
@@ -236,7 +249,8 @@ class RDMPEGAudioRenderer: NSObject {
                     }
                 }
             }
-        } else if bytesPerSample == 2 {  // then we need to convert SInt16 -> Float (and also scale)
+        }
+        else if bytesPerSample == 2 {  // then we need to convert SInt16 -> Float (and also scale)
             var scale: Float = Float(Int16.max)
             vDSP_vsmul(outputData, 1, &scale, outputData, 1, vDSP_Length(numFrames) * vDSP_Length(outputChannelsCount))
 
@@ -258,6 +272,7 @@ class RDMPEGAudioRenderer: NSObject {
     }
 }
 
+// swiftlint:disable:next function_parameter_count
 private func audioRenderCallback(inRefCon: UnsafeMutableRawPointer,
                                  ioActionFlags: UnsafeMutablePointer<AudioUnitRenderActionFlags>,
                                  inTimeStamp: UnsafePointer<AudioTimeStamp>,

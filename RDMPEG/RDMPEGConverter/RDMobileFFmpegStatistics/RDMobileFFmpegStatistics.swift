@@ -9,7 +9,8 @@
 import Foundation
 import ffmpegkit
 
-@objcMembers public class RDMobileFFmpegStatistics: NSObject {
+@objcMembers
+public class RDMobileFFmpegStatistics: NSObject {
     private let statistics: Statistics
 
     public var frameNumber: Int {

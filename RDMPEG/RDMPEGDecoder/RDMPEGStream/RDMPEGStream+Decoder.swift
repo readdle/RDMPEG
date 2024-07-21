@@ -10,7 +10,8 @@ import Foundation
 import Log4Cocoa
 
 extension RDMPEGStream {
-    @objc public convenience init(stream: UnsafeMutablePointer<AVStream>, atIndex streamIndex: UInt) {
+    @objc
+    public convenience init(stream: UnsafeMutablePointer<AVStream>, atIndex streamIndex: UInt) {
         self.init()
         self.stream = stream
         self.streamIndex = streamIndex
@@ -18,23 +19,31 @@ extension RDMPEGStream {
         if let codec = avcodec_find_decoder(stream.pointee.codecpar.pointee.codec_id) {
             var codecContext = avcodec_alloc_context3(codec)
             if let codecContextUnwrapped = codecContext {
-                let parametersToContextStatus = avcodec_parameters_to_context(codecContextUnwrapped, stream.pointee.codecpar)
+                let parametersToContextStatus = avcodec_parameters_to_context(
+                    codecContextUnwrapped,
+                    stream.pointee.codecpar
+                )
+
                 if parametersToContextStatus >= 0 {
                     codecContextUnwrapped.pointee.pkt_timebase = stream.pointee.time_base
-                    self.codec = .init(codec)
+                    self.codec = UnsafePointer(codec)
                     self.codecContext = codecContext
-                } else {
-                    log4Error("Parameters to context error: \(LibAVFormatHelpers.errorToString(errorCode: parametersToContextStatus))")
+                }
+                else {
+                    let libAVError = LibAVFormatHelpers.errorToString(errorCode: parametersToContextStatus)
+                    log4Error("Parameters to context error: \(libAVError)")
 
                     avcodec_free_context(&codecContext)
                 }
-            } else {
+            }
+            else {
                 log4Error("Unable to allocate codec context")
             }
         }
     }
 
-    @objc public func openCodec() -> Bool {
+    @objc
+    public func openCodec() -> Bool {
         guard let codec = codec, let codecContext = codecContext else {
             return false
         }
@@ -57,7 +66,8 @@ extension RDMPEGStream {
         return true
     }
 
-    @objc public func closeCodec() {
+    @objc
+    public func closeCodec() {
         if let codecContext = codecContext {
             if let subCharEnc = codecContext.pointee.sub_charenc {
                 free(UnsafeMutableRawPointer(mutating: subCharEnc))

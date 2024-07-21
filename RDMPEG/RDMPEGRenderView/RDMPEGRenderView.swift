@@ -62,7 +62,7 @@ class RDMPEGRenderView: MTKView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func layoutSubviews() {
+    override public func layoutSubviews() {
         super.layoutSubviews()
 
         drawableSize = CGSize(width: bounds.width * contentScaleFactor,
@@ -99,7 +99,11 @@ class RDMPEGRenderView: MTKView {
         renderEncoder.setViewport(viewport)
         renderEncoder.setRenderPipelineState(pipelineState)
         renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: Int(RDMPEGVertexInputIndexVertices.rawValue))
-        renderEncoder.setVertexBytes(&viewportSize, length: MemoryLayout<vector_uint2>.size, index: Int(RDMPEGVertexInputIndexViewportSize.rawValue))
+        renderEncoder.setVertexBytes(
+                &viewportSize,
+                length: MemoryLayout<vector_uint2>.size,
+                index: Int(RDMPEGVertexInputIndexViewportSize.rawValue)
+            )
 
         if let videoFrame = videoFrame {
             textureSampler.updateTextures(with: videoFrame, renderEncoder: renderEncoder)
@@ -142,7 +146,8 @@ class RDMPEGRenderView: MTKView {
 
         do {
             pipelineState = try device!.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
-        } catch {
+        }
+        catch {
             log4Assert(false, "Unable to create render pipeline: \(error)")
         }
 
@@ -173,12 +178,30 @@ class RDMPEGRenderView: MTKView {
         let adjustedHeight = halfHeight * scale
 
         let quadVertices: [RDMPEGVertex] = [
-            RDMPEGVertex(position: vector_float2( Float(adjustedWidth), -Float(adjustedHeight)), textureCoordinate: vector_float2(1.0, 1.0)),
-            RDMPEGVertex(position: vector_float2(-Float(adjustedWidth), -Float(adjustedHeight)), textureCoordinate: vector_float2(0.0, 1.0)),
-            RDMPEGVertex(position: vector_float2(-Float(adjustedWidth),  Float(adjustedHeight)), textureCoordinate: vector_float2(0.0, 0.0)),
-            RDMPEGVertex(position: vector_float2( Float(adjustedWidth), -Float(adjustedHeight)), textureCoordinate: vector_float2(1.0, 1.0)),
-            RDMPEGVertex(position: vector_float2(-Float(adjustedWidth),  Float(adjustedHeight)), textureCoordinate: vector_float2(0.0, 0.0)),
-            RDMPEGVertex(position: vector_float2( Float(adjustedWidth),  Float(adjustedHeight)), textureCoordinate: vector_float2(1.0, 0.0))
+            RDMPEGVertex(
+                position: vector_float2( Float(adjustedWidth), -Float(adjustedHeight)),
+                textureCoordinate: vector_float2(1.0, 1.0)
+            ),
+            RDMPEGVertex(
+                position: vector_float2(-Float(adjustedWidth), -Float(adjustedHeight)),
+                textureCoordinate: vector_float2(0.0, 1.0)
+            ),
+            RDMPEGVertex(
+                position: vector_float2(-Float(adjustedWidth), Float(adjustedHeight)),
+                textureCoordinate: vector_float2(0.0, 0.0)
+            ),
+            RDMPEGVertex(
+                position: vector_float2( Float(adjustedWidth), -Float(adjustedHeight)),
+                textureCoordinate: vector_float2(1.0, 1.0)
+            ),
+            RDMPEGVertex(
+                position: vector_float2(-Float(adjustedWidth), Float(adjustedHeight)),
+                textureCoordinate: vector_float2(0.0, 0.0)
+            ),
+            RDMPEGVertex(
+                position: vector_float2( Float(adjustedWidth), Float(adjustedHeight)),
+                textureCoordinate: vector_float2(1.0, 0.0)
+            )
         ]
 
         vertexBuffer = device?.makeBuffer(bytes: quadVertices,
@@ -214,7 +237,8 @@ class RDMPEGRenderView: MTKView {
         log4Assert(bounds.contains(aspectFitVideoFrame), "Aspect fit frame should be contained within bounds")
     }
 
-    @objc private func applicationDidBecomeActive() {
+    @objc
+    private func applicationDidBecomeActive() {
         render(currentFrame)
     }
 }

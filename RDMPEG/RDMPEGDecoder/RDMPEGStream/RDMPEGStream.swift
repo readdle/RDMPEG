@@ -9,7 +9,8 @@
 import Foundation
 import Log4Cocoa
 
-@objc public enum RDMPEGStreamCodecType: UInt {
+@objc
+public enum RDMPEGStreamCodecType: UInt {
     case unknown
     case h264
     case mp3
@@ -20,7 +21,8 @@ import Log4Cocoa
     case wav
 }
 
-@objc public class RDMPEGStream: NSObject {
+@objc
+public class RDMPEGStream: NSObject {
     @objc public var stream: UnsafeMutablePointer<AVStream>?
     @objc public var streamIndex: UInt = 0
     @objc public var codec: UnsafePointer<AVCodec>?
@@ -74,7 +76,8 @@ import Log4Cocoa
         avcodec_free_context(&codecContext)
     }
 
-    @objc public override class func l4Logger() -> L4Logger {
+    @objc
+    override public class func l4Logger() -> L4Logger {
         return L4Logger(forName: "rd.mediaplayer.RDMPEGStream")
     }
 

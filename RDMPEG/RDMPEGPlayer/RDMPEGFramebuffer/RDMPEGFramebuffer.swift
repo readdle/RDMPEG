@@ -20,83 +20,65 @@ class RDMPEGFramebuffer {
     private var subtitleFramesLock = NSLock()
 
     var bufferedVideoDuration: TimeInterval {
-        get {
-            videoFramesLock.withLock {
-                return videoFrames.reduce(0) { $0 + $1.duration }
-            }
+        videoFramesLock.withLock {
+            return videoFrames.reduce(0) { $0 + $1.duration }
         }
     }
 
     var bufferedAudioDuration: TimeInterval {
-        get {
-            audioFramesLock.withLock {
-                return audioFrames.reduce(0) { $0 + $1.duration }
-            }
+        audioFramesLock.withLock {
+            return audioFrames.reduce(0) { $0 + $1.duration }
         }
     }
 
     var bufferedSubtitleDuration: TimeInterval {
-        get {
-            subtitleFramesLock.withLock {
-                guard let first = subtitleFrames.first else { return 0 }
-                var minPosition = first.position
-                var maxPosition = first.position + first.duration
+        subtitleFramesLock.withLock {
+            guard let first = subtitleFrames.first else { return 0 }
+            var minPosition = first.position
+            var maxPosition = first.position + first.duration
 
-                for frame in subtitleFrames {
-                    minPosition = min(minPosition, frame.position)
-                    maxPosition = max(maxPosition, frame.position + frame.duration)
-                }
-
-                return maxPosition - minPosition
+            for frame in subtitleFrames {
+                minPosition = min(minPosition, frame.position)
+                maxPosition = max(maxPosition, frame.position + frame.duration)
             }
+
+            return maxPosition - minPosition
         }
     }
 
     var bufferedVideoFramesCount: Int {
-        get {
-            videoFramesLock.withLock {
-                return videoFrames.count
-            }
+        videoFramesLock.withLock {
+            return videoFrames.count
         }
     }
 
     var bufferedAudioFramesCount: Int {
-        get {
-            audioFramesLock.withLock {
-                return audioFrames.count
-            }
+        audioFramesLock.withLock {
+            return audioFrames.count
         }
     }
 
     var bufferedSubtitleFramesCount: Int {
-        get {
-            subtitleFramesLock.withLock {
-                return subtitleFrames.count
-            }
+        subtitleFramesLock.withLock {
+            return subtitleFrames.count
         }
     }
 
     var nextVideoFrame: RDMPEGVideoFrame? {
-        get {
-            videoFramesLock.withLock {
-                return videoFrames.first
-            }
+        videoFramesLock.withLock {
+            return videoFrames.first
         }
     }
 
     var nextAudioFrame: RDMPEGAudioFrame? {
-        get {
-            audioFramesLock.withLock {
-                return audioFrames.first
-            }
+        audioFramesLock.withLock {
+            return audioFrames.first
         }
     }
 
     var nextSubtitleFrame: RDMPEGSubtitleFrame? {
-        get {
-            subtitleFramesLock.withLock {
-                return subtitleFrames.first
-            }
+        subtitleFramesLock.withLock {
+            return subtitleFrames.first
         }
     }
 
@@ -108,28 +90,34 @@ class RDMPEGFramebuffer {
         for frame in frames {
             switch frame.type {
             case .video:
-                let videoFrame = frame as! RDMPEGVideoFrame
-                #if RD_DEBUG_MPEG_PLAYER
-                log4Debug("Pushed video frame: \(frame.position) \(frame.duration)")
-                #endif
-                videoFramesLock.withLock {
-                    videoFrames.append(videoFrame)
+                if let videoFrame = frame as? RDMPEGVideoFrame {
+                    #if RD_DEBUG_MPEG_PLAYER
+                    log4Debug("Pushed video frame: \(frame.position) \(frame.duration)")
+                    #endif
+                    videoFramesLock.withLock {
+                        videoFrames.append(videoFrame)
+                    }
                 }
             case .audio:
-                let audioFrame = frame as! RDMPEGAudioFrame
-                #if RD_DEBUG_MPEG_PLAYER
-                log4Debug("Pushed audio frame: \(frame.position) \(frame.duration)")
-                #endif
-                audioFramesLock.withLock {
-                    audioFrames.append(audioFrame)
+                if let audioFrame = frame as? RDMPEGAudioFrame {
+                    #if RD_DEBUG_MPEG_PLAYER
+                    log4Debug("Pushed audio frame: \(frame.position) \(frame.duration)")
+                    #endif
+                    audioFramesLock.withLock {
+                        audioFrames.append(audioFrame)
+                    }
                 }
             case .subtitle:
-                let subtitleFrame = frame as! RDMPEGSubtitleFrame
-                #if RD_DEBUG_MPEG_PLAYER
-                log4Debug("Pushed subtitle frame: \(subtitleFrame.position) \(subtitleFrame.duration) \(subtitleFrame.text ?? "")")
-                #endif
-                subtitleFramesLock.withLock {
-                    subtitleFrames.append(subtitleFrame)
+                if let subtitleFrame = frame as? RDMPEGSubtitleFrame {
+                    #if RD_DEBUG_MPEG_PLAYER
+                    log4Debug("""
+                        Pushed subtitle frame:
+                        \(subtitleFrame.position) \(subtitleFrame.duration) \(subtitleFrame.text ?? "")
+                    """)
+                    #endif
+                    subtitleFramesLock.withLock {
+                        subtitleFrames.append(subtitleFrame)
+                    }
                 }
             case .artwork:
                 #if RD_DEBUG_MPEG_PLAYER
@@ -156,7 +144,8 @@ class RDMPEGFramebuffer {
         }
     }
 
-    @discardableResult public func popSubtitleFrame() -> RDMPEGSubtitleFrame? {
+    @discardableResult
+    public func popSubtitleFrame() -> RDMPEGSubtitleFrame? {
         subtitleFramesLock.withLock {
             guard !subtitleFrames.isEmpty else { return nil }
             return subtitleFrames.removeFirst()
