@@ -8,12 +8,11 @@
 
 import Foundation
 
-class RDMPEGRawAudioFrame: NSObject {
+class RDMPEGRawAudioFrame {
     private(set) var rawAudioData: Data
     var rawAudioDataOffset: Int = 0
 
     init(rawAudioData: Data) {
         self.rawAudioData = rawAudioData
-        super.init()
     }
 }

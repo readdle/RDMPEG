@@ -8,7 +8,7 @@
 
 import Metal
 
-protocol RDMPEGTextureSampler: NSObjectProtocol {
+protocol RDMPEGTextureSampler {
     func newSamplingFunction(from library: MTLLibrary) -> MTLFunction?
 
     func setupTextures(with device: MTLDevice, frameWidth: Int, frameHeight: Int)

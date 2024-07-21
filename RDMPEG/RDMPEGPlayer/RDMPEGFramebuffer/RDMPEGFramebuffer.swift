@@ -9,7 +9,7 @@
 import Foundation
 import Log4Cocoa
 
-class RDMPEGFramebuffer: NSObject {
+class RDMPEGFramebuffer {
     var bufferedVideoDuration: TimeInterval {
         get {
             synchronized(videoFrames) {

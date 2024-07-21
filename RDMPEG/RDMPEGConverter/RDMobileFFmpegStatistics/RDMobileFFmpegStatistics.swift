@@ -9,7 +9,7 @@
 import Foundation
 import ffmpegkit
 
-class RDMobileFFmpegStatistics: NSObject {
+class RDMobileFFmpegStatistics {
     private let statistics: Statistics
 
     var frameNumber: Int {
@@ -42,6 +42,5 @@ class RDMobileFFmpegStatistics: NSObject {
 
     init(statistics: Statistics) {
         self.statistics = statistics
-        super.init()
     }
 }

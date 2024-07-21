@@ -10,7 +10,6 @@ import Foundation
 import Log4Cocoa
 
 class RDMPEGRenderScheduler: NSObject {
-
     private var timer: Timer?
     private var callback: (() -> Date?)?
 

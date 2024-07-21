@@ -15,12 +15,12 @@ import UIKit
     case subtitle
 }
 
-@objc public class RDMPEGFrame: NSObject {
-    @objc public let type: RDMPEGFrameType
-    @objc public var position: TimeInterval
-    @objc public var duration: TimeInterval
+@objcMembers public class RDMPEGFrame: NSObject {
+    public let type: RDMPEGFrameType
+    public var position: TimeInterval
+    public var duration: TimeInterval
 
-    @objc public init(type: RDMPEGFrameType, position: TimeInterval, duration: TimeInterval) {
+    public init(type: RDMPEGFrameType, position: TimeInterval, duration: TimeInterval) {
         self.type = type
         self.position = position
         self.duration = duration

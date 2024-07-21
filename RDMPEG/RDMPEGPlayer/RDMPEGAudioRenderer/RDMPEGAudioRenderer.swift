@@ -30,8 +30,9 @@ class RDMPEGAudioRenderer: NSObject {
 
     override public init() {
         self.samplingRate = AVAudioSession.sharedInstance().sampleRate
-        super.init()
         self.outputData = UnsafeMutablePointer<Float>.allocate(capacity: RDMPEGAudioRenderer.maxFrameSize * RDMPEGAudioRenderer.maxChannelsCount)
+        super.init()
+
         self.outputData?.initialize(repeating: 0, count: RDMPEGAudioRenderer.maxFrameSize * RDMPEGAudioRenderer.maxChannelsCount)
         self.audioUnitStarted = startAudioUnit()
     }
