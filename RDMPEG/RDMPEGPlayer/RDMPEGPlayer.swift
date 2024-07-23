@@ -19,14 +19,16 @@ private let RDMPEGPlayerInputNameKey = "RDMPEGPlayerInputNameKey"
 private let RDMPEGPlayerInputAudioStreamsKey = "RDMPEGPlayerInputAudioStreamsKey"
 private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStreamsKey"
 
-@objc public enum RDMPEGPlayerState: Int {
+@objc
+public enum RDMPEGPlayerState: Int {
     case stopped
     case failed
     case paused
     case playing
 }
 
-@objc public protocol RDMPEGPlayerDelegate: AnyObject {
+@objc
+public protocol RDMPEGPlayerDelegate: AnyObject {
     func mpegPlayerDidPrepareToPlay(_ player: RDMPEGPlayer)
     func mpegPlayer(_ player: RDMPEGPlayer, didChangeState state: RDMPEGPlayerState)
     func mpegPlayer(_ player: RDMPEGPlayer, didChangeBufferingState state: RDMPEGPlayerState)
@@ -35,7 +37,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
     func mpegPlayerDidFinishPlaying(_ player: RDMPEGPlayer)
 }
 
-@objc public class RDMPEGPlayer: NSObject {
+@objc
+public class RDMPEGPlayer: NSObject {
     @objc public private(set) var playerView: RDMPEGPlayerView
     @objc public var state: RDMPEGPlayerState { internalState }
     @objc public private(set) var error: Error?
@@ -95,7 +98,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
     private var audioStreamExist: Bool = false
     private var subtitleStreamExist: Bool = false
 
-    @objc public init(filePath: String) {
+    @objc
+    public init(filePath: String) {
         self.filePath = filePath
         self.stream = nil
         self.decodingQueue = OperationQueue()
@@ -119,7 +123,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         self.externalInputsQueue.maxConcurrentOperationCount = 1
     }
 
-    @objc public init(filePath: String, stream: RDMPEGIOStream?) {
+    @objc
+    public init(filePath: String, stream: RDMPEGIOStream?) {
         self.filePath = filePath
         self.stream = stream
         self.decodingQueue = OperationQueue()
@@ -151,7 +156,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         externalInputsQueue.cancelAllOperations()
     }
 
-    @objc public func attachInput(filePath: String, subtitleEncoding: String?, stream: RDMPEGIOStream?) {
+    @objc
+    public func attachInput(filePath: String, subtitleEncoding: String?, stream: RDMPEGIOStream?) {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
         prepareToPlayIfNeeded { [weak self] in
@@ -165,7 +171,11 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
             self.externalInputsQueue.addOperation { [weak self] in
                 guard let self = self else { return }
 
-                let decoder = RDMPEGDecoder(path: filePath, ioStream: stream, subtitleEncoding: subtitleEncoding) { [weak self] in
+                let decoder = RDMPEGDecoder(
+                    path: filePath,
+                    ioStream: stream,
+                    subtitleEncoding: subtitleEncoding
+                ) { [weak self] in
                     self == nil
                 }
 
@@ -181,7 +191,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         }
     }
 
-    @objc public func play() {
+    @objc
+    public func play() {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
         prepareToPlayIfNeeded { [weak self] in
@@ -197,7 +208,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         }
     }
 
-    @objc public func pause() {
+    @objc
+    public func pause() {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
         prepareToPlayIfNeeded { [weak self] in
@@ -219,7 +231,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         }
     }
 
-    @objc public func beginSeeking() {
+    @objc
+    public func beginSeeking() {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
         if !isSeeking {
@@ -232,7 +245,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         }
     }
 
-    @objc public func seek(to time: TimeInterval) {
+    @objc
+    public func seek(to time: TimeInterval) {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
         prepareToPlayIfNeeded { [weak self] in
@@ -274,7 +288,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         }
     }
 
-    @objc public func endSeeking() {
+    @objc
+    public func endSeeking() {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
         if isSeeking {
@@ -287,7 +302,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         }
     }
 
-    @objc public func activateAudioStream(at streamIndex: NSNumber?) {
+    @objc
+    public func activateAudioStream(at streamIndex: NSNumber?) {
         if !preparedToPlay {
             return
         }
@@ -303,7 +319,11 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         var decoderStreamToActivate: NSNumber?
 
         if let streamIndex = streamIndex {
-            decoder = decoderForStream(at: streamIndex, streamsKey: RDMPEGPlayerInputAudioStreamsKey, decoderStreamIndex: &decoderStreamToActivate)
+            decoder = decoderForStream(
+                at: streamIndex,
+                streamsKey: RDMPEGPlayerInputAudioStreamsKey,
+                decoderStreamIndex: &decoderStreamToActivate
+            )
         }
 
         let samplingRate = audioRenderer.samplingRate
@@ -321,19 +341,31 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
             }
 
             if self.decoder === decoder {
-                self.decoder?.activateAudioStream(atIndex: decoderStreamToActivate, samplingRate: samplingRate, outputChannels: UInt(outputChannelsCount))
-            } else {
+                self.decoder?
+                    .activateAudioStream(
+                        atIndex: decoderStreamToActivate,
+                        samplingRate: samplingRate,
+                        outputChannels: UInt(outputChannelsCount)
+                    )
+            }
+            else {
                 self.decoder?.deactivateAudioStream()
 
                 self.externalAudioDecoder = decoder
-                self.externalAudioDecoder?.activateAudioStream(atIndex: decoderStreamToActivate, samplingRate: samplingRate, outputChannels: UInt(outputChannelsCount))
+                self.externalAudioDecoder?
+                    .activateAudioStream(
+                        atIndex: decoderStreamToActivate,
+                        samplingRate: samplingRate,
+                        outputChannels: UInt(outputChannelsCount)
+                    )
 
                 self.moveDecoders(to: self.currentInternalTime, includingMainDecoder: false)
             }
         }
     }
 
-    @objc public func activateSubtitleStream(at streamIndex: NSNumber?) {
+    @objc
+    public func activateSubtitleStream(at streamIndex: NSNumber?) {
         if !preparedToPlay {
             return
         }
@@ -349,7 +381,11 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         var decoderStreamToActivate: NSNumber?
 
         if let streamIndex = streamIndex {
-            decoder = decoderForStream(at: streamIndex, streamsKey: RDMPEGPlayerInputSubtitleStreamsKey, decoderStreamIndex: &decoderStreamToActivate)
+            decoder = decoderForStream(
+                at: streamIndex,
+                streamsKey: RDMPEGPlayerInputSubtitleStreamsKey,
+                decoderStreamIndex: &decoderStreamToActivate
+            )
         }
 
         decodingQueue.addOperation { [weak self] in
@@ -364,7 +400,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
 
             if self.decoder === decoder {
                 self.decoder?.activateSubtitleStream(atIndex: decoderStreamToActivate)
-            } else {
+            }
+            else {
                 self.decoder?.deactivateSubtitleStream()
 
                 self.externalSubtitleDecoder = decoder
@@ -375,15 +412,19 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         }
     }
 
-    private func decoderForStream(at streamIndex: NSNumber, streamsKey: String, decoderStreamIndex: UnsafeMutablePointer<NSNumber?>) -> RDMPEGDecoder? {
+    private func decoderForStream(
+        at streamIndex: NSNumber,
+        streamsKey: String,
+        decoderStreamIndex: UnsafeMutablePointer<NSNumber?>
+    ) -> RDMPEGDecoder? {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
         var currentStreamIndex = 0
         for selectableInput in selectableInputs ?? [] {
             if let streams = selectableInput[streamsKey] as? [String] {
-                for i in 0..<streams.count {
+                for index in 0..<streams.count {
                     if streamIndex.intValue == currentStreamIndex {
-                        decoderStreamIndex.pointee = NSNumber(value: i)
+                        decoderStreamIndex.pointee = NSNumber(value: index)
                         return selectableInput[RDMPEGPlayerInputDecoderKey] as? RDMPEGDecoder
                     }
                     currentStreamIndex += 1
@@ -395,6 +436,7 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         return nil
     }
 
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     private func prepareToPlayIfNeeded(successCallback: @escaping () -> Void) {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
@@ -425,7 +467,12 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
             var prepareError: Error?
 
             if !preparedToPlay {
-                preparedToPlay = self.prepareToPlay(audioSamplingRate: samplingRate, outputChannelsCount: outputChannelsCount, error: &prepareError)
+                preparedToPlay = self
+                    .prepareToPlay(
+                        audioSamplingRate: samplingRate,
+                        outputChannelsCount: outputChannelsCount,
+                        error: &prepareError
+                    )
 
                 if preparedToPlay {
                     justPreparedToPlay = true
@@ -445,7 +492,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
                         let textureSampler: RDMPEGTextureSampler
                         if self.decoder?.actualVideoFrameFormat == .YUV {
                             textureSampler = RDMPEGTextureSamplerYUV()
-                        } else {
+                        }
+                        else {
                             textureSampler = RDMPEGTextureSamplerBGRA()
                         }
 
@@ -471,7 +519,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
                     if !prepareOperation.isCancelled {
                         successCallback()
                     }
-                } else {
+                }
+                else {
                     if !prepareOperation.isCancelled {
                         self.updateStateIfNeededAndNotify(.failed, error: prepareError)
                     }
@@ -499,8 +548,14 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
             return false
         }
 
-        let videoError = decoder.loadVideoStream(withPreferredVideoFrameFormat: .YUV, actualVideoFrameFormat: nil)
-        let audioError = decoder.loadAudioStream(withSamplingRate: audioSamplingRate, outputChannels: UInt(outputChannelsCount))
+        let videoError = decoder.loadVideoStream(
+            withPreferredVideoFrameFormat: .YUV,
+            actualVideoFrameFormat: nil
+        )
+        let audioError = decoder.loadAudioStream(
+            withSamplingRate: audioSamplingRate,
+            outputChannels: UInt(outputChannelsCount)
+        )
 
         if videoError == nil || audioError == nil {
             self.decoder = decoder
@@ -559,7 +614,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
                         framebuffer.pushFrames(filteredAudioFrames)
 
                         if let nextAudioFrame = framebuffer.nextAudioFrame {
-                            let externalAudioBufferOverrun = nextAudioFrame.position + framebuffer.bufferedAudioDuration - currentInternalTime
+                            let externalAudioBufferOverrun =
+                                nextAudioFrame.position + framebuffer.bufferedAudioDuration - currentInternalTime
                             if externalAudioBufferOverrun > RDMPEGPlayerMinAudioBufferSize {
                                 return
                             }
@@ -589,7 +645,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
                         framebuffer.pushFrames(filteredSubtitleFrames)
 
                         if let nextSubtitleFrame = framebuffer.nextSubtitleFrame {
-                            let externalSubtitleBufferOverrun = nextSubtitleFrame.position + framebuffer.bufferedSubtitleDuration - currentInternalTime
+                            let externalSubtitleBufferOverrun =
+                            nextSubtitleFrame.position + framebuffer.bufferedSubtitleDuration - currentInternalTime
                             if externalSubtitleBufferOverrun > 0.0 {
                                 return
                             }
@@ -600,6 +657,7 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
         }
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     private func asyncDecodeFramesIfNeeded() {
         if let decodingOperation = decodingOperation, !decodingOperation.isCancelled {
             return
@@ -623,7 +681,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
                 if !self.isAudioBufferReady {
                     if self.decoder?.activeAudioStreamIndex != nil {
                         self.decodeFrames()
-                    } else if self.externalAudioDecoder?.activeAudioStreamIndex != nil {
+                    }
+                    else if self.externalAudioDecoder?.activeAudioStreamIndex != nil {
                         self.decodeExternalAudioFrames()
                     }
                 }
@@ -631,7 +690,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
                 if !self.isSubtitleBufferReady {
                     if self.decoder?.activeSubtitleStreamIndex != nil {
                         self.decodeFrames()
-                    } else if self.externalSubtitleDecoder?.activeSubtitleStreamIndex != nil {
+                    }
+                    else if self.externalSubtitleDecoder?.activeSubtitleStreamIndex != nil {
                         self.decodeExternalSubtitleFrames()
                     }
                 }
@@ -677,7 +737,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
 
                     if self.decodingFinished {
                         self.finishPlaying()
-                    } else {
+                    }
+                    else {
                         self.setBufferingStateIfNeededAndNotify(true)
                         self.asyncDecodeFramesIfNeeded()
                     }
@@ -686,29 +747,37 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
                 }
 
                 if self.correctionInfo == nil {
-                    self.correctionInfo = RDMPEGCorrectionInfo(playbackStartDate: Date(), playbackStartTime: self.currentInternalTime)
+                    self.correctionInfo = RDMPEGCorrectionInfo(
+                        playbackStartDate: Date(),
+                        playbackStartTime: self.currentInternalTime
+                    )
                     self.setBufferingStateIfNeededAndNotify(false)
                 }
 
-                let correctionInterval = self.correctionInfo?.correctionInterval(withCurrentTime: self.currentInternalTime) ?? 0
+                let correctionInterval = self.correctionInfo?.correctionInterval(
+                    withCurrentTime: self.currentInternalTime
+                ) ?? 0
                 let nextFrameInterval = presentedFrame.duration + correctionInterval
 
                 self.asyncDecodeFramesIfNeeded()
 
                 return Date(timeIntervalSinceNow: nextFrameInterval)
-            } else {
+            }
+            else {
                 if self.decodingFinished {
                     if self.framebuffer.nextAudioFrame == nil {
                         self.finishPlaying()
                         return nil
                     }
-                } else {
+                }
+                else {
                     self.asyncDecodeFramesIfNeeded()
                 }
 
                 if let nextAudioFrame = self.framebuffer.nextAudioFrame {
                     return Date(timeIntervalSinceNow: nextAudioFrame.duration)
-                } else {
+                }
+                else {
                     return Date(timeIntervalSinceNow: 0.01)
                 }
             }
@@ -771,10 +840,12 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
                             currentSubtitleFrames.append(subtitleFrame)
                         }
                         break
-                    } else {
+                    }
+                    else {
                         _ = self.framebuffer.popSubtitleFrame()
                     }
-                } else {
+                }
+                else {
                     break
                 }
             }
@@ -793,11 +864,13 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
             _ = audioRenderer.play { [weak self] (data, numFrames, numChannels) in
                 self?.audioCallbackFillData(data, numFrames: numFrames, numChannels: numChannels)
             }
-        } else {
+        }
+        else {
             _ = audioRenderer.pause()
         }
     }
 
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     private func audioCallbackFillData(_ outData: UnsafeMutablePointer<Float>, numFrames: UInt32, numChannels: UInt32) {
         autoreleasepool {
             var outData = outData
@@ -825,11 +898,16 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
 
                     framebuffer.atomicAudioFramesAccess {
                         if let nextFrame = self.framebuffer.nextAudioFrame {
-                            let delta = self.correctionInfo?.correctionInterval(withCurrentTime: nextFrame.position) ?? 0
+                            let delta = self.correctionInfo?.correctionInterval(
+                                withCurrentTime: nextFrame.position
+                            ) ?? 0
 
                             if delta > 0.1 {
 #if RD_DEBUG_MPEG_PLAYER
-                                loggingScope.debug("Desync audio (outrun) wait \(self.currentInternalTime) \(nextFrame.position) \(delta)")
+                                loggingScope.debug("""
+                                    Desync audio (outrun) wait 
+                                    \(self.currentInternalTime) \(nextFrame.position) \(delta)
+                                """)
 #endif
 
                                 isAudioOutrun = true
@@ -844,7 +922,9 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
 
                             if delta < -0.1, self.framebuffer.nextAudioFrame != nil {
 #if RD_DEBUG_MPEG_PLAYER
-                                loggingScope.debug("Desync audio (lags) skip \(self.currentInternalTime) \(nextFrame.position) \(delta)")
+                                loggingScope.debug("""
+                                    Desync audio (lags) skip \(self.currentInternalTime) \(nextFrame.position) \(delta)
+                                """)
 #endif
 
                                 isAudioLags = true
@@ -863,19 +943,24 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
 
                     if let audioFrame = nextAudioFrame {
 #if RD_DEBUG_MPEG_PLAYER
-                        L4Logger.logger(forName: "rd.mediaplayer.RDMPEGPlayer").debug("Audio frame will be rendered: \(audioFrame.position) \(audioFrame.duration)")
+                        L4Logger.logger(forName: "rd.mediaplayer.RDMPEGPlayer")
+                            .debug("Audio frame will be rendered: \(audioFrame.position) \(audioFrame.duration)")
 #endif
 
                         rawAudioFrame = RDMPEGRawAudioFrame(rawAudioData: audioFrame.samples)
 
                         if !videoStreamExist {
-                            correctionInfo = RDMPEGCorrectionInfo(playbackStartDate: Date(), playbackStartTime: currentInternalTime)
+                            correctionInfo = RDMPEGCorrectionInfo(
+                                playbackStartDate: Date(),
+                                playbackStartTime: currentInternalTime
+                            )
 
                             DispatchQueue.main.async {
                                 self.setBufferingStateIfNeededAndNotify(false)
                             }
                         }
-                    } else if !videoStreamExist {
+                    }
+                    else if !videoStreamExist {
                         correctionInfo = nil
 
                         DispatchQueue.main.async {
@@ -903,10 +988,14 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
                     rawAudioFrame.rawAudioDataOffset += bytesToCopy
 
                     if rawAudioFrame.rawAudioDataOffset >= rawAudioFrame.rawAudioData.count {
-                        log4Assert(rawAudioFrame.rawAudioDataOffset == rawAudioFrame.rawAudioData.count, "Incorrect offset, copying should be checked")
+                        log4Assert(
+                            rawAudioFrame.rawAudioDataOffset == rawAudioFrame.rawAudioData.count,
+                            "Incorrect offset, copying should be checked"
+                        )
                         self.rawAudioFrame = nil
                     }
-                } else {
+                }
+                else {
 #if RD_DEBUG_MPEG_PLAYER
                     L4Logger.logger(forName: "rd.mediaplayer.RDMPEGPlayer").debug("Silence audio")
 #endif
@@ -940,7 +1029,10 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
             return
         }
 
-        timeObservingTimer = Timer.scheduledTimer(withTimeInterval: timeObservingInterval, repeats: true) { [weak self] _ in
+        timeObservingTimer = Timer.scheduledTimer(
+                withTimeInterval: timeObservingInterval,
+                repeats: true
+            ) { [weak self] _ in
             self?.timeObservingTimerFired()
         }
     }
@@ -970,7 +1062,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
 
         if internalState == .playing {
             startTimeObservingTimer()
-        } else {
+        }
+        else {
             stopTimeObservingTimer()
         }
 
@@ -989,6 +1082,7 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
     private func registerSelectableInputFromDecoderIfNeeded(_ decoder: RDMPEGDecoder?, inputName: String?) {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
+        // swiftlint:disable:next empty_count
         guard let decoder = decoder, decoder.audioStreams.count > 0 || decoder.subtitleStreams.count > 0 else {
             return
         }
@@ -1062,7 +1156,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
                     let firstLetter = String(language.prefix(1))
                     let foldedFirstLetter = firstLetter.folding(options: .diacriticInsensitive, locale: .current)
                     streamName += foldedFirstLetter.uppercased() + language.dropFirst()
-                } else {
+                }
+                else {
                     streamName += languageCode
                 }
 
@@ -1074,7 +1169,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
             if let info = stream.info {
                 streamName += info
             }
-        } else {
+        }
+        else {
             streamName += NSLocalizedString("Unsupported", comment: "Stream which we're unable to decode")
         }
 
@@ -1096,7 +1192,10 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
 
         if decoder?.isVideoStreamExist == true {
             if decoder?.activeAudioStreamIndex != nil {
-                log4Assert(externalAudioDecoder == nil, "External audio decoder should be nil when main audio stream activated")
+                log4Assert(
+                    externalAudioDecoder == nil,
+                    "External audio decoder should be nil when main audio stream activated"
+                )
 
                 if decoder?.isEndReached == true {
                     return true
@@ -1111,7 +1210,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
                 }
 
                 return false
-            } else if externalAudioDecoder?.activeAudioStreamIndex != nil {
+            }
+            else if externalAudioDecoder?.activeAudioStreamIndex != nil {
                 if externalAudioDecoder?.isEndReached == true {
                     return true
                 }
@@ -1121,10 +1221,12 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
                 }
 
                 return false
-            } else {
+            }
+            else {
                 return true
             }
-        } else {
+        }
+        else {
             guard let decoder = decoder, decoder.isAudioStreamExist, !decoder.isEndReached else {
                 return true
             }
@@ -1138,7 +1240,10 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
 
         if decoder?.isVideoStreamExist == true {
             if decoder?.activeSubtitleStreamIndex != nil {
-                log4Assert(externalSubtitleDecoder == nil, "External subtitle decoder should be nil when main subtitle stream activated")
+                log4Assert(
+                    externalSubtitleDecoder == nil,
+                    "External subtitle decoder should be nil when main subtitle stream activated"
+                )
 
                 if decoder?.isEndReached == true {
                     return true
@@ -1149,7 +1254,8 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
                 }
 
                 return framebuffer.bufferedSubtitleFramesCount > 0
-            } else if externalSubtitleDecoder?.activeSubtitleStreamIndex != nil {
+            }
+            else if externalSubtitleDecoder?.activeSubtitleStreamIndex != nil {
                 if externalSubtitleDecoder?.isEndReached == true {
                     return true
                 }
@@ -1159,10 +1265,12 @@ private let RDMPEGPlayerInputSubtitleStreamsKey = "RDMPEGPlayerInputSubtitleStre
                 }
 
                 return framebuffer.bufferedSubtitleFramesCount > 0
-            } else {
+            }
+            else {
                 return true
             }
-        } else {
+        }
+        else {
             return true
         }
     }

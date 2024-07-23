@@ -9,7 +9,8 @@
 import UIKit
 import Log4Cocoa
 
-@objc public class RDMPEGPlayerView: UIView {
+@objc
+public class RDMPEGPlayerView: UIView {
     @objc public var videoFrame: CGRect {
         return renderView?.videoFrame ?? .zero
     }
@@ -23,7 +24,7 @@ import Log4Cocoa
     }
 
     private let subtitleLabel: UILabel
-    @objc public var renderView: RDMPEGRenderView? {
+    var renderView: RDMPEGRenderView? {
         didSet {
             if renderView !== oldValue {
                 oldValue?.removeFromSuperview()
@@ -39,7 +40,7 @@ import Log4Cocoa
         }
     }
 
-    @objc public var subtitle: String? {
+    var subtitle: String? {
         get { return subtitleLabel.text }
         set {
             subtitleLabel.text = newValue
@@ -47,7 +48,7 @@ import Log4Cocoa
         }
     }
 
-    @objc public override init(frame: CGRect) {
+    override init(frame: CGRect) {
         subtitleLabel = UILabel()
         subtitleLabel.numberOfLines = 0
         subtitleLabel.textColor = .white
@@ -64,12 +65,13 @@ import Log4Cocoa
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func layoutSubviews() {
+    override public func layoutSubviews() {
         super.layoutSubviews()
 
         if subtitleLabel.text?.isEmpty ?? true {
             subtitleLabel.frame = .zero
-        } else {
+        }
+        else {
             let horizontalSubtitleOffset: CGFloat = 10.0
             let verticalSubtitleOffset: CGFloat = 10.0
 
@@ -97,7 +99,7 @@ import Log4Cocoa
 }
 
 extension RDMPEGPlayerView {
-    @objc public override class func l4Logger() -> L4Logger {
+    override public class func l4Logger() -> L4Logger {
         return L4Logger(forName: "rd.mediaplayer.RDMPEGPlayerView")
     }
 }

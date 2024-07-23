@@ -9,14 +9,14 @@
 import Metal
 import Log4Cocoa
 
-@objc public class RDMPEGTextureSamplerBGRA: NSObject, RDMPEGTextureSampler {
+class RDMPEGTextureSamplerBGRA: NSObject, RDMPEGTextureSampler {
     private var bgraTexture: MTLTexture?
 
-    @objc public func newSamplingFunction(from library: MTLLibrary) -> MTLFunction? {
+    func newSamplingFunction(from library: MTLLibrary) -> MTLFunction? {
         return library.makeFunction(name: "samplingShaderBGRA")
     }
 
-    @objc public func setupTextures(with device: MTLDevice, frameWidth: Int, frameHeight: Int) {
+    func setupTextures(with device: MTLDevice, frameWidth: Int, frameHeight: Int) {
         guard bgraTexture == nil else {
             assertionFailure("Texture is already created")
             return
@@ -30,7 +30,7 @@ import Log4Cocoa
         bgraTexture = device.makeTexture(descriptor: textureDescriptor)
     }
 
-    @objc public func updateTextures(with videoFrame: RDMPEGVideoFrame, renderEncoder: MTLRenderCommandEncoder) {
+    func updateTextures(with videoFrame: RDMPEGVideoFrame, renderEncoder: MTLRenderCommandEncoder) {
         guard let bgraTexture = bgraTexture else {
             assertionFailure("setupTextures(with:frameWidth:frameHeight:) must be called before updating textures")
             return
@@ -43,7 +43,10 @@ import Log4Cocoa
 
         guard bgraTexture.width == videoFrame.width,
               bgraTexture.height == videoFrame.height else {
-            log4Assert(false, "Video frame size (\(videoFrame.width) \(videoFrame.height)) does not equal to texture size (\(bgraTexture.width) \(bgraTexture.height))")
+            log4Assert(false, """
+                Video frame size (\(videoFrame.width) \(videoFrame.height)) does not equal to 
+                texture size (\(bgraTexture.width) \(bgraTexture.height))
+            """)
             return
         }
 
@@ -52,7 +55,13 @@ import Log4Cocoa
 
         bgraFrame.bgra.withUnsafeBytes { bgraBuffer in
             if let bgraBufferBasePointer = bgraBuffer.baseAddress {
-                bgraTexture.replace(region: region, mipmapLevel: 0, withBytes: bgraBufferBasePointer, bytesPerRow: 4 * Int(videoFrame.width))
+                bgraTexture
+                    .replace(
+                        region: region,
+                        mipmapLevel: 0,
+                        withBytes: bgraBufferBasePointer,
+                        bytesPerRow: 4 * Int(videoFrame.width)
+                    )
             }
         }
 

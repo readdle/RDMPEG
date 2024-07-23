@@ -8,16 +8,22 @@
 
 import Foundation
 
-@objc public class RDMPEGSubtitleASSParser: NSObject {
+@objcMembers
+public class RDMPEGSubtitleASSParser: NSObject {
 
-    @objc public class func parseEvents(_ events: String) -> [String]? {
+    public class func parseEvents(_ events: String) -> [String]? {
         guard let range = events.range(of: "[Events]") else { return nil }
         var position = range.upperBound
 
         guard let formatRange = events.range(of: "Format:", range: position..<events.endIndex) else { return nil }
         position = formatRange.upperBound
 
-        guard let newlineRange = events.rangeOfCharacter(from: .newlines, range: position..<events.endIndex) else { return nil }
+        guard let newlineRange = events.rangeOfCharacter(
+            from: .newlines,
+            range: position..<events.endIndex
+        ) else {
+            return nil
+        }
 
         let format = events[position..<newlineRange.lowerBound]
         let fields = format.components(separatedBy: ",")
@@ -27,7 +33,7 @@ import Foundation
         return fields.map { $0.trimmingCharacters(in: .whitespaces) }
     }
 
-    @objc public class func parseDialogue(_ dialogue: String, numFields: UInt) -> [String]? {
+    public class func parseDialogue(_ dialogue: String, numFields: UInt) -> [String]? {
         guard dialogue.hasPrefix("Dialogue:") else { return nil }
 
         var fields: [String] = []
@@ -39,7 +45,8 @@ import Foundation
 
             if let commaRange = dialogue.range(of: ",", range: position..<dialogue.endIndex) {
                 range = commaRange.upperBound..<dialogue.endIndex
-            } else {
+            }
+            else {
                 range = dialogue.endIndex..<dialogue.endIndex
             }
 
@@ -53,21 +60,22 @@ import Foundation
         return fields
     }
 
-    @objc public class func removeCommandsFromEventText(_ text: String) -> String {
+    public class func removeCommandsFromEventText(_ text: String) -> String {
         var result = ""
         let scanner = Scanner(string: text)
         scanner.charactersToBeSkipped = nil
 
         while !scanner.isAtEnd {
-            if let s = scanner.scanUpToString("{\\") {
-                result += s
+            if let scanned = scanner.scanUpToString("{\\") {
+                result += scanned
             }
 
             if scanner.scanString("{\\") != nil,
                scanner.scanUpToString("}") != nil,
                scanner.scanString("}") != nil {
                 continue
-            } else {
+            }
+            else {
                 break
             }
         }

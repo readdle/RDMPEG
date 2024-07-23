@@ -10,12 +10,12 @@ import UIKit
 import MetalKit
 import Log4Cocoa
 
-@objc public class RDMPEGRenderView: MTKView {
-    @objc public var videoFrame: CGRect {
+class RDMPEGRenderView: MTKView {
+    var videoFrame: CGRect {
         return isAspectFillMode ? bounds : aspectFitVideoFrame
     }
-    @objc public private(set) var aspectFitVideoFrame: CGRect = .zero
-    @objc public var isAspectFillMode: Bool = false {
+    private(set) var aspectFitVideoFrame: CGRect = .zero
+    var isAspectFillMode: Bool = false {
         didSet {
             if isAspectFillMode != oldValue {
                 updateVertices()
@@ -39,7 +39,7 @@ import Log4Cocoa
         return L4Logger(forName: "rd.mediaplayer.RDMPEGRenderView")
     }
 
-    @objc public init(frame: CGRect, textureSampler: RDMPEGTextureSampler, frameWidth: Int, frameHeight: Int) {
+    init(frame: CGRect, textureSampler: RDMPEGTextureSampler, frameWidth: Int, frameHeight: Int) {
         self.textureSampler = textureSampler
         self.frameWidth = frameWidth
         self.frameHeight = frameHeight
@@ -62,7 +62,7 @@ import Log4Cocoa
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func layoutSubviews() {
+    override public func layoutSubviews() {
         super.layoutSubviews()
 
         drawableSize = CGSize(width: bounds.width * contentScaleFactor,
@@ -71,7 +71,7 @@ import Log4Cocoa
         updateVertices()
     }
 
-    @objc public func render(_ videoFrame: RDMPEGVideoFrame?) {
+    func render(_ videoFrame: RDMPEGVideoFrame?) {
         guard isAbleToRender else {
             log4Assert(videoFrame == nil, "Attempt to render frame in invalid state")
             return
@@ -99,7 +99,11 @@ import Log4Cocoa
         renderEncoder.setViewport(viewport)
         renderEncoder.setRenderPipelineState(pipelineState)
         renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: Int(RDMPEGVertexInputIndexVertices.rawValue))
-        renderEncoder.setVertexBytes(&viewportSize, length: MemoryLayout<vector_uint2>.size, index: Int(RDMPEGVertexInputIndexViewportSize.rawValue))
+        renderEncoder.setVertexBytes(
+                &viewportSize,
+                length: MemoryLayout<vector_uint2>.size,
+                index: Int(RDMPEGVertexInputIndexViewportSize.rawValue)
+            )
 
         if let videoFrame = videoFrame {
             textureSampler.updateTextures(with: videoFrame, renderEncoder: renderEncoder)
@@ -142,7 +146,8 @@ import Log4Cocoa
 
         do {
             pipelineState = try device!.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
-        } catch {
+        }
+        catch {
             log4Assert(false, "Unable to create render pipeline: \(error)")
         }
 
@@ -173,12 +178,30 @@ import Log4Cocoa
         let adjustedHeight = halfHeight * scale
 
         let quadVertices: [RDMPEGVertex] = [
-            RDMPEGVertex(position: vector_float2( Float(adjustedWidth), -Float(adjustedHeight)), textureCoordinate: vector_float2(1.0, 1.0)),
-            RDMPEGVertex(position: vector_float2(-Float(adjustedWidth), -Float(adjustedHeight)), textureCoordinate: vector_float2(0.0, 1.0)),
-            RDMPEGVertex(position: vector_float2(-Float(adjustedWidth),  Float(adjustedHeight)), textureCoordinate: vector_float2(0.0, 0.0)),
-            RDMPEGVertex(position: vector_float2( Float(adjustedWidth), -Float(adjustedHeight)), textureCoordinate: vector_float2(1.0, 1.0)),
-            RDMPEGVertex(position: vector_float2(-Float(adjustedWidth),  Float(adjustedHeight)), textureCoordinate: vector_float2(0.0, 0.0)),
-            RDMPEGVertex(position: vector_float2( Float(adjustedWidth),  Float(adjustedHeight)), textureCoordinate: vector_float2(1.0, 0.0))
+            RDMPEGVertex(
+                position: vector_float2( Float(adjustedWidth), -Float(adjustedHeight)),
+                textureCoordinate: vector_float2(1.0, 1.0)
+            ),
+            RDMPEGVertex(
+                position: vector_float2(-Float(adjustedWidth), -Float(adjustedHeight)),
+                textureCoordinate: vector_float2(0.0, 1.0)
+            ),
+            RDMPEGVertex(
+                position: vector_float2(-Float(adjustedWidth), Float(adjustedHeight)),
+                textureCoordinate: vector_float2(0.0, 0.0)
+            ),
+            RDMPEGVertex(
+                position: vector_float2( Float(adjustedWidth), -Float(adjustedHeight)),
+                textureCoordinate: vector_float2(1.0, 1.0)
+            ),
+            RDMPEGVertex(
+                position: vector_float2(-Float(adjustedWidth), Float(adjustedHeight)),
+                textureCoordinate: vector_float2(0.0, 0.0)
+            ),
+            RDMPEGVertex(
+                position: vector_float2( Float(adjustedWidth), Float(adjustedHeight)),
+                textureCoordinate: vector_float2(1.0, 0.0)
+            )
         ]
 
         vertexBuffer = device?.makeBuffer(bytes: quadVertices,
@@ -214,7 +237,8 @@ import Log4Cocoa
         log4Assert(bounds.contains(aspectFitVideoFrame), "Aspect fit frame should be contained within bounds")
     }
 
-    @objc private func applicationDidBecomeActive() {
+    @objc
+    private func applicationDidBecomeActive() {
         render(currentFrame)
     }
 }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-open class RDMPEGOperation: Operation {
+open class RDMPEGOperation: Operation, @unchecked Sendable {
     private var _executing: Bool = false
     private var _finished: Bool = false
 
