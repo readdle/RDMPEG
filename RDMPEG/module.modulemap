@@ -1,0 +1,19 @@
+//
+//  module.modulemap
+//  RDMPEG
+//
+//  Created by Max Berezhnoy on 18/07/2024.
+//  Copyright © 2024 Readdle. All rights reserved.
+//
+
+framework module RDMPEG {
+    umbrella header "RDMPEG.h"
+
+    export *
+    module * { export * }
+}
+
+module libavformat {
+  header "libavformat.h"
+  export *
+}
