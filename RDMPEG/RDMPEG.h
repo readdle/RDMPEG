@@ -8,12 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import <VideoToolbox/VideoToolbox.h>
-#import <RDMPEG/RDMPEGPlayer.h>
-#import <RDMPEG/RDMPEGPlayerView.h>
+#import <MetalKit/MetalKit.h>
+#import <libavformat/avformat.h>
 #import <RDMPEG/RDMPEGDecoder.h>
 #import <RDMPEG/RDMPEGIOStream.h>
-#import <RDMPEG/RDMPEGStream.h>
-#import <RDMPEG/RDMPEGSelectableInputStream.h>
-#import <RDMPEG/RDMobileFFmpegOperation.h>
-#import <RDMPEG/RDMobileFFmpegStatistics.h>
+#import <RDMPEG/RDMPEGShaderTypes.h>
 

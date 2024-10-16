@@ -1,0 +1,22 @@
+parent_config: ../RD2SwiftLintConfig/swiftlint_base.yml
+included:
+- RDMPEG
+
+opt_in_rules:
+ - operator_usage_whitespace
+ - attributes
+ - explicit_init
+
+function_body_length:
+  warning: 60
+  error: 60
+
+operator_usage_whitespace:
+  severity: error
+
+attributes:
+  severity: error
+
+explicit_init:
+  severity: error
+  include_bare_init: true
