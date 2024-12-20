@@ -47,8 +47,27 @@ public class RDMobileFFmpegOperation: RDMPEGOperation, @unchecked Sendable {
     override public func main() {
         assert(session == nil)
 
-        session = FFmpegKit.execute(
-            withArgumentsAsync: arguments,
+        self.hasAudioStream { [weak self] hasAudioStream in
+            if hasAudioStream {
+                self?.execute()
+            }
+            else {
+                self?.completeOperation()
+            }
+        }
+    }
+
+    override public func cancel() {
+        super.cancel()
+
+        if let sessionId = session?.getId() {
+            FFmpegKit.cancel(sessionId)
+        }
+    }
+
+    private func execute() {
+        self.session = FFmpegKit.execute(
+            withArgumentsAsync: self.arguments,
             withExecuteCallback: { [weak self] session in
                 guard let self, let session else { return }
 
@@ -72,11 +91,31 @@ public class RDMobileFFmpegOperation: RDMPEGOperation, @unchecked Sendable {
         )
     }
 
-    override public func cancel() {
-        super.cancel()
+    private func hasAudioStream(completion: @escaping (Bool) -> Void) {
+        // List all stream (-show_streams)
+        // Select only audio streams (-select_streams a)
+        // and output them in JSON (-of json)
+        // format without logging (-v quiet)
+        let arguments = ["-i", self.arguments[1],
+                         "-show_streams",
+                         "-select_streams", "a",
+                         "-of", "json",
+                         "-v", "quiet"
+        ]
+        
+        FFprobeKit.execute(withArgumentsAsync: arguments) { session in
+            guard
+                let output = session?.getOutput(),
+                let data = output.data(using: .utf8),
+                let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                let streams = json["streams"] as? [String]
+            else {
+                // True by default in case this workaround will not work in future
+                completion(true)
+                return
+            }
 
-        if let sessionId = session?.getId() {
-            FFmpegKit.cancel(sessionId)
+            completion(streams.isEmpty == false)
         }
     }
 
