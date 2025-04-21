@@ -974,7 +974,7 @@ public class RDMPEGPlayer: NSObject {
                     L4Logger.logger(forName: "rd.mediaplayer.RDMPEGPlayer").debug("Rendering raw audio frame")
 #endif
 
-                    let bytes = rawAudioFrame.rawAudioData.withUnsafeBytes { $0.baseAddress! }
+                    let bytes = rawAudioFrame.rawAudioData.withUnsafeBytes { $0.baseAddress }?
                         .advanced(by: rawAudioFrame.rawAudioDataOffset)
                     let bytesLeft = rawAudioFrame.rawAudioData.count - rawAudioFrame.rawAudioDataOffset
                     let frameSize = Int(numChannels) * MemoryLayout<Float>.size
