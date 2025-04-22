@@ -122,7 +122,9 @@ class RDMPEGRenderView: MTKView {
         colorPixelFormat = .bgra8Unorm
         framebufferOnly = true
 
-        guard let defaultLibrary = try? device?.makeDefaultLibrary(bundle: Bundle(for: type(of: self))) else {
+        guard let device = self.device,
+              let defaultLibrary = try? device.makeDefaultLibrary(bundle: Bundle(for: type(of: self))) else
+        {
             log4Assert(false, "Unable to locate default library")
             return
         }
@@ -142,16 +144,16 @@ class RDMPEGRenderView: MTKView {
         pipelineStateDescriptor.fragmentFunction = samplingFunction
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
 
-        textureSampler.setupTextures(with: device!, frameWidth: frameWidth, frameHeight: frameHeight)
+        textureSampler.setupTextures(with: device, frameWidth: frameWidth, frameHeight: frameHeight)
 
         do {
-            pipelineState = try device!.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
+            pipelineState = try device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
         }
         catch {
             log4Assert(false, "Unable to create render pipeline: \(error)")
         }
 
-        commandQueue = device!.makeCommandQueue()
+        commandQueue = device.makeCommandQueue()
 
         updateVertices()
         listenNotifications()
