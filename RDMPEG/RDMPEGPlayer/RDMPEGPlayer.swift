@@ -163,7 +163,7 @@ public class RDMPEGPlayer: NSObject {
         prepareToPlayIfNeeded { [weak self] in
             guard let self = self else { return }
 
-            if self.videoStreamExist == false {
+            guard self.videoStreamExist else {
                 log4Info("Ignoring external input since video stream doesn't exist")
                 return
             }
@@ -304,7 +304,7 @@ public class RDMPEGPlayer: NSObject {
 
     @objc
     public func activateAudioStream(at streamIndex: NSNumber?) {
-        if preparedToPlay == false {
+        guard preparedToPlay else {
             return
         }
 
@@ -366,7 +366,7 @@ public class RDMPEGPlayer: NSObject {
 
     @objc
     public func activateSubtitleStream(at streamIndex: NSNumber?) {
-        if preparedToPlay == false {
+        guard preparedToPlay else {
             return
         }
 
