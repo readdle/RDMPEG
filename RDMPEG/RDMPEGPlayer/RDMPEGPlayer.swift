@@ -580,7 +580,7 @@ public class RDMPEGPlayer: NSObject {
             return
         }
 
-        guard decoder?.isEndReached != true else {
+        guard decoder?.isEndReached == false else {
             log4Assert(decodingFinished, "This properties expected to be synchronized")
             decodingFinished = true
             return
