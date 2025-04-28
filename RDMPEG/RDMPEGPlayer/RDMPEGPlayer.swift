@@ -163,7 +163,7 @@ public class RDMPEGPlayer: NSObject {
         prepareToPlayIfNeeded { [weak self] in
             guard let self = self else { return }
 
-            if !self.videoStreamExist {
+            guard self.videoStreamExist else {
                 log4Info("Ignoring external input since video stream doesn't exist")
                 return
             }
@@ -235,7 +235,7 @@ public class RDMPEGPlayer: NSObject {
     public func beginSeeking() {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
-        if !isSeeking {
+        if isSeeking == false {
             isSeeking = true
 
             if internalState == .playing {
@@ -304,7 +304,7 @@ public class RDMPEGPlayer: NSObject {
 
     @objc
     public func activateAudioStream(at streamIndex: NSNumber?) {
-        if !preparedToPlay {
+        guard preparedToPlay else {
             return
         }
 
@@ -366,7 +366,7 @@ public class RDMPEGPlayer: NSObject {
 
     @objc
     public func activateSubtitleStream(at streamIndex: NSNumber?) {
-        if !preparedToPlay {
+        guard preparedToPlay else {
             return
         }
 
@@ -466,7 +466,7 @@ public class RDMPEGPlayer: NSObject {
             var justPreparedToPlay = false
             var prepareError: Error?
 
-            if !preparedToPlay {
+            if preparedToPlay == false {
                 preparedToPlay = self
                     .prepareToPlay(
                         audioSamplingRate: samplingRate,
@@ -516,12 +516,12 @@ public class RDMPEGPlayer: NSObject {
                         self.delegate?.mpegPlayerDidPrepareToPlay(self)
                     }
 
-                    if !prepareOperation.isCancelled {
+                    if prepareOperation.isCancelled == false {
                         successCallback()
                     }
                 }
                 else {
-                    if !prepareOperation.isCancelled {
+                    if prepareOperation.isCancelled == false {
                         self.updateStateIfNeededAndNotify(.failed, error: prepareError)
                     }
                 }
@@ -580,7 +580,7 @@ public class RDMPEGPlayer: NSObject {
             return
         }
 
-        guard !(decoder?.isEndReached ?? true) else {
+        guard decoder?.isEndReached == false else {
             log4Assert(decodingFinished, "This properties expected to be synchronized")
             decodingFinished = true
             return
@@ -610,7 +610,7 @@ public class RDMPEGPlayer: NSObject {
                 if let audioFrames = externalAudioDecoder.decodeFrames() {
                     let filteredAudioFrames = audioFrames.compactMap { $0 as? RDMPEGAudioFrame }
 
-                    if !filteredAudioFrames.isEmpty {
+                    if filteredAudioFrames.isEmpty == false {
                         framebuffer.pushFrames(filteredAudioFrames)
 
                         if let nextAudioFrame = framebuffer.nextAudioFrame {
@@ -641,7 +641,7 @@ public class RDMPEGPlayer: NSObject {
                 if let subtitleFrames = externalSubtitleDecoder.decodeFrames() {
                     let filteredSubtitleFrames = subtitleFrames.compactMap { $0 as? RDMPEGSubtitleFrame }
 
-                    if !subtitleFrames.isEmpty {
+                    if subtitleFrames.isEmpty == false {
                         framebuffer.pushFrames(filteredSubtitleFrames)
 
                         if let nextSubtitleFrame = framebuffer.nextSubtitleFrame {
@@ -659,7 +659,7 @@ public class RDMPEGPlayer: NSObject {
 
     // swiftlint:disable:next cyclomatic_complexity
     private func asyncDecodeFramesIfNeeded() {
-        if let decodingOperation = decodingOperation, !decodingOperation.isCancelled {
+        if let decodingOperation = decodingOperation, decodingOperation.isCancelled == false {
             return
         }
 
@@ -669,16 +669,16 @@ public class RDMPEGPlayer: NSObject {
         decodingOperation.addExecutionBlock { [weak self, weak decodingOperation] in
             guard let self = self, let decodingOperation = decodingOperation else { return }
 
-            while !decodingOperation.isCancelled {
+            while decodingOperation.isCancelled == false {
                 if self.isVideoBufferReady && self.isAudioBufferReady && self.isSubtitleBufferReady {
                     break
                 }
 
-                if !self.isVideoBufferReady {
+                if self.isVideoBufferReady == false {
                     self.decodeFrames()
                 }
 
-                if !self.isAudioBufferReady {
+                if self.isAudioBufferReady == false {
                     if self.decoder?.activeAudioStreamIndex != nil {
                         self.decodeFrames()
                     }
@@ -687,7 +687,7 @@ public class RDMPEGPlayer: NSObject {
                     }
                 }
 
-                if !self.isSubtitleBufferReady {
+                if self.isSubtitleBufferReady == false {
                     if self.decoder?.activeSubtitleStreamIndex != nil {
                         self.decodeFrames()
                     }
@@ -857,7 +857,7 @@ public class RDMPEGPlayer: NSObject {
 
     private func setAudioOutputEnabled(_ audioOutputEnabled: Bool) {
         if audioOutputEnabled {
-            guard !audioRenderer.isPlaying else {
+            guard audioRenderer.isPlaying == false else {
                 return
             }
 
@@ -916,7 +916,7 @@ public class RDMPEGPlayer: NSObject {
 
                             nextAudioFrame = self.framebuffer.popAudioFrame()
 
-                            if !videoStreamExist {
+                            if videoStreamExist == false {
                                 currentInternalTime = nextAudioFrame?.position ?? 0
                             }
 
@@ -949,7 +949,7 @@ public class RDMPEGPlayer: NSObject {
 
                         rawAudioFrame = RDMPEGRawAudioFrame(rawAudioData: audioFrame.samples)
 
-                        if !videoStreamExist {
+                        if videoStreamExist == false {
                             correctionInfo = RDMPEGCorrectionInfo(
                                 playbackStartDate: Date(),
                                 playbackStartTime: currentInternalTime
@@ -960,7 +960,7 @@ public class RDMPEGPlayer: NSObject {
                             }
                         }
                     }
-                    else if !videoStreamExist {
+                    else if videoStreamExist == false {
                         correctionInfo = nil
 
                         DispatchQueue.main.async {
@@ -1014,7 +1014,7 @@ public class RDMPEGPlayer: NSObject {
             return
         }
 
-        guard internalState == .playing || !buffering else {
+        guard internalState == .playing || buffering == false else {
             return
         }
 
@@ -1180,7 +1180,7 @@ public class RDMPEGPlayer: NSObject {
     private var isVideoBufferReady: Bool {
         log4Assert(OperationQueue.current == decodingQueue, "Method '\(#function)' called from wrong queue")
 
-        guard let decoder = decoder, decoder.isVideoStreamExist, !decoder.isEndReached else {
+        guard let decoder = decoder, decoder.isVideoStreamExist, decoder.isEndReached == false else {
             return true
         }
 
@@ -1227,7 +1227,7 @@ public class RDMPEGPlayer: NSObject {
             }
         }
         else {
-            guard let decoder = decoder, decoder.isAudioStreamExist, !decoder.isEndReached else {
+            guard let decoder = decoder, decoder.isAudioStreamExist, decoder.isEndReached == false else {
                 return true
             }
 
