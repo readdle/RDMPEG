@@ -65,7 +65,7 @@ public class RDMPEGSubtitleASSParser: NSObject {
         let scanner = Scanner(string: text)
         scanner.charactersToBeSkipped = nil
 
-        while !scanner.isAtEnd {
+        while scanner.isAtEnd == false {
             if let scanned = scanner.scanUpToString("{\\") {
                 result += scanned
             }

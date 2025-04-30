@@ -132,14 +132,14 @@ class RDMPEGFramebuffer {
 
     func popVideoFrame() -> RDMPEGVideoFrame? {
         videoFramesLock.withLock {
-            guard !videoFrames.isEmpty else { return nil }
+            guard videoFrames.isEmpty == false else { return nil }
             return videoFrames.removeFirst()
         }
     }
 
     func popAudioFrame() -> RDMPEGAudioFrame? {
         audioFramesLock.withLock {
-            guard !audioFrames.isEmpty else { return nil }
+            guard audioFrames.isEmpty == false else { return nil }
             return audioFrames.removeFirst()
         }
     }
@@ -147,7 +147,7 @@ class RDMPEGFramebuffer {
     @discardableResult
     public func popSubtitleFrame() -> RDMPEGSubtitleFrame? {
         subtitleFramesLock.withLock {
-            guard !subtitleFrames.isEmpty else { return nil }
+            guard subtitleFrames.isEmpty == false else { return nil }
             return subtitleFrames.removeFirst()
         }
     }
