@@ -53,7 +53,7 @@ class RDMPEGAudioRenderer: NSObject {
     }
 
     func play(withOutputCallback outputCallback: @escaping OutputCallback) -> Bool {
-        guard !isPlaying, let audioUnit = audioUnit else {
+        guard isPlaying == false, let audioUnit = audioUnit else {
             log4Assert(false, "Already playing or Audio unit doesn't exist")
             return false
         }

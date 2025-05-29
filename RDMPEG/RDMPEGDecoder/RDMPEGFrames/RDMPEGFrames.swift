@@ -68,23 +68,25 @@ public class RDMPEGVideoFrameBGRA: RDMPEGVideoFrame {
     public func asImage() -> UIImage? {
         guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else { return nil }
 
-        let provider = CGDataProvider(data: bgra as CFData)
-
-        guard let imageRef = CGImage(
-            width: Int(width),
-            height: Int(height),
-            bitsPerComponent: 8,
-            bitsPerPixel: 32,
-            bytesPerRow: Int(linesize),
-            space: colorSpace,
-            bitmapInfo: CGBitmapInfo(
-                rawValue: CGImageAlphaInfo.noneSkipFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
-            ),
-            provider: provider!,
-            decode: nil,
-            shouldInterpolate: true,
-            intent: .defaultIntent
-        ) else { return nil }
+        guard let provider = CGDataProvider(data: bgra as CFData),
+              let imageRef = CGImage(
+                width: Int(width),
+                height: Int(height),
+                bitsPerComponent: 8,
+                bitsPerPixel: 32,
+                bytesPerRow: Int(linesize),
+                space: colorSpace,
+                bitmapInfo: CGBitmapInfo(
+                    rawValue: CGImageAlphaInfo.noneSkipFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
+                ),
+                provider: provider,
+                decode: nil,
+                shouldInterpolate: true,
+                intent: .defaultIntent
+              )
+        else {
+            return nil
+        }
 
         return UIImage(cgImage: imageRef)
     }
