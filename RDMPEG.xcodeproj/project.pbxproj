@@ -62,13 +62,6 @@
 			remoteGlobalIDString = 8A5B3A2D1C0DC44600AD9356;
 			remoteInfo = Log4Cocoa;
 		};
-		739F77B11F82A270009E27EA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 739F77AB1F82A270009E27EA /* Log4Cocoa.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 0D5B4EF114C36987008A00B6;
-			remoteInfo = "Log4Cocoa iOS";
-		};
 		739F77B31F82A270009E27EA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 739F77AB1F82A270009E27EA /* Log4Cocoa.xcodeproj */;
@@ -82,6 +75,55 @@
 			proxyType = 2;
 			remoteGlobalIDString = 8A5B3A2E1C0DC44600AD9356;
 			remoteInfo = Log4Cocoa;
+		};
+		BE7BD2282DF8492000EA698A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 739F77AB1F82A270009E27EA /* Log4Cocoa.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FF09D2F52D6BC90400F15E0A;
+			remoteInfo = Log4CocoaTests;
+		};
+		BE7BD22F2DF8492000EA698A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BE7BD21F2DF8492000EA698A /* ReaddleLib.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6D31EB491880562E00AADE0B;
+			remoteInfo = ReaddleLibTests;
+		};
+		BE7BD2312DF8492000EA698A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BE7BD21F2DF8492000EA698A /* ReaddleLib.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6DE89FAD197E6780006FF42B;
+			remoteInfo = "ReaddleLib Mac OS Tests";
+		};
+		BE7BD2332DF8492000EA698A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BE7BD21F2DF8492000EA698A /* ReaddleLib.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6DBD47EA1B203853003E7E65;
+			remoteInfo = "Readdle Lib Mac OS";
+		};
+		BE7BD2352DF8492000EA698A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BE7BD21F2DF8492000EA698A /* ReaddleLib.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8A5B3A7B1C0DC72D00AD9356;
+			remoteInfo = "Readdle Lib";
+		};
+		BE7BD2372DF8492000EA698A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BE7BD21F2DF8492000EA698A /* ReaddleLib.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DAB17D7A2A2A62D9003453A5;
+			remoteInfo = TestUtils;
+		};
+		BE7BD2392DF8492900EA698A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BE7BD21F2DF8492000EA698A /* ReaddleLib.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8A5B3A7A1C0DC72D00AD9356;
+			remoteInfo = "Readdle Lib";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -133,6 +175,7 @@
 		73DE14331F82A3F100E96055 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };
 		7890012F22AE855000D17F31 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		7890013322AE86E800D17F31 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		BE7BD21F2DF8492000EA698A /* ReaddleLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReaddleLib.xcodeproj; path = ../ReaddleLib/ReaddleLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -328,6 +371,7 @@
 		739F77AA1F82A22F009E27EA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BE7BD21F2DF8492000EA698A /* ReaddleLib.xcodeproj */,
 				50A5E62A2C4937DE00222ADC /* ReaddleLib.framework */,
 				738312B326D98FCE0036874B /* ffmpegkit.xcframework */,
 				738312B726D98FCE0036874B /* lame.xcframework */,
@@ -353,9 +397,9 @@
 		739F77AC1F82A270009E27EA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				739F77B21F82A270009E27EA /* libLog4Cocoa.a */,
 				739F77B41F82A270009E27EA /* Log4Cocoa.framework */,
 				739F77B61F82A270009E27EA /* Log4Cocoa.framework */,
+				BE7BD2292DF8492000EA698A /* Log4CocoaTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -386,6 +430,18 @@
 				507FD0522C468BD500FA90C4 /* RDMobileFFmpegOperation.swift */,
 			);
 			path = RDMPEGConverter;
+			sourceTree = "<group>";
+		};
+		BE7BD2242DF8492000EA698A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BE7BD2302DF8492000EA698A /* ReaddleLibTests.xctest */,
+				BE7BD2322DF8492000EA698A /* ReaddleLibMacOSTests.xctest */,
+				BE7BD2342DF8492000EA698A /* ReaddleLib.framework */,
+				BE7BD2362DF8492000EA698A /* ReaddleLib.framework */,
+				BE7BD2382DF8492000EA698A /* TestUtils.framework */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -419,6 +475,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				BE7BD23A2DF8492900EA698A /* PBXTargetDependency */,
 				738B8AAE1F82A28E003C2AEC /* PBXTargetDependency */,
 			);
 			name = RDMPEG;
@@ -458,6 +515,10 @@
 					ProductGroup = 739F77AC1F82A270009E27EA /* Products */;
 					ProjectRef = 739F77AB1F82A270009E27EA /* Log4Cocoa.xcodeproj */;
 				},
+				{
+					ProductGroup = BE7BD2242DF8492000EA698A /* Products */;
+					ProjectRef = BE7BD21F2DF8492000EA698A /* ReaddleLib.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -467,13 +528,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		739F77B21F82A270009E27EA /* libLog4Cocoa.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libLog4Cocoa.a;
-			remoteRef = 739F77B11F82A270009E27EA /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		739F77B41F82A270009E27EA /* Log4Cocoa.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -486,6 +540,48 @@
 			fileType = wrapper.framework;
 			path = Log4Cocoa.framework;
 			remoteRef = 739F77B51F82A270009E27EA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BE7BD2292DF8492000EA698A /* Log4CocoaTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = Log4CocoaTests.xctest;
+			remoteRef = BE7BD2282DF8492000EA698A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BE7BD2302DF8492000EA698A /* ReaddleLibTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ReaddleLibTests.xctest;
+			remoteRef = BE7BD22F2DF8492000EA698A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BE7BD2322DF8492000EA698A /* ReaddleLibMacOSTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = ReaddleLibMacOSTests.xctest;
+			remoteRef = BE7BD2312DF8492000EA698A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BE7BD2342DF8492000EA698A /* ReaddleLib.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ReaddleLib.framework;
+			remoteRef = BE7BD2332DF8492000EA698A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BE7BD2362DF8492000EA698A /* ReaddleLib.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ReaddleLib.framework;
+			remoteRef = BE7BD2352DF8492000EA698A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BE7BD2382DF8492000EA698A /* TestUtils.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = TestUtils.framework;
+			remoteRef = BE7BD2372DF8492000EA698A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -558,6 +654,11 @@
 			isa = PBXTargetDependency;
 			name = Log4Cocoa;
 			targetProxy = 738B8AAD1F82A28E003C2AEC /* PBXContainerItemProxy */;
+		};
+		BE7BD23A2DF8492900EA698A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Readdle Lib";
+			targetProxy = BE7BD2392DF8492900EA698A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
