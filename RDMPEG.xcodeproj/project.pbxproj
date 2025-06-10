@@ -805,7 +805,7 @@
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c swift";
 				OTHER_LDFLAGS = (
 					"-Xlinker",
-					"-no_compact_unwind",
+					"-w",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.readdle.RDMPEG;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -845,7 +845,7 @@
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c swift";
 				OTHER_LDFLAGS = (
 					"-Xlinker",
-					"-no_compact_unwind",
+					"-w",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.readdle.RDMPEG;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
