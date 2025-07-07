@@ -13,6 +13,7 @@ import ReaddleLib
 private let RDMPEGPlayerMinVideoBufferSize: TimeInterval = 0.2
 private let RDMPEGPlayerMaxVideoBufferSize: TimeInterval = 1.0
 private let RDMPEGPlayerMinAudioBufferSize: TimeInterval = 0.2
+private let RDMPEGPlayerMaxAudioBufferSize: TimeInterval = 1.0
 
 private let RDMPEGPlayerInputDecoderKey = "RDMPEGPlayerInputDecoderKey"
 private let RDMPEGPlayerInputNameKey = "RDMPEGPlayerInputNameKey"
@@ -1201,6 +1202,10 @@ public class RDMPEGPlayer: NSObject {
                     return true
                 }
 
+                if framebuffer.bufferedAudioDuration >= RDMPEGPlayerMaxAudioBufferSize {
+                    return true
+                }
+
                 if framebuffer.bufferedAudioDuration > RDMPEGPlayerMinAudioBufferSize {
                     return true
                 }
@@ -1216,6 +1221,10 @@ public class RDMPEGPlayer: NSObject {
                     return true
                 }
 
+                if framebuffer.bufferedAudioDuration >= RDMPEGPlayerMaxAudioBufferSize {
+                    return true
+                }
+
                 if framebuffer.bufferedAudioDuration > RDMPEGPlayerMinAudioBufferSize {
                     return true
                 }
@@ -1228,6 +1237,10 @@ public class RDMPEGPlayer: NSObject {
         }
         else {
             guard let decoder = decoder, decoder.isAudioStreamExist, decoder.isEndReached == false else {
+                return true
+            }
+
+            if framebuffer.bufferedAudioDuration >= RDMPEGPlayerMaxAudioBufferSize {
                 return true
             }
 
