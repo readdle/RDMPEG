@@ -829,7 +829,9 @@ public class RDMPEGPlayer: NSObject {
             }
         }
 
-        framebuffer.atomicSubtitleFramesAccess {
+        framebuffer.atomicSubtitleFramesAccess { [weak self] in
+            guard let self = self else { return }
+            
             while let nextSubtitleFrame = self.framebuffer.nextSubtitleFrame {
                 let nextSubtitleStartTime = nextSubtitleFrame.position
                 let nextSubtitleEndTime = nextSubtitleStartTime + nextSubtitleFrame.duration
@@ -872,15 +874,10 @@ public class RDMPEGPlayer: NSObject {
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length
     private func audioCallbackFillData(_ outData: UnsafeMutablePointer<Float>, numFrames: UInt32, numChannels: UInt32) {
-        autoreleasepool { [weak self] in
-            guard let self = self else {
-                memset(outData, 0, Int(numFrames) * Int(numChannels) * MemoryLayout<Float>.size)
-                return
-            }
-            
+        autoreleasepool {
             var outData = outData
 
-            if videoStreamExist && correctionInfo == nil {
+            if self.videoStreamExist && self.correctionInfo == nil {
 #if RD_DEBUG_MPEG_PLAYER
                 L4Logger.logger(forName: "rd.mediaplayer.RDMPEGPlayer").debug("Silence audio while correcting video")
 #endif
@@ -901,7 +898,9 @@ public class RDMPEGPlayer: NSObject {
                     let loggingScope = L4Logger.logger(forName: "rd.mediaplayer.RDMPEGPlayer").loggingScope()
 #endif
 
-                    self.framebuffer.atomicAudioFramesAccess {
+                    framebuffer.atomicAudioFramesAccess { [weak self] in
+                        guard let self = self else { return }
+                        
                         if let nextFrame = self.framebuffer.nextAudioFrame {
                             let delta = self.correctionInfo?.correctionInterval(
                                 withCurrentTime: nextFrame.position
@@ -960,16 +959,16 @@ public class RDMPEGPlayer: NSObject {
                                 playbackStartTime: self.currentInternalTime
                             )
 
-                            DispatchQueue.main.async {
-                                self.setBufferingStateIfNeededAndNotify(false)
+                            DispatchQueue.main.async { [weak self] in
+                                self?.setBufferingStateIfNeededAndNotify(false)
                             }
                         }
                     }
                     else if self.videoStreamExist == false {
                         self.correctionInfo = nil
 
-                        DispatchQueue.main.async {
-                            self.setBufferingStateIfNeededAndNotify(true)
+                        DispatchQueue.main.async { [weak self] in
+                            self?.setBufferingStateIfNeededAndNotify(true)
                         }
                     }
                 }
