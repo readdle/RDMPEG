@@ -872,7 +872,12 @@ public class RDMPEGPlayer: NSObject {
 
     // swiftlint:disable:next cyclomatic_complexity function_body_length
     private func audioCallbackFillData(_ outData: UnsafeMutablePointer<Float>, numFrames: UInt32, numChannels: UInt32) {
-        autoreleasepool {
+        autoreleasepool { [weak self] in
+            guard let self = self else {
+                memset(outData, 0, Int(numFrames) * Int(numChannels) * MemoryLayout<Float>.size)
+                return
+            }
+            
             var outData = outData
 
             if videoStreamExist && correctionInfo == nil {
@@ -887,7 +892,7 @@ public class RDMPEGPlayer: NSObject {
             var numFramesLeft = numFrames
 
             while numFramesLeft > 0 {
-                if rawAudioFrame == nil {
+                if self.rawAudioFrame == nil {
                     var nextAudioFrame: RDMPEGAudioFrame?
                     var isAudioOutrun = false
                     var isAudioLags = false
@@ -896,7 +901,7 @@ public class RDMPEGPlayer: NSObject {
                     let loggingScope = L4Logger.logger(forName: "rd.mediaplayer.RDMPEGPlayer").loggingScope()
 #endif
 
-                    framebuffer.atomicAudioFramesAccess {
+                    self.framebuffer.atomicAudioFramesAccess {
                         if let nextFrame = self.framebuffer.nextAudioFrame {
                             let delta = self.correctionInfo?.correctionInterval(
                                 withCurrentTime: nextFrame.position
@@ -916,8 +921,8 @@ public class RDMPEGPlayer: NSObject {
 
                             nextAudioFrame = self.framebuffer.popAudioFrame()
 
-                            if videoStreamExist == false {
-                                currentInternalTime = nextAudioFrame?.position ?? 0
+                            if self.videoStreamExist == false {
+                                self.currentInternalTime = nextAudioFrame?.position ?? 0
                             }
 
                             if delta < -0.1, self.framebuffer.nextAudioFrame != nil {
@@ -947,12 +952,12 @@ public class RDMPEGPlayer: NSObject {
                             .debug("Audio frame will be rendered: \(audioFrame.position) \(audioFrame.duration)")
 #endif
 
-                        rawAudioFrame = RDMPEGRawAudioFrame(rawAudioData: audioFrame.samples)
+                        self.rawAudioFrame = RDMPEGRawAudioFrame(rawAudioData: audioFrame.samples)
 
-                        if videoStreamExist == false {
-                            correctionInfo = RDMPEGCorrectionInfo(
+                        if self.videoStreamExist == false {
+                            self.correctionInfo = RDMPEGCorrectionInfo(
                                 playbackStartDate: Date(),
-                                playbackStartTime: currentInternalTime
+                                playbackStartTime: self.currentInternalTime
                             )
 
                             DispatchQueue.main.async {
@@ -960,8 +965,8 @@ public class RDMPEGPlayer: NSObject {
                             }
                         }
                     }
-                    else if videoStreamExist == false {
-                        correctionInfo = nil
+                    else if self.videoStreamExist == false {
+                        self.correctionInfo = nil
 
                         DispatchQueue.main.async {
                             self.setBufferingStateIfNeededAndNotify(true)
@@ -969,7 +974,7 @@ public class RDMPEGPlayer: NSObject {
                     }
                 }
 
-                if let rawAudioFrame = rawAudioFrame {
+                if let rawAudioFrame = self.rawAudioFrame {
 #if RD_DEBUG_MPEG_PLAYER
                     L4Logger.logger(forName: "rd.mediaplayer.RDMPEGPlayer").debug("Rendering raw audio frame")
 #endif
