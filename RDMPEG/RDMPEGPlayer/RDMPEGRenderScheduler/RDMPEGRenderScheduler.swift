@@ -22,7 +22,7 @@ class RDMPEGRenderScheduler: NSObject {
     }
 
     func start(with callback: @escaping () -> Date?) {
-        guard !isScheduling else {
+        guard isScheduling == false else {
             log4Assert(false, "Already scheduling")
             return
         }
