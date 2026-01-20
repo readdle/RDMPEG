@@ -91,38 +91,23 @@ class RDMPEGFramebuffer {
             switch frame.type {
             case .video:
                 if let videoFrame = frame as? RDMPEGVideoFrame {
-                    #if RD_DEBUG_MPEG_PLAYER
-                    log4Debug("Pushed video frame: \(frame.position) \(frame.duration)")
-                    #endif
                     videoFramesLock.withLock {
                         videoFrames.append(videoFrame)
                     }
                 }
             case .audio:
                 if let audioFrame = frame as? RDMPEGAudioFrame {
-                    #if RD_DEBUG_MPEG_PLAYER
-                    log4Debug("Pushed audio frame: \(frame.position) \(frame.duration)")
-                    #endif
                     audioFramesLock.withLock {
                         audioFrames.append(audioFrame)
                     }
                 }
             case .subtitle:
                 if let subtitleFrame = frame as? RDMPEGSubtitleFrame {
-                    #if RD_DEBUG_MPEG_PLAYER
-                    log4Debug("""
-                        Pushed subtitle frame:
-                        \(subtitleFrame.position) \(subtitleFrame.duration) \(subtitleFrame.text ?? "")
-                    """)
-                    #endif
                     subtitleFramesLock.withLock {
                         subtitleFrames.append(subtitleFrame)
                     }
                 }
             case .artwork:
-                #if RD_DEBUG_MPEG_PLAYER
-                log4Debug("Pushed artwork frame: \(frame.position) \(frame.duration)")
-                #endif
                 artworkFrame = frame as? RDMPEGArtworkFrame
             @unknown default:
                 break

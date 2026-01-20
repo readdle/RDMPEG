@@ -797,15 +797,8 @@ public class RDMPEGPlayer: NSObject {
         log4Assert(Thread.isMainThread, "Method '\(#function)' called from wrong thread")
 
         guard let videoFrame = framebuffer.popVideoFrame() else {
-#if RD_DEBUG_MPEG_PLAYER
-            log4debug("There is no video frame to render")
-#endif
             return nil
         }
-
-#if RD_DEBUG_MPEG_PLAYER
-        log4debug("Rendering video frame: \(videoFrame.position) \(videoFrame.duration)")
-#endif
 
         currentInternalTime = videoFrame.position
 
@@ -878,10 +871,6 @@ public class RDMPEGPlayer: NSObject {
             var outData = outData
 
             if self.videoStreamExist && self.correctionInfo == nil {
-#if RD_DEBUG_MPEG_PLAYER
-                L4Logger.logger(forName: "rd.mediaplayer.RDMPEGPlayer").debug("Silence audio while correcting video")
-#endif
-
                 memset(outData, 0, Int(numFrames) * Int(numChannels) * MemoryLayout<Float>.size)
                 return
             }
@@ -894,10 +883,6 @@ public class RDMPEGPlayer: NSObject {
                     var isAudioOutrun = false
                     var isAudioLags = false
 
-#if RD_DEBUG_MPEG_PLAYER
-                    let loggingScope = L4Logger.logger(forName: "rd.mediaplayer.RDMPEGPlayer").loggingScope()
-#endif
-
                     framebuffer.atomicAudioFramesAccess { [weak self] in
                         guard let self = self else { return }
                         
@@ -907,13 +892,6 @@ public class RDMPEGPlayer: NSObject {
                             ) ?? 0
 
                             if delta > 0.1 {
-#if RD_DEBUG_MPEG_PLAYER
-                                loggingScope.debug("""
-                                    Desync audio (outrun) wait 
-                                    \(self.currentInternalTime) \(nextFrame.position) \(delta)
-                                """)
-#endif
-
                                 isAudioOutrun = true
                                 return
                             }
@@ -925,12 +903,6 @@ public class RDMPEGPlayer: NSObject {
                             }
 
                             if delta < -0.1, self.framebuffer.nextAudioFrame != nil {
-#if RD_DEBUG_MPEG_PLAYER
-                                loggingScope.debug("""
-                                    Desync audio (lags) skip \(self.currentInternalTime) \(nextFrame.position) \(delta)
-                                """)
-#endif
-
                                 isAudioLags = true
                                 return
                             }
@@ -946,11 +918,6 @@ public class RDMPEGPlayer: NSObject {
                     }
 
                     if let audioFrame = nextAudioFrame {
-#if RD_DEBUG_MPEG_PLAYER
-                        L4Logger.logger(forName: "rd.mediaplayer.RDMPEGPlayer")
-                            .debug("Audio frame will be rendered: \(audioFrame.position) \(audioFrame.duration)")
-#endif
-
                         self.rawAudioFrame = RDMPEGRawAudioFrame(rawAudioData: audioFrame.samples)
 
                         if self.videoStreamExist == false {
@@ -974,10 +941,6 @@ public class RDMPEGPlayer: NSObject {
                 }
 
                 if let rawAudioFrame = self.rawAudioFrame {
-#if RD_DEBUG_MPEG_PLAYER
-                    L4Logger.logger(forName: "rd.mediaplayer.RDMPEGPlayer").debug("Rendering raw audio frame")
-#endif
-
                     let bytes = rawAudioFrame.rawAudioData.withUnsafeBytes { $0.baseAddress }?
                         .advanced(by: rawAudioFrame.rawAudioDataOffset)
                     let bytesLeft = rawAudioFrame.rawAudioData.count - rawAudioFrame.rawAudioDataOffset
@@ -1000,10 +963,6 @@ public class RDMPEGPlayer: NSObject {
                     }
                 }
                 else {
-#if RD_DEBUG_MPEG_PLAYER
-                    L4Logger.logger(forName: "rd.mediaplayer.RDMPEGPlayer").debug("Silence audio")
-#endif
-
                     memset(outData, 0, Int(numFramesLeft) * Int(numChannels) * MemoryLayout<Float>.size)
                     break
                 }
