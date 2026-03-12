@@ -48,7 +48,7 @@ extension RDMPEGStream {
             return false
         }
 
-        if let subtitleEncoding = subtitleEncoding, !subtitleEncoding.isEmpty {
+        if let subtitleEncoding = subtitleEncoding, subtitleEncoding.isEmpty == false {
             if let subCharEnc = codecContext.pointee.sub_charenc {
                 free(UnsafeMutableRawPointer(mutating: subCharEnc))
             }
