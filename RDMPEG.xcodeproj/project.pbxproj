@@ -614,7 +614,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$SRCROOT/RunScripts/swiftlint.sh\"\n";
+			shellScript = "sh \"$SRCROOT/../RD2SwiftLintConfig/swiftlint.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
