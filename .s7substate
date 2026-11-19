@@ -1,1 +1,1 @@
-Dependencies/FFmpegKit = { git@github.com:readdle/ffmpeg-kit.git, b71717c27afc6586236ad1f2a6d73bac62450b73, fix/DOC-15161-ffmpeg-linker-issues }
+Dependencies/FFmpegKit = { git@github.com:readdle/ffmpeg-kit.git, 37ba9c22868801e25bb0f1402fdac14fc5508ac2, main }
