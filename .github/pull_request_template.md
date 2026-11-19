@@ -22,6 +22,7 @@ __PR submission checklist__
 - [ ] .s7substat has correct subrepos revisions
 - [ ] Common ([Obj-C](https://readdle-j.atlassian.net/wiki/x/gQDGAQ) / [Swift](https://readdle-j.atlassian.net/wiki/x/fwDGAQ)) and your team's coding conventions and style guidelines ([PDF Expert](https://readdle-j.atlassian.net/wiki/spaces/DOC/pages/34603406/PE+iOS+Swift+Style+Guide?xpis=eyJicmlkZ2UiOiJxdWlja0ZpbmQiLCJpZCI6IjE3OTQxNjU5Nzc3ODEiLCJzb3VyY2UiOiJjb25mbHVlbmNlIn0%3D), [PDF Expert Mac](https://readdle-j.atlassian.net/wiki/spaces/DOC/pages/34603333/PDF+Expert+Mac+Swift+Style+Guide?xpis=eyJicmlkZ2UiOiJxdWlja0ZpbmQiLCJpZCI6IjE3OTQxNjU5Nzc3ODEiLCJzb3VyY2UiOiJjb25mbHVlbmNlIn0%3D), absent for Documents) are followed
 - [ ] All new UI components meet accessibility expectations according to the [Accessibility guide](https://readdle-j.atlassian.net/wiki/x/IwDGAQ).
+- [ ] The AQA team is notified about any changes to accessibility identifiers or labels
 - [ ] Unit tests to cover the critical parts of the code are written
 - [ ] Relevant documentation updated / added if needed
 - [ ] Self-reviewed using the [self-review checklist](https://readdle-j.atlassian.net/wiki/x/kwHGAQ) prior to submitting a PR
