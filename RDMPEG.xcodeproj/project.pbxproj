@@ -614,7 +614,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$SRCROOT/RunScripts/swiftlint.sh\"\n";
+			shellScript = "sh \"$SRCROOT/../RD2SwiftLintConfig/swiftlint.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -826,6 +826,8 @@
 		73450B181F82906B009E8F5F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				MERGEABLE_LIBRARY = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CLANG_WARN_STRICT_PROTOTYPES = NO;
