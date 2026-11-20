@@ -807,10 +807,6 @@
 				MODULEMAP_FILE = "$(PROJECT_NAME)/module.modulemap";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c swift";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
-				OTHER_LDFLAGS = (
-					"-Xlinker",
-					"-w",
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.readdle.RDMPEG;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -849,10 +845,6 @@
 				MODULEMAP_FILE = "$(PROJECT_NAME)/module.modulemap";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c swift";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
-				OTHER_LDFLAGS = (
-					"-Xlinker",
-					"-w",
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.readdle.RDMPEG;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
